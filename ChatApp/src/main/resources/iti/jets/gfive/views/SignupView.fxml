@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.SignupController">
+    <center>
+        <HBox>
+            <children>
+                <AnchorPane prefHeight="440.0" prefWidth="340.0" style="-fx-background-color: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12); -fx-background-radius: 1em;">
+                    <children>
+                        <VBox alignment="CENTER_LEFT" layoutX="76.0" layoutY="84.0" prefHeight="228.0" prefWidth="236.0" style="-fx-background-radius: 1em;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <FontIcon iconColor="#e4f3ff" iconLiteral="fab-telegram-plane" iconSize="150" />
+                                <Label text="ChetChat" textFill="WHITE">
+                                    <font>
+                                        <Font name="JetBrains Mono Regular" size="28.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                    <effect>
+                        <DropShadow />
+                    </effect>
+                </AnchorPane>
+                <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label prefHeight="25.0" text="Signup" textFill="#9c99ae">
+                            <font>
+                                <Font name="JetBrains Mono Regular" size="30.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </Label>
+                        <Region layoutX="15.0" layoutY="255.0" VBox.vgrow="ALWAYS" />
+                        <HBox>
+                            <children>
+                                <Label prefHeight="40.0" prefWidth="100.0" text="Username">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="tfUsername" prefHeight="40.0" HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextField>
+                            </children>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label prefHeight="40.0" prefWidth="100.0" text="Email">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="tfEmail" prefHeight="40.0" prefWidth="217.0" HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </TextField>
+                            </children>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label prefHeight="40.0" prefWidth="100.0" text="Password">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                </Label>
+                                <PasswordField fx:id="tfPassword" prefHeight="40.0" prefWidth="217.0" HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </PasswordField>
+                            </children>
+                        </HBox>
+                        <Region VBox.vgrow="ALWAYS" />
+                        <HBox>
+                            <children>
+                                <Button defaultButton="true" layoutX="460.0" layoutY="10.0" onAction="#handleLoginBtnClick" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: lightgray; -fx-background-radius: 1em;" text="Login" textFill="#545454">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                    <effect>
+                                        <DropShadow />
+                                    </effect>
+                                </Button>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button defaultButton="true" onAction="#handleSignupBtnClick" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: lightblue; -fx-background-radius: 1em;" text="  Register" textFill="#545454">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                    <graphic>
+                                        <FontIcon iconColor="#545454" iconLiteral="fab-telegram-plane" iconSize="25" textOrigin="CENTER" />
+                                    </graphic>
+                                    <effect>
+                                        <DropShadow />
+                                    </effect>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding>
+                    <HBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </HBox.margin>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+        </HBox>
+    </center>
+</BorderPane>
