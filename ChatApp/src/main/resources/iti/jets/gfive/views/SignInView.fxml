@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="365.0" prefWidth="447.0" stylesheets="@../styles/application.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="397.0" prefWidth="172.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutX="85.0" layoutY="-1.0" prefHeight="397.0" prefWidth="327.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox layoutX="157.0" styleClass="searchHBox" visible="false" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <TextField promptText="Search" />
+                  <FontIcon iconColor="#375d81" iconLiteral="mdi2s-search-web" iconSize="22" wrappingWidth="22.4000244140625" />
+               </children>
+            </HBox>
+            <Label layoutX="178.0" layoutY="23.0" text="ChillChat" AnchorPane.leftAnchor="178.0" AnchorPane.topAnchor="23.0" />
+            <Label layoutX="34.0" layoutY="64.0" text="Sign in to your account" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="64.0" />
+            <GridPane hgap="1.0" layoutX="50.0" layoutY="101.0" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="240.0" vgap="1.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="37.19999999999999" AnchorPane.topAnchor="101.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <FontIcon iconColor="#375d81" iconLiteral="mdi2a-account" iconSize="25" wrappingWidth="26.4000244140625" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <JFXTextField focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Username" unFocusColor="#375d81" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+               </children>
+            </GridPane>
+            <GridPane hgap="1.0" layoutX="50.0" layoutY="148.0" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="240.0" vgap="1.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="37.19999999999999" AnchorPane.topAnchor="148.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <FontIcon iconColor="#375d81" iconLiteral="mdi2a-account-lock" iconSize="25" wrappingWidth="26.4000244140625" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <JFXTextField focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Password" unFocusColor="#375d81" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+               </children>
+            </GridPane>
+            <JFXButton buttonType="RAISED" layoutX="230.0" layoutY="197.0" text="Sign in" AnchorPane.rightAnchor="44.39999999999999" AnchorPane.topAnchor="197.0" />
+            <Hyperlink graphicTextGap="0.0" layoutX="141.60000610351562" layoutY="204.0" text="Forgot password?" underline="true" AnchorPane.rightAnchor="112.79999389648437" AnchorPane.topAnchor="204.0">
+               <padding>
+                  <Insets bottom="-3.0" left="-4.0" right="-4.0" top="-3.0" />
+               </padding>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Hyperlink>
+            <Label layoutX="34.0" layoutY="263.0" text="Don't have an account?" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="263.0" />
+            <JFXButton buttonType="RAISED" layoutX="47.0" layoutY="287.0" prefHeight="26.0" prefWidth="60.0" text="Register" AnchorPane.leftAnchor="77.0" AnchorPane.topAnchor="287.0" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutY="366.0" text="By logging in you're agreeing to our Terms of Service and Privacy policy." visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

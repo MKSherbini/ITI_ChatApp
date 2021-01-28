@@ -1,0 +1,64 @@
+.Bloggy-Gradient-Blues-1-hex {
+    color: #E1E6FA;
+}
+
+.Bloggy-Gradient-Blues-2-hex {
+    color: #C4D7ED;
+}
+
+.Bloggy-Gradient-Blues-3-hex {
+    color: #ABC8E2;
+}
+
+.Bloggy-Gradient-Blues-4-hex {
+    color: #375D81;
+}
+
+.Bloggy-Gradient-Blues-5-hex {
+    color: #183152;
+}
+
+.root {
+    /*-fx-background-color: linear-gradient(to left, #183152, #375D81);*/
+    /*-fx-background-color: #375D81;*/
+    -fx-background-image: url("../backgroup.png");
+    -fx-background-size: AUTO; /* or DEFAULT? */
+
+}
+
+
+.right-pane{
+    -fx-background-color: #183152;
+}
+
+.button {
+    -fx-background-color: #375D81;
+    -fx-text-fill: #E1E6FA;
+    -fx-background-radius: 1em;
+}
+
+
+.label {
+    -fx-text-fill: #E1E6FA;
+}
+
+.searchHBox .text-field {
+    -fx-background-color: #E1E6FA;
+    -fx-background-radius: 1em;
+    -fx-text-fill: #183152;
+}
+
+.searchHBox {
+    -fx-background-color: #E1E6FA;
+    -fx-background-radius: 1em;
+}
+
+.loginHbox {
+    -fx-background-color: #183152;
+}
+
+.loginHbox .text-field {
+    -fx-background-color: #183152;
+    -fx-text-fill: #E1E6FA;
+    -fx-prompt-text-fill: #375D81;
+}
