@@ -122,6 +122,18 @@
             <version>${commons.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.goldrenard</groupId>
+            <artifactId>ab</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.jensd</groupId>
+            <artifactId>fontawesomefx-fontawesome</artifactId>
+            <version>4.7.0-9.1.2</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -130,6 +142,11 @@
             <id>Central</id>
             <name>Central Repository</name>
             <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+
+        <repository>
+            <id>JCenter</id>
+            <url>https://jcenter.bintray.com</url>
         </repository>
 
     </repositories>

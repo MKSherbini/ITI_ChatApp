@@ -17,6 +17,11 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="JCenter" />
+      <option name="name" value="JCenter" />
+      <option name="url" value="https://jcenter.bintray.com" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="Central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo1.maven.org/maven2/" />

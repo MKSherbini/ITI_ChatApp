@@ -10,11 +10,16 @@ module iti.jets.gfive {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.fontawesome5;
     requires org.kordamp.ikonli.materialdesign2;
+    requires com.jfoenix;
+    requires de.jensd.fx.glyphs.fontawesome;
 
     requires java.sql;
     requires mysql.connector.java;
     requires java.naming;
     requires org.apache.commons.lang3;
+
+    requires ab;
+
 
     exports iti.jets.gfive;
     opens iti.jets.gfive.ui.controllers;

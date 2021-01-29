@@ -21,7 +21,7 @@
 .root {
     /*-fx-background-color: linear-gradient(to left, #183152, #375D81);*/
     /*-fx-background-color: #375D81;*/
-    -fx-background-image: url("../backgroup.png");
+    -fx-background-image: url("../images/backgroup.png");
     -fx-background-size: AUTO; /* or DEFAULT? */
 
 }
