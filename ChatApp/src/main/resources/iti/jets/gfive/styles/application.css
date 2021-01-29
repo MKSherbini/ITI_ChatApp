@@ -47,6 +47,21 @@
     -fx-background-radius: 1em;
     -fx-text-fill: #183152;
 }
+.jfx-text-field{
+    -jfx-unfocus-color: #375D81;
+    -jfx-focus-color: #c4d7ed;
+}
+
+/*.jfx-date-picker .jfx-text-field{*/
+/*    -jfx-unfocus-color: #375D81;*/
+/*}*/
+
+.jfx-radio-button{
+   -fx-text-fill: #375D81;
+   -jfx-selected-color: #c4d7ed;
+   -jfx-unselected-color: #375D81;
+}
+
 
 .searchHBox {
     -fx-background-color: #E1E6FA;
