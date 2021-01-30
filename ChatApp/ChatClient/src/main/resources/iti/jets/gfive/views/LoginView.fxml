@@ -129,18 +129,14 @@
                            </toggleGroup>
                         </JFXRadioButton>
                         <JFXRadioButton text="Female" toggleGroup="$Gender" HBox.hgrow="ALWAYS" />
-                        <JFXRadioButton text="Other">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="Gender1" />
-                           </toggleGroup>
-                        </JFXRadioButton>
+                        <JFXRadioButton text="Other" toggleGroup="$Gender" />
                      </children>
                   </HBox>
                </children>
             </VBox>
             <Label layoutX="96.0" layoutY="328.0" text="Already have an account?" AnchorPane.bottomAnchor="19.4" AnchorPane.rightAnchor="96.80000000000001" />
             <JFXButton buttonType="RAISED" layoutX="242.0" layoutY="324.0" prefHeight="26.0" prefWidth="60.0" text="Login" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="26.0" />
-            <JFXButton buttonType="RAISED" layoutX="202.0" layoutY="283.0" text="Register" />
+            <JFXButton buttonType="RAISED" layoutX="202.0" layoutY="283.0" text="Register" AnchorPane.rightAnchor="66.99999999999999" />
          </children>
       </AnchorPane>
    </children>

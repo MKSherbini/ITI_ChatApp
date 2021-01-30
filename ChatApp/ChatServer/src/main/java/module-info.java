@@ -1,4 +1,4 @@
-module iti.jets.gfive {
+module ChatServer {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
@@ -19,7 +19,6 @@ module iti.jets.gfive {
     requires org.apache.commons.lang3;
 
     requires ab;
-
 
     exports iti.jets.gfive;
     opens iti.jets.gfive.ui.controllers;
