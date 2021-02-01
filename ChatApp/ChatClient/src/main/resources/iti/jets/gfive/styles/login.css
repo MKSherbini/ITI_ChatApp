@@ -64,5 +64,6 @@
 
 .jfx-password-field .error-label,
 .jfx-text-field .error-label {
-    -fx-padding: -5 0 0 0;
+    -fx-text-fill: #D34336;
+    -fx-padding: -2 0 0 0;
 }
