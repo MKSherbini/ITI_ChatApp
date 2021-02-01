@@ -23,8 +23,7 @@
     -fx-background-size: AUTO; /* or DEFAULT? */
 }
 
-
-.right-pane{
+.right-pane {
     -fx-background-color: #183152;
 }
 
@@ -34,14 +33,14 @@
     -fx-background-radius: 1em;
 }
 
- .right-pane > .label {
+.right-pane > .label {
     -fx-text-fill: #E1E6FA;
 }
 
-.jfx-radio-button{
-   -fx-text-fill: #375D81;
-   -jfx-selected-color: #c4d7ed;
-   -jfx-unselected-color: #375D81;
+.jfx-radio-button {
+    -fx-text-fill: #375D81;
+    -jfx-selected-color: #c4d7ed;
+    -jfx-unselected-color: #375D81;
 }
 
 .loginHbox {
@@ -56,8 +55,14 @@
     -fx-text-fill: #E1E6FA;
     -fx-prompt-text-fill: #375D81;
 }
+
 .loginHbox .jfx-password-field:error,
 .loginHbox .jfx-text-field:error {
     -jfx-focus-color: #D34336;
     -jfx-unfocus-color: #D34336;
+}
+
+.jfx-password-field .error-label,
+.jfx-text-field .error-label {
+    -fx-padding: -5 0 0 0;
 }

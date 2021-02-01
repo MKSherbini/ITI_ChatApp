@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,10 +72,20 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // binding
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         txt_registerPhone.textProperty().bindBidirectional(currentUserModel.phoneNumberProperty());
         txt_registerPass.textProperty().bindBidirectional(currentUserModel.passwordProperty());
+
+
+        // validation
+        Validator validator = Validator.getValidator();
+
+        validator.addPhoneValidationEvt(txt_registerPhone);
+        validator.validateWithBounds(txt_registerPass);
+        validator.validateWithBounds(txt_displayName);
+        validator.addRequiredFieldValidationEvt(txt_bDate);
     }
 }

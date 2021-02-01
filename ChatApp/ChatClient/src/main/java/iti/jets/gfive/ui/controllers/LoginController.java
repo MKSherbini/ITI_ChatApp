@@ -3,9 +3,9 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.validation.*;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,10 +52,10 @@ public class LoginController implements Initializable {
         stageCoordinator.switchToRegisterPage();
     }
 
-    String phoneRgx = "^(\\+2)?01\\d{9}$";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // binding
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
@@ -64,26 +64,11 @@ public class LoginController implements Initializable {
         btn_signSubmit.requestFocus();
 
 
-        // todo move this to validation class
-        RegexValidator regexValidator = new RegexValidator();
-        regexValidator.setRegexPattern(phoneRgx);
+        // validation
+        Validator validator = Validator.getValidator();
 
-        txt_loginPhone.setValidators(regexValidator);
-        txt_loginPhone.getValidators().get(0).setMessage("Phone is not valid!");
-        txt_loginPhone.focusedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal != null && !newVal) {
-                txt_loginPhone.validate();
-            }
-        });
-
-        txt_loginPass.setValidators(new RequiredFieldValidator());
-        txt_loginPass.getValidators().get(0).setMessage("Password is required!");
-        txt_loginPass.focusedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal != null && !newVal) {
-                txt_loginPass.validate();
-            }
-        });
-
+        validator.addPhoneValidationEvt(txt_loginPhone);
+        validator.addRequiredFieldValidationEvt(txt_loginPass);
     }
 }
 
