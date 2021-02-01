@@ -56,10 +56,11 @@
     -fx-prompt-text-fill: #375D81;
 }
 
-.loginHbox .jfx-password-field:error,
-.loginHbox .jfx-text-field:error {
+.loginHbox > * > .jfx-password-field:error,
+.loginHbox > * > .jfx-text-field:error {
     -jfx-focus-color: #D34336;
     -jfx-unfocus-color: #D34336;
+    -fx-prompt-text-fill: #D34336;
 }
 
 .jfx-password-field .error-label,

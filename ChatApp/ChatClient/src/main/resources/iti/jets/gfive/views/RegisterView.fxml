@@ -13,12 +13,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="460.0" prefWidth="447.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.RegisterController">
+<AnchorPane prefHeight="500.0" prefWidth="450.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.RegisterController">
    <children>
-      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="397.0" prefWidth="172.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <AnchorPane layoutX="95.0" layoutY="9.0" prefHeight="397.0" prefWidth="327.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="400.0" prefWidth="198.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutX="95.0" layoutY="9.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="lb_appName" layoutX="178.0" layoutY="23.0" text="ChillChat" AnchorPane.leftAnchor="178.0" AnchorPane.topAnchor="23.0" />
+            <Label fx:id="lb_appName" layoutX="199.0" layoutY="23.0" text="ChillChat" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="23.0" />
             <Label layoutX="34.0" layoutY="64.0" text="Register an account" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="64.0" />
             <VBox layoutX="69.0" layoutY="101.0" prefHeight="98.0" prefWidth="234.0" spacing="25.0" styleClass="loginHbox" AnchorPane.leftAnchor="69.0" AnchorPane.rightAnchor="24.0">
                <children>
@@ -31,13 +31,19 @@
                   <HBox spacing="10.0">
                      <children>
                         <FontIcon fx:id="icon_displayName" iconColor="#375d81" iconLiteral="mdi2a-account" iconSize="25" wrappingWidth="26.4000244140625" />
-                        <JFXTextField fx:id="txt_displayName" focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Display name" unFocusColor="#375d81" HBox.hgrow="ALWAYS" />
+                        <JFXTextField fx:id="txt_displayName" focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Display Name" unFocusColor="#375d81" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox prefHeight="26.0" prefWidth="189.0" spacing="10.0">
                      <children>
                         <FontIcon fx:id="icon_registerPass" iconColor="#375d81" iconLiteral="mdi2a-account-lock" iconSize="25" wrappingWidth="26.4000244140625" />
-                        <JFXPasswordField fx:id="txt_registerPass" prefHeight="26.0" prefWidth="231.0" promptText="Password" />
+                        <JFXPasswordField fx:id="txt_registerPass" prefHeight="26.0" prefWidth="334.0" promptText="Password" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="26.0" prefWidth="189.0" spacing="10.0">
+                     <children>
+                        <FontIcon fx:id="icon_registerPassRepeat" iconColor="#375d81" iconLiteral="mdi2a-account-lock" iconSize="25" wrappingWidth="26.4000244140625" />
+                        <JFXPasswordField fx:id="txt_registerPassRepeat" prefHeight="26.0" prefWidth="334.0" promptText="Re-enter Password" />
                      </children>
                   </HBox>
                   <HBox spacing="10.0" VBox.vgrow="ALWAYS">

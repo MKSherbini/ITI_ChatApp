@@ -6,12 +6,16 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
@@ -40,6 +44,12 @@ public class RegisterController implements Initializable {
 
     @FXML
     private JFXPasswordField txt_registerPass;
+
+    @FXML
+    private FontIcon icon_registerPassRepeat;
+
+    @FXML
+    private JFXPasswordField txt_registerPassRepeat;
 
     @FXML
     private FontIcon icon_bDate;
@@ -80,12 +90,23 @@ public class RegisterController implements Initializable {
         txt_registerPass.textProperty().bindBidirectional(currentUserModel.passwordProperty());
 
 
-        // validation
-        Validator validator = Validator.getValidator();
+        // colors
+        FieldIconBinder iconBinder = FieldIconBinder.getInstance();
+        iconBinder.bind(txt_registerPhone, icon_registerPhone);
+        iconBinder.bind(txt_registerPass, icon_registerPass);
+        iconBinder.bind(txt_displayName, icon_displayName);
+        iconBinder.bind(txt_registerPassRepeat, icon_registerPassRepeat);
+//        txt_bDate.styleProperty().bind(icon_bDate.styleProperty());
+//        txt_bDate.setDefaultColor(Color.BLUE);
 
-        validator.addPhoneValidationEvt(txt_registerPhone);
-        validator.validateWithBounds(txt_registerPass);
-        validator.validateWithBounds(txt_displayName);
-        validator.addRequiredFieldValidationEvt(txt_bDate);
+
+        // validation
+        Validator validator = Validator.getInstance();
+
+        validator.buildPhoneValidation(txt_registerPhone);
+        validator.buildPasswordValidation(txt_registerPass);
+        validator.buildNameValidation(txt_displayName);
+        validator.buildRepeatPasswordValidation(txt_registerPassRepeat, txt_registerPass);
+//        validator.buildDateValidation(txt_bDate); //todo if not fixed un require date in register
     }
 }

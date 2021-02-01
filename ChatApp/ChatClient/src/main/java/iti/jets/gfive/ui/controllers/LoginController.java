@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
@@ -63,12 +64,16 @@ public class LoginController implements Initializable {
         txt_loginPass.textProperty().bindBidirectional(currentUserModel.passwordProperty());
         btn_signSubmit.requestFocus();
 
+        // colors
+        FieldIconBinder iconBinder = FieldIconBinder.getInstance();
+        iconBinder.bind(txt_loginPhone, icon_loginPhone);
+        iconBinder.bind(txt_loginPass, icon_loginPass);
 
         // validation
-        Validator validator = Validator.getValidator();
+        Validator validator = Validator.getInstance();
 
-        validator.addPhoneValidationEvt(txt_loginPhone);
-        validator.addRequiredFieldValidationEvt(txt_loginPass);
+        validator.buildPhoneValidation(txt_loginPhone);
+        validator.buildPasswordValidation(txt_loginPass);
     }
 }
 
