@@ -15,7 +15,8 @@ public class StageCoordinator {
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
 
-    private StageCoordinator() { }
+    private StageCoordinator() {
+    }
 
     public void initStage(Stage stage) {
         if (primaryStage != null) {
@@ -28,29 +29,39 @@ public class StageCoordinator {
         return stageCoordinator;
     }
 
-    public void switchToLoginScene() {
+    public void switchToLoginPage() {
+        var viewName = "LoginView";
+
+        loadView(viewName);
+    }
+
+    public void switchToRegisterPage() {
+        var viewName = "RegisterView";
+
+        loadView(viewName);
+    }
+
+    private void loadView(String viewName) {
         if (primaryStage == null) {
             throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
         }
-
-        if (!scenes.containsKey("login")) {
+        if (!scenes.containsKey(viewName)) {
             try {
                 System.out.println("Created New Scene");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/LoginView.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
                 Parent loginView = fxmlLoader.load();
                 Scene loginScene = new Scene(loginView);
                 SceneData loginSceneData = new SceneData(fxmlLoader, loginView, loginScene);
-                scenes.put("login", loginSceneData);
+                scenes.put(viewName, loginSceneData);
                 primaryStage.setScene(loginScene);
             } catch (IOException e) {
-                System.out.println("IO Exception: Couldn't load 'Login View' FXML file");
+                System.out.println(String.format("IO Exception: Couldn't load %s FXML file", viewName));
             }
         } else {
             System.out.println("Loaded Existing Scene");
-            SceneData loginSceneData = scenes.get("login");
+            SceneData loginSceneData = scenes.get(viewName);
             Scene loginScene = loginSceneData.getScene();
             primaryStage.setScene(loginScene);
         }
-
     }
 }

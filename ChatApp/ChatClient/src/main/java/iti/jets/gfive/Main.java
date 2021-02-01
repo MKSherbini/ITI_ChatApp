@@ -30,7 +30,7 @@ public class Main extends Application {
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
-        stageCoordinator.switchToLoginScene();
+        stageCoordinator.switchToLoginPage();
         primaryStage.show();
 
 //        String botname = "super";
