@@ -73,7 +73,7 @@ public class LoginController implements Initializable {
         Validator validator = Validator.getInstance();
 
         validator.buildPhoneValidation(txt_loginPhone);
-        validator.buildPasswordValidation(txt_loginPass);
+//        validator.buildPasswordValidation(txt_loginPass);
     }
 }
 
