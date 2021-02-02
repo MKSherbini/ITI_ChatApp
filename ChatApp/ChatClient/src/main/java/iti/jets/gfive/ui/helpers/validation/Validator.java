@@ -52,6 +52,11 @@ public class Validator {
         setValidateOnEvent(repeatPassword);
     }
 
+    public void buildRequiredPasswordValidation(JFXPasswordField passwordField) {
+        addRequiredFieldValidation(passwordField);
+        setValidateOnEvent(passwordField);
+    }
+
     public void buildNameValidation(JFXTextField textField) {
         addBoundsValidation(textField, 2, 10);
         setValidateOnEvent(textField);
@@ -85,7 +90,7 @@ public class Validator {
     }
 
     private void addRequiredFieldValidation(JFXPasswordField textField) {
-        RequiredFieldValidator validator = new RequiredFieldValidator("Required password field");
+        RequiredFieldValidator validator = new RequiredFieldValidator("Password field is required");
         textField.getValidators().add(validator);
     }
 

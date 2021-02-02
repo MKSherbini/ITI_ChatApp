@@ -1,0 +1,10 @@
+<aiml>
+    <category>
+        <pattern>WHAT IS JAVA</pattern>
+        <template>Java is a programming language.</template>
+    </category>
+    <category>
+        <pattern>WHAT IS CHAT BOT</pattern>
+        <template>Chatbot is a computer program designed to simulate conversation with human users, especially over the Internet.</template>
+    </category>
+</aiml>

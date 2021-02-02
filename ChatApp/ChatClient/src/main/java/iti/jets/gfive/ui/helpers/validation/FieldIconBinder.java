@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+// todo fix the validation event to listen when submit button is clicked
 public class FieldIconBinder {
     private static final FieldIconBinder instance = new FieldIconBinder();
 

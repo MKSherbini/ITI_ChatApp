@@ -74,6 +74,13 @@ public class RegisterController implements Initializable {
 
     @FXML
     void onClickRegisterSubmit(ActionEvent event) {
+        // validate fields
+        boolean allFieldsValid = txt_registerPhone.validate()
+                & txt_registerPass.validate()
+                & txt_displayName.validate()
+                & txt_registerPassRepeat.validate();
+        if (!allFieldsValid) return;
+
         // validate data and submit
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToLoginPage();

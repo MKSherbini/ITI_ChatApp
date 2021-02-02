@@ -42,6 +42,9 @@ public class LoginController implements Initializable {
 
     @FXML
     void onClickLoginSubmit(ActionEvent event) {
+        // validate fields
+        boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
+        if (!allFieldsValid) return;
         //validate login with DB
 //        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
 //        stageCoordinator.switchToMainPage();
@@ -73,7 +76,7 @@ public class LoginController implements Initializable {
         Validator validator = Validator.getInstance();
 
         validator.buildPhoneValidation(txt_loginPhone);
-//        validator.buildPasswordValidation(txt_loginPass);
+        validator.buildRequiredPasswordValidation(txt_loginPass);
     }
 }
 
