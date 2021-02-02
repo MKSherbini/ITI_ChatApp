@@ -13,10 +13,10 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="365.0" prefWidth="447.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.LoginController">
+<AnchorPane prefHeight="500.0" prefWidth="450.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.LoginController">
    <children>
-      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="397.0" prefWidth="172.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <AnchorPane layoutX="85.0" layoutY="-1.0" prefHeight="397.0" prefWidth="327.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="400.0" prefWidth="198.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutX="85.0" layoutY="-1.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox layoutX="157.0" styleClass="searchHBox" visible="false" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
@@ -24,35 +24,42 @@
                   <FontIcon iconColor="#375d81" iconLiteral="mdi2s-search-web" iconSize="22" wrappingWidth="22.4000244140625" />
                </children>
             </HBox>
-            <Label fx:id="lb_appName" layoutX="178.0" layoutY="23.0" text="ChillChat" AnchorPane.leftAnchor="178.0" AnchorPane.topAnchor="23.0" />
+            <Label fx:id="lb_appName" layoutX="218.0" layoutY="27.0" text="ChillChat" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="27.0" />
             <Label layoutX="34.0" layoutY="64.0" text="Sign in to your account" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="64.0" />
-            <VBox layoutX="71.0" layoutY="107.0" prefHeight="34.0" prefWidth="234.0" spacing="10.0" styleClass="loginHbox">
+            <VBox layoutX="71.0" layoutY="107.0" prefHeight="34.0" prefWidth="234.0" spacing="25.0" styleClass="loginHbox" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="21.799999999999983">
                <children>
                   <HBox prefHeight="26.0" prefWidth="189.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
                         <FontIcon fx:id="icon_loginPhone" iconColor="#375d81" iconLiteral="mdi2c-card-account-phone-outline" iconSize="25" wrappingWidth="26.4000244140625" />
-                        <JFXTextField fx:id="txt_loginPhone" focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="230.0" promptText="Phone Number" unFocusColor="#375d81" />
+                        <JFXTextField fx:id="txt_loginPhone" focusColor="#c4d7ed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="292.0" promptText="Phone Number" unFocusColor="#375d81" />
                      </children>
                   </HBox>
                   <HBox prefHeight="26.0" prefWidth="189.0" spacing="10.0">
                      <children>
                         <FontIcon fx:id="icon_loginPass" iconColor="#375d81" iconLiteral="mdi2a-account-lock" iconSize="25" wrappingWidth="26.4000244140625" />
-                        <JFXPasswordField fx:id="txt_loginPass" prefHeight="26.0" prefWidth="231.0" promptText="Password" />
+                        <JFXPasswordField fx:id="txt_loginPass" prefHeight="26.0" prefWidth="337.0" promptText="Password" />
                      </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="189.0" spacing="15.0">
+                     <children>
+                        <Hyperlink graphicTextGap="0.0" text="Forgot password?" underline="true">
+                           <padding>
+                              <Insets bottom="-3.0" left="-4.0" right="-4.0" top="-3.0" />
+                           </padding>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Hyperlink>
+                        <JFXButton fx:id="btn_signSubmit" buttonType="RAISED" onAction="#onClickLoginSubmit" text="Sign in" />
+                     </children>
+                     <VBox.margin>
+                        <Insets right="15.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>
-            <JFXButton fx:id="btn_signSubmit" buttonType="RAISED" layoutX="230.0" layoutY="197.0" onAction="#onClickLoginSubmit" text="Sign in" AnchorPane.rightAnchor="44.39999999999999" AnchorPane.topAnchor="197.0" />
-            <Hyperlink graphicTextGap="0.0" layoutX="141.60000610351562" layoutY="204.0" text="Forgot password?" underline="true" AnchorPane.rightAnchor="112.79999389648437" AnchorPane.topAnchor="204.0">
-               <padding>
-                  <Insets bottom="-3.0" left="-4.0" right="-4.0" top="-3.0" />
-               </padding>
-               <font>
-                  <Font size="10.0" />
-               </font>
-            </Hyperlink>
-            <Label layoutX="34.0" layoutY="263.0" text="Don't have an account?" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="263.0" />
-            <JFXButton fx:id="btn_registerSwitch" buttonType="RAISED" layoutX="47.0" layoutY="287.0" onAction="#onClickRegisterSwitch" prefHeight="26.0" prefWidth="60.0" text="Register" AnchorPane.leftAnchor="77.0" AnchorPane.topAnchor="287.0" />
+            <Label layoutX="34.0" layoutY="263.0" text="Don't have an account?" AnchorPane.bottomAnchor="48.0" AnchorPane.rightAnchor="48.0" />
+            <JFXButton fx:id="btn_registerSwitch" buttonType="RAISED" layoutX="47.0" layoutY="287.0" onAction="#onClickRegisterSwitch" prefHeight="26.0" prefWidth="60.0" text="Register" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="25.0" />
             <Label alignment="CENTER" contentDisplay="CENTER" layoutY="366.0" text="By logging in you're agreeing to our Terms of Service and Privacy policy." visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <font>
                   <Font size="8.0" />

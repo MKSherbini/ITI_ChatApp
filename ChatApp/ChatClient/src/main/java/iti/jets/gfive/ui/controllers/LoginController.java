@@ -3,9 +3,10 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.validation.*;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
+import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,6 +42,9 @@ public class LoginController implements Initializable {
 
     @FXML
     void onClickLoginSubmit(ActionEvent event) {
+        // validate fields
+        boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
+        if (!allFieldsValid) return;
         //validate login with DB
 //        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
 //        stageCoordinator.switchToMainPage();
@@ -52,10 +56,10 @@ public class LoginController implements Initializable {
         stageCoordinator.switchToRegisterPage();
     }
 
-    String phoneRgx = "^(\\+2)?01\\d{9}$";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // binding
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
@@ -63,27 +67,16 @@ public class LoginController implements Initializable {
         txt_loginPass.textProperty().bindBidirectional(currentUserModel.passwordProperty());
         btn_signSubmit.requestFocus();
 
+        // colors
+        FieldIconBinder iconBinder = FieldIconBinder.getInstance();
+        iconBinder.bind(txt_loginPhone, icon_loginPhone);
+        iconBinder.bind(txt_loginPass, icon_loginPass);
 
-        // todo move this to validation class
-        RegexValidator regexValidator = new RegexValidator();
-        regexValidator.setRegexPattern(phoneRgx);
+        // validation
+        Validator validator = Validator.getInstance();
 
-        txt_loginPhone.setValidators(regexValidator);
-        txt_loginPhone.getValidators().get(0).setMessage("Phone is not valid!");
-        txt_loginPhone.focusedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal != null && !newVal) {
-                txt_loginPhone.validate();
-            }
-        });
-
-        txt_loginPass.setValidators(new RequiredFieldValidator());
-        txt_loginPass.getValidators().get(0).setMessage("Password is required!");
-        txt_loginPass.focusedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal != null && !newVal) {
-                txt_loginPass.validate();
-            }
-        });
-
+        validator.buildPhoneValidation(txt_loginPhone);
+        validator.buildRequiredPasswordValidation(txt_loginPass);
     }
 }
 

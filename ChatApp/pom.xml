@@ -183,41 +183,31 @@
                     <options>
                         <!--===========================================CONTROL FX CONFIGS============================================-->
                         <!--                        Opening Controls-->
-                        <option>--add-opens</option>
-                        <option>javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
+                        <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
                         <!--                        Table Row expander Column-->
-                        <option>--add-opens</option>
-                        <option>javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
+                        <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
                         <!--                        Notification Pane Adding-->
-                        <option>--add-exports</option>
-                        <option>javafx.graphics/com.sun.javafx.scene=org.controlsfx.controls</option>
-                        <option>--add-exports</option>
-                        <option>javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls</option>
+                        <option>--add-exports javafx.graphics/com.sun.javafx.scene=org.controlsfx.controls</option>
+                        <option>--add-exports javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls
+                        </option>
                         <!--                        Auto complete binding adding-->
-                        <option>--add-exports</option>
-                        <option>javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
+                        <option>--add-exports javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
                         <!--                        Glyph Font Adding-->
-                        <option>--add-exports</option>
-                        <option>javafx.graphics/com.sun.javafx.css=org.controlsfx.controls</option>
+                        <option>--add-exports javafx.graphics/com.sun.javafx.css=org.controlsfx.controls</option>
                         <!--===============================================JFOENIX CONFIGS========================================-->
-                        <option>--add-opens</option>
-                        <option>java.base/java.lang.reflect=com.jfoenix</option>
-                        <option>--add-opens</option>
-                        <option>javafx.graphics/javafx.css=com.jfoenix</option>
-                        <option>--add-opens</option>
-                        <option>javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
-                        <option>--add-opens</option>
-                        <option>javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
-                        <option>--add-exports</option>
-                        <option>javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
-                        <option>--add-exports</option>
-                        <option>javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
-                        <option>--add-exports</option>
-                        <option>javafx.base/com.sun.javafx.binding=com.jfoenix</option>
-                        <option>--add-exports</option>
-                        <option>javafx.graphics/com.sun.javafx.stage=com.jfoenix</option>
-                        <option>--add-exports</option>
-                        <option>javafx.base/com.sun.javafx.event=com.jfoenix</option>
+                        <option>--add-opens java.base/java.lang.reflect=com.jfoenix</option>
+                        <option>--add-opens javafx.graphics/javafx.css=com.jfoenix</option>
+                        <option>--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
+                        <option>--add-opens javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
+                        <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
+                        <option>--add-exports javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
+                        <option>--add-exports javafx.base/com.sun.javafx.binding=com.jfoenix</option>
+                        <option>--add-exports javafx.graphics/com.sun.javafx.stage=com.jfoenix</option>
+                        <option>--add-exports javafx.base/com.sun.javafx.event=com.jfoenix</option>
+<!--                        &lt;!&ndash;                        JFOENIX demoduling &ndash;&gt;-->
+<!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=${groupId}.${artifactId}</option>-->
+<!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=iti.jets.gfive.ui.helpers.validation.Validator</option>-->
+
                     </options>
                 </configuration>
             </plugin>
