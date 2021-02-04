@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import iti.jets.gfive.db.UserDao;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
@@ -12,6 +13,7 @@ import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
@@ -20,6 +22,9 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
 import java.net.URL;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
@@ -80,6 +85,19 @@ public class RegisterController implements Initializable {
                 & txt_displayName.validate()
                 & txt_registerPassRepeat.validate();
         if (!allFieldsValid) return;
+
+        Date d = Date.valueOf(txt_bDate.getValue());
+        //System.out.println(d + " <-- date");
+        RadioButton selectedRadioButton = (RadioButton) Gender.getSelectedToggle();
+        String selectedGenderValue = selectedRadioButton.getText();
+        //System.out.println(selectedGenderValue);
+
+        UserDao userDao = new UserDao();
+        //rest of the user data not represeted yet
+        int rowsAffected = userDao.insertUserRecord(txt_registerPhone.getText(), txt_displayName.getText(),
+                txt_registerPass.getText(), selectedGenderValue, d);
+        System.out.println("number of affected rows after insert: " + rowsAffected);
+        if(rowsAffected == 0) return;
 
         // validate data and submit
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
