@@ -1,15 +1,9 @@
 package iti.jets.gfive.ui.helpers.validation;
 
-import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 // todo fix the validation event to listen when submit button is clicked
 public class FieldIconBinder {
@@ -28,22 +22,32 @@ public class FieldIconBinder {
                 if (newVal) {
                     icon.setIconColor(text.getFocusColor());
                 } else {
-                    text.validate(); // same logic as in validator
-                    Runnable task = () -> {
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Platform.runLater(() -> {
-                            icon.setIconColor(text.getUnFocusColor());
-                        });
-                    };
-//                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-//                    executorService.scheduleWithFixedDelay(task, 0, 100, TimeUnit.MILLISECONDS);
-                    new Thread(task).start();
+                    runValidationLater(text, icon);
                 }
         });
+
+        text.activeValidatorProperty().addListener((observable, oldValue, newVal) -> {
+            if (newVal != null && newVal.getHasErrors()) {
+                runValidationLater(text, icon);
+            }
+        });
+    }
+
+    private void runValidationLater(JFXTextField text, FontIcon icon) {
+        text.validate(); // same logic as in validator
+        Runnable task = () -> {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> {
+                icon.setIconColor(text.getUnFocusColor());
+            });
+        };
+//                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+//                    executorService.scheduleWithFixedDelay(task, 0, 100, TimeUnit.MILLISECONDS);
+        new Thread(task).start();
     }
 
     public void bind(JFXPasswordField text, FontIcon icon) {
@@ -52,22 +56,31 @@ public class FieldIconBinder {
                 if (newVal) {
                     icon.setIconColor(text.getFocusColor());
                 } else {
-                    text.validate(); // same logic as in validator
-                    Runnable task = () -> {
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Platform.runLater(() -> {
-                            icon.setIconColor(text.getUnFocusColor());
-                        });
-                    };
-//                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-//                    executorService.scheduleWithFixedDelay(task, 0, 100, TimeUnit.MILLISECONDS);
-                    new Thread(task).start();
+                    runValidationLater(text, icon);
                 }
         });
+        text.activeValidatorProperty().addListener((observable, oldValue, newVal) -> {
+            if (newVal != null && newVal.getHasErrors()) {
+                runValidationLater(text, icon);
+            }
+        });
+    }
+
+    private void runValidationLater(JFXPasswordField text, FontIcon icon) {
+        text.validate(); // same logic as in validator
+        Runnable task = () -> {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> {
+                icon.setIconColor(text.getUnFocusColor());
+            });
+        };
+//                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+//                    executorService.scheduleWithFixedDelay(task, 0, 100, TimeUnit.MILLISECONDS);
+        new Thread(task).start();
     }
 
 //    public void bind(JFXDatePicker text, FontIcon icon) {

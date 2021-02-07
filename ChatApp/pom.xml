@@ -178,7 +178,7 @@
                 <configuration>
                     <launcher>hellofx</launcher>
                     <jlinkImageName>hello</jlinkImageName>
-                    <mainClass>${artifactId}/${project.groupId}.Main</mainClass>
+                    <mainClass>${project.artifactId}/${project.groupId}.Main</mainClass>
 
                     <options>
                         <!--===========================================CONTROL FX CONFIGS============================================-->
@@ -226,7 +226,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${artifactId}/${project.groupId}.Main</mainClass>
+                                    <mainClass>${project.artifactId}/${project.groupId}.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

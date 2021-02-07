@@ -1,17 +1,17 @@
 package iti.jets.gfive.ui.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
@@ -110,10 +110,20 @@ public class RegisterController implements Initializable {
         // validation
         Validator validator = Validator.getInstance();
 
-        validator.buildPhoneValidation(txt_registerPhone);
+        validator.buildPhoneValidation(txt_registerPhone); // todo validate if exists using DB procedure
         validator.buildPasswordValidation(txt_registerPass);
         validator.buildNameValidation(txt_displayName);
         validator.buildRepeatPasswordValidation(txt_registerPassRepeat, txt_registerPass);
 //        validator.buildDateValidation(txt_bDate); //todo if not fixed un require date in register
+
+
+//        // test
+//        ((JFXRadioButton) Gender.getSelectedToggle()).getText();
+//
+//        Gender.getToggles().forEach(toggle -> {
+//            JFXRadioButton t = (JFXRadioButton) toggle;
+//            if (t.getText().equals("Female")) t.setSelected(true);
+//        });
+
     }
 }
