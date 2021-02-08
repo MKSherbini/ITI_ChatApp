@@ -20,7 +20,7 @@ public class Main extends Application {
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
-        stageCoordinator.switchToLoginPage();
+        stageCoordinator.switchToProfilePage();
         primaryStage.show();
 
 //        botsDemo();
