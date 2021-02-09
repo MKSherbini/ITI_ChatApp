@@ -1,0 +1,20 @@
+.root{
+	/*-fx-background-color: #E1E6FA;*/
+	/*-fx-background-color: #C4D7ED; ;*/
+
+	/*-fx-background-color: #ABC8E2;*/
+	/*-fx-background-color: #375D81;*/
+	-fx-background-color: #183152;
+}
+.combo-box{
+	-fx-text-fill: #fff;
+	-fx-fill: #fff;
+	-fx-background-color: #445e83;
+}
+.search{
+	-fx-background-color: #C4D7ED;
+
+}
+.body{
+	-fx-background-color: #E1E6FA;
+}

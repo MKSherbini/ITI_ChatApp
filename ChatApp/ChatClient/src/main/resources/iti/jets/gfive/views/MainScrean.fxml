@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Avatar?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane layoutX="18.0" layoutY="14.0" prefHeight="586.0" prefWidth="76.0" style="-fx-background-color: #183152;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="19.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="85.0">
+               <image>
+                  <Image url="@../icons/twitter.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="19.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="155.0">
+               <image>
+                  <Image url="@../icons/facebook_icon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="18.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="14.0">
+               <image>
+                  <Image url="@../icons/menu_icon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="19.0" layoutY="500.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="19.0">
+               <image>
+                  <Image url="@../icons/settings.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="75.0" prefHeight="62.0" prefWidth="377.0" scaleZ="5.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="39.0" fitWidth="38.0" layoutX="326.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.399999999999999" AnchorPane.leftAnchor="325.6" AnchorPane.rightAnchor="13.600000000000023" AnchorPane.topAnchor="12.0">
+               <image>
+                  <Image url="@../icons/add_contact_icon.png" />
+               </image></ImageView>
+            <JFXTextField layoutX="86.0" layoutY="20.0" promptText="Search" AnchorPane.bottomAnchor="20.799999999999997" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="141.20000000000002" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="badge" />
+                  <String fx:value="active" />
+               </styleClass>
+            </JFXTextField>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Avatar layoutX="414.0" layoutY="13.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="13.0">
+               <image>
+                  <Image url="@../icons/profile_icon.png" />
+               </image>
+            </Avatar>
+            <Text fill="#fafafa" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="120.80003356933582" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="18.2734375">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="450.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0">
+               <image>
+                  <Image url="@../icons/menu-icon_2.png" />
+               </image>
+            </ImageView>
+            <ComboBox layoutX="332.0" layoutY="16.0" prefHeight="26.0" prefWidth="60.0" styleClass="badge" />
+         </children></AnchorPane>
+      <JFXListView layoutX="75.0" layoutY="62.0" prefHeight="526.0" prefWidth="378.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="59.60000000000002" />
+      <Line endX="-100.0" endY="525.3999633789062" layoutX="552.0" layoutY="63.0" startX="-100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="451.5" AnchorPane.topAnchor="59.60000000000002" />
+      <Group layoutX="94.0" layoutY="84.0" AnchorPane.leftAnchor="94.0">
+         <children>
+            <ImageView fitHeight="39.0" fitWidth="38.0" layoutX="-5.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/add_contact_icon.png" />
+               </image>
+            </ImageView>
+            <FontIcon layoutX="57.0" layoutY="14.0" text="Mohammed " wrappingWidth="120.80003356933594">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </FontIcon>
+            <FontIcon fill="#6f3a3a" layoutX="57.0" layoutY="41.0" text="Hello I miss you ." wrappingWidth="215.99998474121094">
+               <font>
+                  <Font name="Times New Roman" size="14.0" />
+               </font>
+            </FontIcon>
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="224.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/menu-icon_2.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+   </children>
+</AnchorPane>
