@@ -73,6 +73,12 @@ public class RegisterController implements Initializable {
     void onClickLoginSwitch(ActionEvent event) {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToLoginPage();
+
+        //check if the user if registered or not
+        //check if the password is correct
+        //if all correct then go fetch this phone_number's data from the db
+        //it will return a UserDto that we're going to take its values and set the UserModel's properties
+        //then switch to main page
     }
 
     @FXML
@@ -90,13 +96,19 @@ public class RegisterController implements Initializable {
         String selectedGenderValue = selectedRadioButton.getText();
         //System.out.println(selectedGenderValue + " <-- gender");
 
+        //(1) creating the UserDto obj that will be transferred to the server.
         UserDto user = new UserDto(txt_registerPhone.getText(), txt_displayName.getText(),
                 txt_registerPass.getText(), selectedGenderValue, birthDate);
 
+        //(2) getting the singleton UserDBCrudService instance that has the server's obj.
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
+        // todo here have to check if the user is already registered!!!
         try {
+            //(3) calling the insert user service that inserts the user to the db
             int rowsAffected = userServices.insertUserRecord(user);
             System.out.println("number of affected rows after insert: " + rowsAffected);
+            //(4) return from the method if the number of the affected rows are 0
+            // which means no record were inserted.
             if(rowsAffected == 0) return;
         } catch (RemoteException e) {
             e.printStackTrace();
