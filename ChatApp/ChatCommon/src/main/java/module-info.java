@@ -1,4 +1,4 @@
-module ChatClient {
+module ChatCommon {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
@@ -19,10 +19,9 @@ module ChatClient {
     requires org.apache.commons.lang3;
 
     requires ab;
-    requires ChatCommon;
     requires java.rmi;
 
-
-    exports iti.jets.gfive;
-    opens iti.jets.gfive.ui.controllers;
+    exports iti.jets.gfive.common;
+    exports iti.jets.gfive.common.interfaces;
+    exports iti.jets.gfive.common.models;
 }
