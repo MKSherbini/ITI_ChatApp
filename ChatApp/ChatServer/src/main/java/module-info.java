@@ -19,6 +19,8 @@ module ChatServer {
     requires org.apache.commons.lang3;
 
     requires ab;
+    requires java.rmi;
+    requires ChatCommon;
 
     exports iti.jets.gfive;
     opens iti.jets.gfive.ui.controllers;
