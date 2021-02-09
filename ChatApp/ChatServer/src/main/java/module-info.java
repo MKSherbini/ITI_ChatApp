@@ -22,6 +22,7 @@ module ChatServer {
     requires java.rmi;
     requires ChatCommon;
 
+
     exports iti.jets.gfive;
     opens iti.jets.gfive.ui.controllers;
 }

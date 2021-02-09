@@ -21,7 +21,6 @@ module ChatCommon {
     requires ab;
     requires java.rmi;
 
-    exports iti.jets.gfive.common;
     exports iti.jets.gfive.common.interfaces;
     exports iti.jets.gfive.common.models;
 }
