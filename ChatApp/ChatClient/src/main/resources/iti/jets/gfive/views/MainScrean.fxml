@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.Avatar?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.lang.String?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
    <children>
       <AnchorPane layoutX="18.0" layoutY="14.0" prefHeight="586.0" prefWidth="76.0" style="-fx-background-color: #183152;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -63,17 +62,17 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Avatar layoutX="414.0" layoutY="13.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="13.0">
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="414.0" layoutY="13.0" onMouseClicked="#showContextMenu" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="13.0">
                <image>
                   <Image url="@../icons/profile_icon.png" />
                </image>
-            </Avatar>
+            </ImageView>
             <Text fill="#fafafa" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="120.80003356933582" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="18.2734375">
                <font>
                   <Font size="24.0" />
                </font>
             </Text>
-            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="450.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0">
+            <ImageView fx:id="context_menu" fitHeight="35.0" fitWidth="35.0" layoutX="450.0" layoutY="12.0" onMouseClicked="#showContxtMenu" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0">
                <image>
                   <Image url="@../icons/menu-icon_2.png" />
                </image>
