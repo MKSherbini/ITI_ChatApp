@@ -68,3 +68,7 @@
     -fx-text-fill: #D34336;
     -fx-padding: -2 0 0 0;
 }
+.header{
+    -fx-text-fill: #E1E6FA;
+    -fx-background-color:  #375D81;
+}

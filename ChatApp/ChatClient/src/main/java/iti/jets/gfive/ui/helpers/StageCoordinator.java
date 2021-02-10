@@ -55,7 +55,8 @@ public class StageCoordinator {
                 scenes.put(viewName, loginSceneData);
                 primaryStage.setScene(loginScene);
             } catch (IOException e) {
-                System.out.println(String.format("IO Exception: Couldn't load %s FXML file", viewName));
+//                System.out.println(String.format("IO Exception: Couldn't load %s FXML file", viewName));
+                e.printStackTrace();
             }
         } else {
             System.out.println("Loaded Existing Scene");
@@ -63,5 +64,11 @@ public class StageCoordinator {
             Scene loginScene = loginSceneData.getScene();
             primaryStage.setScene(loginScene);
         }
+    }
+
+
+    public void switchToMainPage() {
+        var viewName = "MainScreenView";
+        loadView(viewName);
     }
 }
