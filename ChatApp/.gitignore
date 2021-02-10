@@ -101,3 +101,9 @@ hs_err_pid*
 # Mine
 MEM
 **/target/*
+
+# Ignoring the DBConnectionCredentials class that created the db.properties file
+DBConnectionCredentials.java
+
+# Ignoring the db.properties file
+*.properties

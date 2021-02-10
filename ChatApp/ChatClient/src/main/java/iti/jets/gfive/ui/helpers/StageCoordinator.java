@@ -40,6 +40,17 @@ public class StageCoordinator {
 
         loadView(viewName);
     }
+    public void switchToUpdateProfilePage() {
+        var viewName = "UpdateProfileView";
+
+        loadView(viewName);
+    }
+
+    public void switchToProfilePage() {
+        var viewName = "ProfileView";
+
+        loadView(viewName);
+    }
 
     private void loadView(String viewName) {
         if (primaryStage == null) {

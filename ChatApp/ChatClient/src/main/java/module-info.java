@@ -19,6 +19,8 @@ module ChatClient {
     requires org.apache.commons.lang3;
 
     requires ab;
+    requires ChatCommon;
+    requires java.rmi;
 
 
     exports iti.jets.gfive;
