@@ -1,0 +1,36 @@
+.sendBtnId {
+    -fx-background-color: #375D81;
+    -fx-background-radius: 4px;
+    /*-fx-fill-width: 15px;*/
+    /*-fx-font-color: #E1E6FA;*/
+}
+.attachBtnId {
+    -fx-background-color: #375D81;
+    -fx-background-radius: 4px;
+    /*-fx-fill-width: 15px;*/
+    /*-fx-font-color: #E1E6FA;*/
+}
+.saveBtnId {
+    -fx-background-color: #375D81;
+    -fx-background-radius: 4px;
+    /*-fx-fill-width: 15px;*/
+    /*-fx-font-color: #E1E6FA;*/
+}
+.msgTxtFieldId {
+    -fx-border-color: #375D81;
+    -fx-border-radius: 5px;
+    -fx-wrap-text: true;
+}
+.scrollBarId {
+    -fx-vbar-policy: AS_NEEDED;
+    -fx-hbar-policy: NEVER;
+}
+.chatListView {
+    -fx-background-color: #C4D7ED;
+    -fx-background-radius: 4px;
+}
+.msgLabelId {
+    -fx-background-color: #E1E6FA;
+    -fx-background-radius: 6px;
+    -fx-wrap-text: true;
+}
