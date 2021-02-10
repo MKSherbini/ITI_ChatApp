@@ -31,8 +31,14 @@ public class Validator {
         setValidateOnEvent(email);
     }
 
-    public void buildPhoneValidation(JFXTextField phone) {
+    public void buildPhoneLoginValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        setValidateOnEvent(phone);
+    }
+
+    public void buildPhoneRegisterValidation(JFXTextField phone) {
+        addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        addDBDuplicatePhoneValidation(phone);
         setValidateOnEvent(phone);
     }
 
@@ -96,6 +102,11 @@ public class Validator {
 
     private void addRequiredFieldValidation(JFXTextField textField) {
         RequiredFieldValidator validator = new RequiredFieldValidator("Required field");
+        textField.getValidators().add(validator);
+    }
+
+    private void addDBDuplicatePhoneValidation(JFXTextField textField) {
+        DuplicatePhoneNumberValidator validator = new DuplicatePhoneNumberValidator("Phone number already exists");
         textField.getValidators().add(validator);
     }
 
