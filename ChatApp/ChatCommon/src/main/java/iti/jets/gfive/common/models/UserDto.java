@@ -1,6 +1,10 @@
 package iti.jets.gfive.common.models;
 
+import javafx.scene.image.Image;
+
+import java.io.File;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Date;
 
 public class UserDto implements Serializable {
@@ -13,6 +17,13 @@ public class UserDto implements Serializable {
     private Date birthDate;
     private String bio;
     private String status;
+    private Image image;
+   // private java.sql.Blob image;
+    //private byte[] image;
+    //private File image ;
+
+    public UserDto() {
+    }
 
     public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate){
         this.phoneNumber = phoneNumber;
@@ -20,7 +31,23 @@ public class UserDto implements Serializable {
         this.password = password;
         this.gender = gender;
         this.birthDate = birthDate;
+
     }
+    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate , String country , String email ,String bio){
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.country=country;
+        this.email =email;
+        this.bio =bio;
+    }
+    public UserDto(String phoneNumber,Image image){
+        this.phoneNumber = phoneNumber;
+        this.image =image;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -92,4 +119,13 @@ public class UserDto implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
 }

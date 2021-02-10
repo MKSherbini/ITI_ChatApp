@@ -15,7 +15,7 @@ import java.util.Map;
 public class Validator {
     private static final Validator validator = new Validator();
     private static final String passwordRgx = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]*";
-    private static final String emailRgx = "^[A-Za-z0-9._-]+@[A-Za-z0-9]+\\.[A-Za-z]{2,6}$";
+    private static final String emailRgx = "(^[A-Za-z0-9._-]+@[A-Za-z0-9]+\\.[A-Za-z]{2,6}$)| [ \\t\\n]* ";
     private static final String phoneRgx = "^(\\+2)?01\\d{9}$";
 
     private Validator() {

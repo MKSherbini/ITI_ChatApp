@@ -5,19 +5,66 @@ import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.db.DataSourceFactory;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInter {
     DataSource ds;
 
-    public UserDBCrudImpl() throws RemoteException {}
+
+    public UserDBCrudImpl() throws RemoteException {
+    }
 
     @Override
-    public ArrayList<UserDto> selectFromDB(String sql) throws RemoteException {
-        return null;
+    public UserDto selectFromDB(String phoneNumber , String password) throws RemoteException {
+        UserDto user = new UserDto();
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            String sql = "select * from user_data \n" +
+                    " WHERE phone_number = ? and user_password =?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, phoneNumber);
+            preparedStatement.setString(2, password);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                user = new UserDto();
+                user.setUsername(resultSet.getString("user_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setGender(resultSet.getString("gender"));
+                user.setCountry(resultSet.getString("country"));
+                user.setBirthDate(resultSet.getDate("date_birth"));
+                user.setBio(resultSet.getString("bio"));
+                user.setStatus(resultSet.getString("user_status"));
+                Blob b =resultSet.getBlob("picture");
+                //user.setImage(resultSet.getBytes("picture"));
+
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null && resultSet != null) {
+            try {
+                stmt.close();
+                con.close();
+                resultSet.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        return user;
     }
 
     @Override
@@ -42,9 +89,10 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if (con != null && stmt != null) {
             try {
-                stmt.close(); con.close();
+                stmt.close();
+                con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -53,7 +101,8 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     }
 
     @Override
-    public int updateUserRecord(UserDto user) throws RemoteException {
+    public int updateUserPhoto(UserDto user) throws RemoteException {
+
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         Statement stmt = null;
@@ -62,8 +111,38 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String insertQuery = "update user_data \n" +
-                    "set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?, \n" +
+                    "set picture = ?, \n" +
                     " WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            // preparedStatement.setBlob(1, new FileInputStream(user.getImage()));
+            preparedStatement.setString(2, user.getPhoneNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null) {
+            try {
+                stmt.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public int updateUserRecord(UserDto user) throws RemoteException {
+        System.out.println("inside update");
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
+            //"update users set num_points = ? where first_name = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
@@ -73,13 +152,15 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             preparedStatement.setDate(6, user.getBirthDate());
             preparedStatement.setString(7, user.getBio());
             preparedStatement.setString(8, user.getPhoneNumber());
+            System.out.println("inside 2");
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if (con != null && stmt != null) {
             try {
-                stmt.close(); con.close();
+                stmt.close();
+                con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -104,9 +185,10 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if (con != null && stmt != null) {
             try {
-                stmt.close(); con.close();
+                stmt.close();
+                con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

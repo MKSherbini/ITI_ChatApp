@@ -3,6 +3,9 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
@@ -15,6 +18,11 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -42,12 +50,39 @@ public class LoginController implements Initializable {
 
     @FXML
     void onClickLoginSubmit(ActionEvent event) {
-        // validate fields
+        // validate field
+
+        UserDto userDto = new UserDto();
+
+
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
         if (!allFieldsValid) return;
+
         //validate login with DB
-//        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-//        stageCoordinator.switchToMainPage();
+        //todo validation on textfiled of login
+        //todo get and set the picture
+        try {
+            UserDBCrudInter userServices = UserDBCrudService.getUserService();
+            userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
+            System.out.println("name  "+userDto.getUsername());
+
+                ModelsFactory modelsFactory = ModelsFactory.getInstance();
+                CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+                currentUserModel.setPhoneNumber(txt_loginPhone.getText());
+                currentUserModel.setUsername(userDto.getUsername());
+                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+                currentUserModel.setCountry(userDto.getCountry());
+                currentUserModel.setGender(userDto.getGender());
+                currentUserModel.setEmail(userDto.getEmail());
+                currentUserModel.setPassword(txt_loginPass.getText());
+                currentUserModel.setBio(userDto.getBio());
+
+        }catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
+       StageCoordinator stageCoordinator = StageCoordinator.getInstance();
+      stageCoordinator.switchToProfilePage();
     }
 
     @FXML

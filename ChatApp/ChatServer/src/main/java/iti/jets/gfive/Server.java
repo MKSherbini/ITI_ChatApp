@@ -12,7 +12,7 @@ public class Server {
     public Server(){
         try{
             UserDBCrudInter obj = new UserDBCrudImpl();
-            Registry registry = LocateRegistry.createRegistry(3000);
+            Registry registry = LocateRegistry.createRegistry(52365);
             registry.rebind("UserDB-CRUD", obj);
             System.out.println("Done");
         } catch (RemoteException e) {

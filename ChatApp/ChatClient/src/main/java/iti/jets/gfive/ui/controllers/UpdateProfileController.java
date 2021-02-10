@@ -1,6 +1,9 @@
 package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.*;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.Validator;
@@ -14,6 +17,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.ResourceBundle;
 
@@ -57,12 +61,23 @@ public class UpdateProfileController implements Initializable {
 
     @FXML
     void OnCLickUpdateProfile(ActionEvent event) {
-        boolean fieldsValidation = NameID.validate() & EmailID.validate() & PasswordID.validate()
+        Date date=null;
+        //check for email validation
+        boolean emailvalidation = false;
+        if(!EmailID.getText().equals(""))
+        {
+            emailvalidation =  EmailID.validate();
+        }
+        else
+        {
+            emailvalidation = true;
+        }
+        boolean fieldsValidation = NameID.validate() & PasswordID.validate()
                 & ReEnterPasswordID.validate();
-        if (fieldsValidation) {
+        if (fieldsValidation && emailvalidation ) {
             try {
                 if (BirthDateID.getValue() != null) {
-                    Date date = Date.valueOf(BirthDateID.getValue());
+                    date = Date.valueOf(BirthDateID.getValue());
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -76,11 +91,22 @@ public class UpdateProfileController implements Initializable {
             }
 
 
-            //UserDao userDao = new UserDao();
+            UserDto user = new UserDto(PhoneID.getText(), NameID.getText(),
+                    PasswordID.getText(), gender,date ,CountryID.getValue() ,EmailID.getText() ,BioID.getText());
 
-            //give to it phone number to update its record
-            //  int affectedRows = userDao.updateUserRecord(PhoneID.getText() ,  NameID.getText() , EmailID.getText() , PasswordID.getText()
-            //  , gender , CountryID.getValue() ,date ,BioID.getText());
+            UserDBCrudInter userServices = UserDBCrudService.getUserService();
+
+            try {
+
+                int rowsAffected = userServices.updateUserRecord(user);
+                System.out.println("rows affected " + rowsAffected);
+                if(rowsAffected == 0) return;
+            }catch (RemoteException e)
+            {
+                e.printStackTrace();
+            }
+
+
             //update user object
             ModelsFactory modelsFactory = ModelsFactory.getInstance();
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
@@ -91,6 +117,8 @@ public class UpdateProfileController implements Initializable {
             currentUserModel.setEmail(EmailID.getText());
             currentUserModel.setPassword(PasswordID.getText());
             currentUserModel.setBio(BioID.getText());
+
+
 
 
             StageCoordinator stageCoordinator = StageCoordinator.getInstance();
@@ -145,10 +173,12 @@ public class UpdateProfileController implements Initializable {
         PasswordID.setText(currentUserModel.getPassword());
         ReEnterPasswordID.setText(currentUserModel.getPassword());
 
-        if (currentUserModel.getGender().equals("Male")) {
+
+        if (currentUserModel.getGender().equals("male")) {
+            System.out.print("inside male check");
             MaleRadioButton.setSelected(true);
 
-        } else if (currentUserModel.getGender().equals("Female")) {
+        } else if (currentUserModel.getGender().equals("female")) {
             FemaleRadioButton.setSelected(true);
         }
 
@@ -163,6 +193,7 @@ public class UpdateProfileController implements Initializable {
         validator.buildNameValidation(NameID);
         validator.buildPasswordValidation(PasswordID);
         validator.buildRepeatPasswordValidation(ReEnterPasswordID, PasswordID);
+        //if(!EmailID.getText().equals(""))
         validator.buildEmailValidation(EmailID);
 
 
