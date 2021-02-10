@@ -113,4 +113,35 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         }
         return rowsAffected;
     }
+
+    public boolean checkUserId(String userId){
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs;
+        boolean registered = false;
+        try {
+            con = ds.getConnection();
+            //stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String selectQuery = "select * from user_data \n" +
+                    " WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(selectQuery);
+            preparedStatement.setString(1, userId);
+            rs = preparedStatement.executeQuery();
+            if(rs.next() != false){
+                System.out.println("rs.next: " + rs.next());
+                registered = true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if(con != null && stmt!= null){
+            try {
+                stmt.close(); con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return registered;
+    }
 }

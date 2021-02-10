@@ -106,7 +106,17 @@ public class RegisterController implements Initializable {
 
         //(2) getting the singleton UserDBCrudService instance that has the server's obj.
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
-        // todo here have to check if the user is already registered!!!
+        boolean registered = false;
+        try {
+            registered = userServices.checkUserId(user.getPhoneNumber());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        if(registered){
+            // todo dialog or validation: already registered
+            System.out.println("user already exists, registered: " + registered);
+            return;
+        }
         try {
             //(3) calling the insert user service that inserts the user to the db
             int rowsAffected = userServices.insertUserRecord(user);
