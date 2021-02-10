@@ -58,14 +58,14 @@
 
 .loginHbox > * > .jfx-password-field:error,
 .loginHbox > * > .jfx-text-field:error {
-    -jfx-focus-color: #D34336;
-    -jfx-unfocus-color: #D34336;
+    -jfx-focus-color: #FF4500;
+    -jfx-unfocus-color: #FF4500;
     -fx-prompt-text-fill: #D34336;
 }
 
 .jfx-password-field .error-label,
 .jfx-text-field .error-label {
-    -fx-text-fill: #D34336;
+    -fx-text-fill: #FF4500;
     -fx-padding: -2 0 0 0;
 }
 .header{

@@ -19,6 +19,7 @@
 
         <module>ChatServer</module>
         <module>ChatClient</module>
+        <module>ChatCommon</module>
 
     </modules>
 
@@ -166,78 +167,76 @@
             <id>JCenter</id>
             <url>https://jcenter.bintray.com</url>
         </repository>
-
     </repositories>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.5</version>
-                <configuration>
-                    <launcher>hellofx</launcher>
-                    <jlinkImageName>hello</jlinkImageName>
-                    <mainClass>${artifactId}/${project.groupId}.Main</mainClass>
-
-                    <options>
-                        <!--===========================================CONTROL FX CONFIGS============================================-->
-                        <!--                        Opening Controls-->
-                        <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
-                        <!--                        Table Row expander Column-->
-                        <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>
-                        <!--                        Notification Pane Adding-->
-                        <option>--add-exports javafx.graphics/com.sun.javafx.scene=org.controlsfx.controls</option>
-                        <option>--add-exports javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls
-                        </option>
-                        <!--                        Auto complete binding adding-->
-                        <option>--add-exports javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
-                        <!--                        Glyph Font Adding-->
-                        <option>--add-exports javafx.graphics/com.sun.javafx.css=org.controlsfx.controls</option>
-                        <!--===============================================JFOENIX CONFIGS========================================-->
-                        <option>--add-opens java.base/java.lang.reflect=com.jfoenix</option>
-                        <option>--add-opens javafx.graphics/javafx.css=com.jfoenix</option>
-                        <option>--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
-                        <option>--add-opens javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
-                        <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix</option>
-                        <option>--add-exports javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
-                        <option>--add-exports javafx.base/com.sun.javafx.binding=com.jfoenix</option>
-                        <option>--add-exports javafx.graphics/com.sun.javafx.stage=com.jfoenix</option>
-                        <option>--add-exports javafx.base/com.sun.javafx.event=com.jfoenix</option>
-<!--                        &lt;!&ndash;                        JFOENIX demoduling &ndash;&gt;-->
-<!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=${groupId}.${artifactId}</option>-->
-<!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=iti.jets.gfive.ui.helpers.validation.Validator</option>-->
-
-                    </options>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${artifactId}/${project.groupId}.Main</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>0.0.5</version>
+                    <configuration>
+                        <launcher>hellofx</launcher>
+                        <jlinkImageName>hello</jlinkImageName>
+                        <mainClass>${project.artifactId}/${project.groupId}.Main</mainClass>
+                        <options>
+                            <!--===========================================CONTROL FX CONFIGS============================================-->
+                            <!--                        Opening Controls-->
+                            <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls
+                            </option>
+                            <!--                        Table Row expander Column-->
+                            <option>--add-opens javafx.controls/javafx.scene.control.skin=org.controlsfx.controls
+                            </option>
+                            <!--                        Notification Pane Adding-->
+                            <option>--add-exports javafx.graphics/com.sun.javafx.scene=org.controlsfx.controls</option>
+                            <option>--add-exports javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls
+                            </option>
+                            <!--                        Auto complete binding adding-->
+                            <option>--add-exports javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
+                            <!--                        Glyph Font Adding-->
+                            <option>--add-exports javafx.graphics/com.sun.javafx.css=org.controlsfx.controls</option>
+                            <!--===============================================JFOENIX CONFIGS========================================-->
+                            <option>--add-opens java.base/java.lang.reflect=com.jfoenix</option>
+                            <option>--add-opens javafx.graphics/javafx.css=com.jfoenix</option>
+                            <option>--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix
+                            </option>
+                            <option>--add-opens javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
+                            <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix
+                            </option>
+                            <option>--add-exports javafx.controls/com.sun.javafx.scene.control=com.jfoenix</option>
+                            <option>--add-exports javafx.base/com.sun.javafx.binding=com.jfoenix</option>
+                            <option>--add-exports javafx.graphics/com.sun.javafx.stage=com.jfoenix</option>
+                            <option>--add-exports javafx.base/com.sun.javafx.event=com.jfoenix</option>
+                            <!--                        &lt;!&ndash;                        JFOENIX demoduling &ndash;&gt;-->
+                            <!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=${groupId}.${artifactId}</option>-->
+                            <!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=iti.jets.gfive.ui.helpers.validation.Validator</option>-->
+                        </options>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.2.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <shadedArtifactAttached>true</shadedArtifactAttached>
+                                <transformers>
+                                    <transformer
+                                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <mainClass>${project.artifactId}/${project.groupId}.Main</mainClass>
+                                    </transformer>
+                                </transformers>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

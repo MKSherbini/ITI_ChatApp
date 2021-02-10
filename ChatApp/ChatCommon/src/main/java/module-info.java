@@ -1,4 +1,4 @@
-module ChatServer {
+module ChatCommon {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
@@ -20,9 +20,7 @@ module ChatServer {
 
     requires ab;
     requires java.rmi;
-    requires ChatCommon;
 
-
-    exports iti.jets.gfive;
-    opens iti.jets.gfive.ui.controllers;
+    exports iti.jets.gfive.common.interfaces;
+    exports iti.jets.gfive.common.models;
 }
