@@ -24,15 +24,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     public int insertUserRecord(UserDto user) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String insertQuery = "insert into user_data\n" +
                     "(phone_number, user_name, user_password, gender, date_birth)\n" +
                     "values (?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getPhoneNumber());
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
@@ -42,9 +41,9 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if(con != null && preparedStatement != null){
             try {
-                stmt.close(); con.close();
+                preparedStatement.close(); con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -52,6 +51,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         return rowsAffected;
     }
 
+    //todo tell salma about the stmt that is always null and should be replaced with preparedStatement
     @Override
     public int updateUserRecord(UserDto user) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
@@ -91,22 +91,21 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     public int deleteUser(UserDto user) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String insertQuery = "delete from user_data \n" +
                     " WHERE phone_number = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getPhoneNumber());
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if(con != null && preparedStatement != null){
             try {
-                stmt.close(); con.close();
+                preparedStatement.close(); con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -117,15 +116,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     public boolean checkUserId(String userId){
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         ResultSet rs;
         boolean registered = false;
         try {
             con = ds.getConnection();
-            //stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String selectQuery = "select * from user_data \n" +
                     " WHERE phone_number = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(selectQuery);
+            preparedStatement = con.prepareStatement(selectQuery);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
             if(rs.next() != false){
@@ -135,9 +133,9 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && stmt!= null){
+        if(con != null && preparedStatement != null){
             try {
-                stmt.close(); con.close();
+                preparedStatement.close(); con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

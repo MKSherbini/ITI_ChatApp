@@ -1,7 +1,10 @@
 package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.ui.helpers.ContactsListView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +20,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
@@ -31,16 +35,18 @@ public class  MainScreenController implements Initializable {
     @FXML
     public ImageView ibtnAddContct;
     @FXML
-private ImageView ivContextMenu;
-@FXML
-private Button btnContextMenu;
-private ContextMenu contextMenu;
-JFXPopup popupMenu ;
+    private ImageView ivContextMenu;
+    @FXML
+    private Button btnContextMenu;
+    private ContextMenu contextMenu;
+    JFXPopup popupMenu ;
     @FXML
     private MenuItem miExit;
     @FXML
     private MenuItem miLogout,miAvailable,miBusy,miSleep,miOut;
     private Menu status;
+    @FXML
+    private JFXListView<BorderPane> contactsListViewId;
 
    /* @FXML
     void showContxtMenu(MouseEvent event) {
@@ -69,6 +75,9 @@ JFXPopup popupMenu ;
 
         btnContextMenu.setContextMenu(contextMenu);
         initPopup();
+
+        ContactsListView c = ContactsListView.getInstance();
+        c.setContactsListViewId(this.contactsListViewId);
     }
    void  initPopup(){
         popupMenu = new JFXPopup();

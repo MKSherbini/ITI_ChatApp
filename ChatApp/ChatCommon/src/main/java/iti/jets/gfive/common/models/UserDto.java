@@ -2,6 +2,7 @@ package iti.jets.gfive.common.models;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class UserDto implements Serializable {
     private String phoneNumber;
@@ -13,6 +14,9 @@ public class UserDto implements Serializable {
     private Date birthDate;
     private String bio;
     private String status;
+    private ArrayList<UserDto> contacts;
+
+    public UserDto(){};
 
     public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate){
         this.phoneNumber = phoneNumber;
@@ -91,5 +95,17 @@ public class UserDto implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setContacts(ArrayList<UserDto> contacts){
+        this.contacts = contacts;
+    }
+
+    public ArrayList<UserDto> getContacts(){
+        return this.contacts;
+    }
+
+    public String toString(){
+        return ("Phone Number: " + this.phoneNumber + " Username: " + this.username);
     }
 }

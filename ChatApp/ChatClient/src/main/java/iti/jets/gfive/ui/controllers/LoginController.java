@@ -3,6 +3,10 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
@@ -14,7 +18,10 @@ import javafx.scene.control.Label;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
+import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -46,6 +53,22 @@ public class LoginController implements Initializable {
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
 //        if (!allFieldsValid) return;
         //validate login with DB
+
+        // todo call the thread that gets the contacts list and display in the listView
+        // same thread or method to be called after adding a new contact aka --> a friend request accept
+        ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
+        ArrayList<UserDto> contacts = null;
+        try {
+            contacts = contactDBCrudInter.getContactsList("01234555555");
+            for (UserDto contact : contacts) {
+                System.out.println(contact);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        ContactsListView c = ContactsListView.getInstance();
+        c.fillContacts(contacts);
+
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
     }
@@ -77,6 +100,7 @@ public class LoginController implements Initializable {
 
         validator.buildPhoneValidation(txt_loginPhone);
         validator.buildRequiredPasswordValidation(txt_loginPass);
+
     }
 }
 

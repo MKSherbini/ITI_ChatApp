@@ -101,9 +101,9 @@
                </contextMenu>
             </Button>
          </children></AnchorPane>
-      <JFXListView layoutX="75.0" layoutY="62.0" prefHeight="526.0" prefWidth="378.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="59.60000000000002" />
+      <JFXListView fx:id="contactsListViewId" layoutX="75.0" layoutY="62.0" prefHeight="526.0" prefWidth="378.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="59.60000000000002" />
       <Line endX="-100.0" endY="525.3999633789062" layoutX="552.0" layoutY="63.0" startX="-100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="451.5" AnchorPane.topAnchor="59.60000000000002" />
-      <Group layoutX="94.0" layoutY="84.0" AnchorPane.leftAnchor="94.0">
+      <Group layoutX="94.0" layoutY="84.0" visible="false" AnchorPane.leftAnchor="94.0">
          <children>
             <ImageView fitHeight="39.0" fitWidth="38.0" layoutX="-5.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
                <image>

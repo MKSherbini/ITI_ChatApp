@@ -9,7 +9,6 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="root" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.NewContactDialogController">
    <children>
       <AnchorPane layoutX="-2.0" prefHeight="68.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -27,7 +26,7 @@
             <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#performAddContact" prefWidth="100.0" text="Add" />
          </children>
       </HBox>
-      <AnchorPane layoutX="51.0" layoutY="81.0" prefHeight="258.0" prefWidth="498.0" style="-fx-background-color: #c4d7ed;" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="81.0">
+      <AnchorPane layoutX="51.0" layoutY="81.0" prefHeight="258.0" prefWidth="498.0" styleClass="loginHbox" stylesheets="@../styles/addContactDialog.css" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="81.0">
          <children>
             <AnchorPane layoutX="34.0" layoutY="35.0" prefHeight="26.0" prefWidth="438.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="18.799999999999955" AnchorPane.topAnchor="35.00000000000001">
                <children>
