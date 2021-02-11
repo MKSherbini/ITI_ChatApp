@@ -14,11 +14,13 @@ import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class LoginController implements Initializable {
         UserDto userDto = new UserDto();
 
 
+
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
         if (!allFieldsValid) return;
 
@@ -63,19 +66,27 @@ public class LoginController implements Initializable {
         //todo get and set the picture
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
+            System.out.println("befor");
+            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
             System.out.println("name  "+userDto.getUsername());
+            System.out.println("imag  "+userDto.getImage());
 
                 ModelsFactory modelsFactory = ModelsFactory.getInstance();
                 CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                 currentUserModel.setPhoneNumber(txt_loginPhone.getText());
                 currentUserModel.setUsername(userDto.getUsername());
-                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+                //in case the user did not enter the date in registeration
+                Date date = userDto.getBirthDate();
+                if(date != null) {
+                    currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+                }
                 currentUserModel.setCountry(userDto.getCountry());
                 currentUserModel.setGender(userDto.getGender());
                 currentUserModel.setEmail(userDto.getEmail());
                 currentUserModel.setPassword(txt_loginPass.getText());
                 currentUserModel.setBio(userDto.getBio());
+                currentUserModel.setImage(userDto.getImage());
 
         }catch (RemoteException e)
         {

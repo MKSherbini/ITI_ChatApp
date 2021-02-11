@@ -16,7 +16,7 @@ public class UserDBCrudService {
         if(userDBCrudInter == null){
             Registry registry = null;
             try {
-                registry = LocateRegistry.getRegistry(52365);
+                registry = LocateRegistry.getRegistry(8000);
                 userDBCrudInter = (UserDBCrudInter) registry.lookup("UserDB-CRUD");
                 return userDBCrudInter;
             } catch (RemoteException | NotBoundException e) {

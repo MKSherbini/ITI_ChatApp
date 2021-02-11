@@ -3,20 +3,22 @@ package iti.jets.gfive.server;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.db.DataSourceFactory;
+import javafx.scene.image.Image;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import javax.imageio.ImageIO;
+import javafx.embed.swing.SwingFXUtils;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInter {
     DataSource ds;
+
 
 
     public UserDBCrudImpl() throws RemoteException {
@@ -32,7 +34,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            String sql = "select * from user_data \n" +
+            String sql = "select * from user_data1 \n" +
                     " WHERE phone_number = ? and user_password =?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, phoneNumber);
@@ -47,12 +49,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 user.setBirthDate(resultSet.getDate("date_birth"));
                 user.setBio(resultSet.getString("bio"));
                 user.setStatus(resultSet.getString("user_status"));
-                Blob b =resultSet.getBlob("picture");
-                //user.setImage(resultSet.getBytes("picture"));
+              /*  byte[] bytes = {};
+                System.out.println("befor condition");
+                System.out.println(resultSet.getBytes("picture"));
+                bytes = resultSet.getBytes("picture");
+                 Image image = deserializeFromString(bytes);
+                user.setImage(image);*/
 
 
             }
-        } catch (SQLException throwables) {
+        } catch (SQLException | NullPointerException throwables ) {
             throwables.printStackTrace();
         }
         if (con != null && stmt != null && resultSet != null) {
@@ -76,17 +82,21 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "insert into user_data\n" +
-                    "(phone_number, user_name, user_password, gender, date_birth)\n" +
-                    "values (?, ?, ?, ?, ?)";
+            String insertQuery = "insert into user_data1\n" +
+                    "(phone_number, user_name, user_password, gender, date_birth,picture)\n" +
+                    "values (?, ?, ?, ?, ? ,?)";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getPhoneNumber());
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getGender());
             preparedStatement.setDate(5, user.getBirthDate());
+            FileInputStream fileInputStream = new FileInputStream("C:\\Users\\A\\Desktop\\JavaProject_Team5ChatAPP\\ITI_ChatApp\\ChatApp\\ChatClient\\src\\main\\resources\\iti\\jets\\gfive\\images\\personal.jpg");
+            Image image = new Image(fileInputStream);
+            byte[] bytes = serializeToString(image);
+            preparedStatement.setBytes(6, bytes);
             rowsAffected = preparedStatement.executeUpdate();
-        } catch (SQLException throwable) {
+        } catch (SQLException | IOException throwable) {
             throwable.printStackTrace();
         }
         if (con != null && stmt != null) {
@@ -102,6 +112,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
     @Override
     public int updateUserPhoto(UserDto user) throws RemoteException {
+        System.out.println("inside update photo");
 
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
@@ -110,14 +121,17 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "update user_data \n" +
-                    "set picture = ?, \n" +
-                    " WHERE phone_number = ?";
+            String insertQuery = "update user_data1 set picture = ? WHERE phone_number = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
-            // preparedStatement.setBlob(1, new FileInputStream(user.getImage()));
+            //null
+            System.out.println("imaaage " +user.getImage());
+            byte[] bytes = serializeToString(user.getImage());
+            System.out.println("inside update photo22");
+             preparedStatement.setBytes(1,bytes);
             preparedStatement.setString(2, user.getPhoneNumber());
             rowsAffected = preparedStatement.executeUpdate();
-        } catch (SQLException throwables) {
+            System.out.println("rowaffected "+rowsAffected);
+        } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
         if (con != null && stmt != null) {
@@ -141,7 +155,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
+            String insertQuery = "update user_data1 set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
             //"update users set num_points = ? where first_name = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getUsername());
@@ -154,6 +168,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             preparedStatement.setString(8, user.getPhoneNumber());
             System.out.println("inside 2");
             rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("towsaffected" + rowsAffected);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -195,4 +210,23 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         }
         return rowsAffected;
     }
+
+
+    public static Image deserializeFromString(byte[] s) throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(
+                new ByteArrayInputStream(s));
+        var img = SwingFXUtils.toFXImage(ImageIO.read(ois), null);
+        return img;
+    }
+
+    public static byte[] serializeToString(Image o) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        ImageIO.write(SwingFXUtils.fromFXImage(o, null), "jpg", oos); // todo generalise
+        return baos.toByteArray();
+    }
+
+
+
+
 }

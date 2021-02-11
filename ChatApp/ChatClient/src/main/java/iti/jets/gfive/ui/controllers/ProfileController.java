@@ -56,26 +56,28 @@ public class ProfileController implements Initializable {
     private Button choosephotobtn;
 
    @FXML
-    void OnClickChangePhoto(ActionEvent event) {
+    void OnClickChangePhoto(ActionEvent event) throws FileNotFoundException {
         //wait to update db
-      /* FileChooser fileChooser = new FileChooser();
+       FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
                 FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
-
                 ProfileImageID.setImage(new Image(fileInputStream));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
-       // ProfileImageID.getImage().t
+
         //update user db
-       UserDto user = new UserDto(PhoneID.getText(),selectedFile);
+
+       UserDto user = new UserDto(PhoneID.getText(),ProfileImageID.getImage());
 
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
 
         try {
+            System.out.println("imaaage " +user.getImage());
+            System.out.println("imaaage " +user.getPhoneNumber());
             int rowsAffected = userServices.updateUserPhoto(user);
             if (rowsAffected == 0) return;
         } catch (RemoteException e) {
@@ -84,7 +86,7 @@ public class ProfileController implements Initializable {
         //update userobject
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        currentUserModel.setImage(ProfileImageID.getImage());*/
+        currentUserModel.setImage(ProfileImageID.getImage());
 
     }
 
@@ -126,7 +128,8 @@ public class ProfileController implements Initializable {
         //birthdate can't be bind bidirectional
         DateOfBirthID.textProperty().bindBidirectional(currentUserModel.dateProperty(), converter);
         //must set the image by default image if it return null in the login
-       // ProfileImageID.imageProperty().bind(currentUserModel.imageProperty());
+        ProfileImageID.setImage(currentUserModel.getImage());
+       // ProfileImageID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
 
 
     }

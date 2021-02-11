@@ -1,6 +1,7 @@
 package iti.jets.gfive.common.interfaces;
 
 import iti.jets.gfive.common.models.UserDto;
+import javafx.scene.image.Image;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
