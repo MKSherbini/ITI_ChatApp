@@ -10,14 +10,20 @@ import javafx.scene.control.TextInputControl;
 import java.rmi.RemoteException;
 
 @DefaultProperty(value = "icon")
-public class DuplicatePhoneNumberValidator extends ValidatorBase {
+public class ExistingPhoneNumberValidator extends ValidatorBase {
+    boolean shouldExist;
 
-    public DuplicatePhoneNumberValidator(String message) {
+    public ExistingPhoneNumberValidator(String message) {
         super(message);
     }
 
+    public ExistingPhoneNumberValidator(String message, boolean shouldExist) {
+        this(message);
+        this.shouldExist = shouldExist;
+    }
 
-    public DuplicatePhoneNumberValidator() {
+
+    public ExistingPhoneNumberValidator() {
     }
 
     @Override
@@ -39,7 +45,7 @@ public class DuplicatePhoneNumberValidator extends ValidatorBase {
             e.printStackTrace();
         }
 
-        hasErrors.set(registered);
+        hasErrors.set(shouldExist != registered);
     }
 
 }

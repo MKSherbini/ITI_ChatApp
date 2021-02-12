@@ -5,10 +5,9 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.models.CurrentUserModel;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-
-import java.util.Map;
 
 // todo create a builder to add multiple validators then register with event
 // add additional validators
@@ -40,7 +39,16 @@ public class Validator {
 
     public void buildPhoneRegisterValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
-        addDBDuplicatePhoneValidation(phone);
+        addDBExistingPhoneValidation(phone);
+        setValidateOnEvent(phone);
+    }
+
+    public void buildPhoneContactValidation(JFXTextField phone) {
+        addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        addMatchValidation(phone, currentUserModel.phoneNumberProperty(), false, "Can't add self"); // todo make sure currentUserModel is actually valid
+        addDBExistingPhoneValidation(phone, true);
         setValidateOnEvent(phone);
     }
 
@@ -84,7 +92,13 @@ public class Validator {
 
     private void addMatchValidation(JFXPasswordField field, JFXPasswordField matches, String errorMsg) {
         MatchingStringValidator validator = new MatchingStringValidator(errorMsg);
-        validator.setStrings(field.textProperty(), matches.textProperty());
+        validator.setStringMatch(matches.textProperty());
+        field.getValidators().add(validator);
+    }
+
+    private void addMatchValidation(JFXTextField field, javafx.beans.property.StringProperty matches, boolean shouldMatch, String errorMsg) {
+        MatchingStringValidator validator = new MatchingStringValidator(errorMsg);
+        validator.setStringMatch(matches, shouldMatch);
         field.getValidators().add(validator);
     }
 
@@ -108,8 +122,17 @@ public class Validator {
         textField.getValidators().add(validator);
     }
 
-    private void addDBDuplicatePhoneValidation(JFXTextField textField) {
-        DuplicatePhoneNumberValidator validator = new DuplicatePhoneNumberValidator("Phone number already exists");
+    private void addDBExistingPhoneValidation(JFXTextField textField) {
+        addDBExistingPhoneValidation(textField, false);
+    }
+
+    private void addDBExistingPhoneValidation(JFXTextField textField, boolean shouldExist) {
+        ExistingPhoneNumberValidator validator;
+        if (shouldExist) {
+            validator = new ExistingPhoneNumberValidator("Phone number doesn't exist", true);
+        } else {
+            validator = new ExistingPhoneNumberValidator("Phone number already exists");
+        }
         textField.getValidators().add(validator);
     }
 
