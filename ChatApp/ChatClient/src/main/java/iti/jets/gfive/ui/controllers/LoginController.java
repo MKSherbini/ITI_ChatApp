@@ -64,7 +64,7 @@ public class LoginController implements Initializable {
         // validate field
 
         UserDto userDto = new UserDto();
-        boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
+        boolean allFieldsValid = validateFields();
         if (!allFieldsValid) return;
 
         //validate login with DB
@@ -126,6 +126,17 @@ public class LoginController implements Initializable {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
 //        stageCoordinator.switchToMainPage();
         stageCoordinator.switchToProfilePage();
+    }
+
+    public boolean validateFields() {
+        return txt_loginPass.validate() & txt_loginPhone.validate();
+    }
+
+    public void resetFieldsValidation() {
+        txt_loginPass.resetValidation();
+        txt_loginPhone.resetValidation();
+
+        // clear left for the binding
     }
 
     @FXML

@@ -1,25 +1,18 @@
 package iti.jets.gfive.ui.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.UserDBCrudService;
-import com.jfoenix.controls.*;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -29,7 +22,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
@@ -91,10 +83,7 @@ public class RegisterController implements Initializable {
     @FXML
     void onClickRegisterSubmit(ActionEvent event) {
         // validate fields
-        boolean allFieldsValid = txt_registerPhone.validate()
-                & txt_registerPass.validate()
-                & txt_displayName.validate()
-                & txt_registerPassRepeat.validate();
+        boolean allFieldsValid = validateFields();
         if (!allFieldsValid) return;
 
         Date birthDate = Date.valueOf(txt_bDate.getValue());
@@ -140,6 +129,31 @@ public class RegisterController implements Initializable {
         stageCoordinator.switchToLoginPage();
         // todo validate fields again in login, to avoid wrong errors
         // only login will sign in
+    }
+
+    public boolean validateFields() {
+        return txt_registerPhone.validate()
+                & txt_registerPass.validate()
+                & txt_displayName.validate()
+                & txt_registerPassRepeat.validate();
+    }
+
+    public void resetFields() {
+        txt_registerPhone.resetValidation();
+        txt_registerPass.resetValidation();
+        txt_displayName.resetValidation();
+        txt_registerPassRepeat.resetValidation();
+
+//        txt_registerPhone.clear(); // left for the binding
+//        txt_registerPass.clear();
+
+        txt_displayName.clear();
+        txt_registerPassRepeat.clear();
+        txt_bDate.setValue(null);
+        Gender.getToggles().forEach(toggle -> {
+            JFXRadioButton t = (JFXRadioButton) toggle;
+            if (t.getText().equals("Male")) t.setSelected(true);
+        });
     }
 
     @Override
