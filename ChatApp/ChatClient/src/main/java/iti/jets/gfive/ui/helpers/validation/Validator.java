@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 
 import java.util.Map;
 
@@ -27,16 +29,23 @@ public class Validator {
     }
 
     public void buildEmailValidation(JFXTextField email) {
-        addRegexValidation(email, emailRgx, "Must be in format name@domain.com");
+        addNonEmptyRegexValidation(email, emailRgx, "Must be empty or in format name@domain.com");
         setValidateOnEvent(email);
     }
 
-    public void buildPhoneValidation(JFXTextField phone) {
+    public void buildPhoneLoginValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
         setValidateOnEvent(phone);
     }
 
+    public void buildPhoneRegisterValidation(JFXTextField phone) {
+        addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        addDBDuplicatePhoneValidation(phone);
+        setValidateOnEvent(phone);
+    }
+
     //    "Must contain at least one uppercase letter, one lowercase letter, one number and one special character"
+    // todo show the user currently using that password
     public void buildPasswordValidation(JFXPasswordField password) {
         addBoundsValidation(password, 4, 8);
         addRegexValidation(password, "(?=.*[a-z]).*", "Must contain at least one lower letter");
@@ -99,6 +108,11 @@ public class Validator {
         textField.getValidators().add(validator);
     }
 
+    private void addDBDuplicatePhoneValidation(JFXTextField textField) {
+        DuplicatePhoneNumberValidator validator = new DuplicatePhoneNumberValidator("Phone number already exists");
+        textField.getValidators().add(validator);
+    }
+
     private void addRegexValidation(JFXTextField textField, String regex, String errorMsg) {
         RegexValidator regexValidator = new RegexValidator(errorMsg);
         regexValidator.setRegexPattern(regex);
@@ -111,7 +125,13 @@ public class Validator {
         textField.getValidators().add(regexValidator);
     }
 
+    private void addNonEmptyRegexValidation(JFXTextField textField, String regex, String errorMsg) {
+        NonEmptyRegexValidator regexValidator = new NonEmptyRegexValidator(regex, errorMsg);
+        textField.getValidators().add(regexValidator);
+    }
+
     private void setValidateOnEvent(JFXDatePicker textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
@@ -120,6 +140,7 @@ public class Validator {
     }
 
     private void setValidateOnEvent(JFXTextField textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
@@ -128,10 +149,29 @@ public class Validator {
     }
 
     private void setValidateOnEvent(JFXPasswordField textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
             }
         });
+    }
+
+    // fas-exclamation, fas-exclamation-circle, fas-exclamation-triangle, fas-info-circle
+    // fas-khanda, fas-lightbulb, fas-minus-circle, fas-question-circle,
+    // fas-skull, mdi2s-skull-outline, mdi2s-skull-scan-outline, mdi2s-skull, mdi2s-skull-crossbones-outline
+    private void setErrorIcon(JFXTextField textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
+    private void setErrorIcon(JFXDatePicker textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
+    private void setErrorIcon(JFXPasswordField textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
     }
 }

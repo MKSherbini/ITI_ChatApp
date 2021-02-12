@@ -106,24 +106,14 @@ public class RegisterController implements Initializable {
 
         //(2) getting the singleton UserDBCrudService instance that has the server's obj.
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
-        boolean registered = false;
-        try {
-            registered = userServices.checkUserId(user.getPhoneNumber());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if(registered){
-            // todo dialog or validation: already registered
-            System.out.println("user already exists, registered: " + registered);
-            return;
-        }
+
         try {
             //(3) calling the insert user service that inserts the user to the db
             int rowsAffected = userServices.insertUserRecord(user);
             System.out.println("number of affected rows after insert: " + rowsAffected);
             //(4) return from the method if the number of the affected rows are 0
             // which means no record were inserted.
-            if(rowsAffected == 0) return;
+            if (rowsAffected == 0) return;
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -157,7 +147,7 @@ public class RegisterController implements Initializable {
         // validation
         Validator validator = Validator.getInstance();
 
-        validator.buildPhoneValidation(txt_registerPhone); // todo validate if exists using DB procedure
+        validator.buildPhoneRegisterValidation(txt_registerPhone); // todo validate if exists using DB procedure
         validator.buildPasswordValidation(txt_registerPass);
         validator.buildNameValidation(txt_displayName);
         validator.buildRepeatPasswordValidation(txt_registerPassRepeat, txt_registerPass);
