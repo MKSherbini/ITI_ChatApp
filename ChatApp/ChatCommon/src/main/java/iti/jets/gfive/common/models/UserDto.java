@@ -55,6 +55,17 @@ public class UserDto implements Serializable {
         this.image =image;
     }
 
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
+    }
+
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
+//        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); 72kb
+
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -148,19 +159,4 @@ public class UserDto implements Serializable {
         return image;
     }
 
-
-    /*private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-        s.defaultReadObject();
-        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
-    }*/
-
-  /*  private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-        //image = new Image(UserDto.class.getResource("/images/personal.jpg").getPath());
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", s); // todo generalise
-    }*/
-   /* private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-        s.defaultReadObject();
-        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
-    }*/
 }

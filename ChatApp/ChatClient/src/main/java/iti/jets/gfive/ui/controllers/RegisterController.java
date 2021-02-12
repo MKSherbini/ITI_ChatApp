@@ -29,6 +29,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
@@ -102,11 +103,12 @@ public class RegisterController implements Initializable {
         String selectedGenderValue = selectedRadioButton.getText();
         //System.out.println(selectedGenderValue + " <-- gender");
 
-        Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
-       // Image image = new Image("/iti/jets/gfive/images/personal.jpg");
+//        Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+        Image sponge = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/sponge.png").toString());
+        // Image image = new Image("/iti/jets/gfive/images/personal.jpg");
         //(1) creating the UserDto obj that will be transferred to the server.
         UserDto user = new UserDto(txt_registerPhone.getText(), txt_displayName.getText(),
-                txt_registerPass.getText(), selectedGenderValue, birthDate ,image);
+                txt_registerPass.getText(), selectedGenderValue, birthDate, sponge);
 
         //(2) getting the singleton UserDBCrudService instance that has the server's obj.
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
@@ -116,7 +118,7 @@ public class RegisterController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        if(registered){
+        if (registered) {
             // todo dialog or validation: already registered
             System.out.println("user already exists, registered: " + registered);
             return;
@@ -128,7 +130,7 @@ public class RegisterController implements Initializable {
             System.out.println("number of affected rows after insert: " + rowsAffected);
             //(4) return from the method if the number of the affected rows are 0
             // which means no record were inserted.
-            if(rowsAffected == 0) return;
+            if (rowsAffected == 0) return;
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -136,6 +138,7 @@ public class RegisterController implements Initializable {
         // validate data and submit
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToLoginPage();
+        // todo validate fields again in login, to avoid wrong errors
         // only login will sign in
     }
 
@@ -176,6 +179,11 @@ public class RegisterController implements Initializable {
 //            JFXRadioButton t = (JFXRadioButton) toggle;
 //            if (t.getText().equals("Female")) t.setSelected(true);
 //        });
+//        txt_registerPass.setText("!Q1q");
+//        txt_registerPassRepeat.setText("!Q1q");
+//        txt_registerPhone.setText("01234567895");
+//        txt_bDate.setValue(LocalDate.now());
+//        txt_displayName.setText("mmmm");
 
     }
 }
