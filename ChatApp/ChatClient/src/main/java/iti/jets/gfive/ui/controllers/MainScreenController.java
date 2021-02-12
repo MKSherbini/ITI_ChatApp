@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.helpers.ContactsListView;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,10 +15,8 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -47,7 +46,10 @@ public class  MainScreenController implements Initializable {
     private Menu status;
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
-
+    @FXML
+    private BorderPane chatAreaBorderPaneID;
+    @FXML
+    private Label receivernameID;
    /* @FXML
     void showContxtMenu(MouseEvent event) {
     contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
@@ -125,4 +127,25 @@ public class  MainScreenController implements Initializable {
         }
 
     }
+    //click on the contact to start chat with him/her
+    @FXML
+    public void onClickonContact(MouseEvent mouseEvent) {
+        System.out.println("pressed");
+        ObservableList<BorderPane> selectedContact;
+        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
+        for(BorderPane borderPane:selectedContact) {
+            //get the name and image of the selected contact
+            Label label = (Label) borderPane.getCenter();
+            ImageView imageView =(ImageView) borderPane.getLeft();
+            System.out.println("label text is " +label.getText());
+            receivernameID.setText(label.getText());
+            chatAreaBorderPaneID.setVisible(true);
+
+
+        }
+
+
+
+    }
+
 }

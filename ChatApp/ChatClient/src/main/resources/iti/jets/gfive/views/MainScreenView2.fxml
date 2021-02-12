@@ -32,7 +32,7 @@
 <?import org.controlsfx.control.ToggleSwitch?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css"  xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
    <children>
       <AnchorPane layoutX="18.0" layoutY="14.0" prefHeight="586.0" prefWidth="76.0" style="-fx-background-color: #183152;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -95,17 +95,17 @@
                </graphic>
                <contextMenu>
                   <ContextMenu anchorX="40.0" anchorY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" x="0.0" y="0.0">
-                     <items>
+                    <items>
                         <Menu mnemonicParsing="false" text="Status">
-                           <items>
+                          <items>
                               <MenuItem mnemonicParsing="false" text="Busy" />
-                              <MenuItem mnemonicParsing="false" text="Available" />
+                            <MenuItem mnemonicParsing="false" text="Available" />
                               <MenuItem mnemonicParsing="false" text="Sleep" />
-                           </items>
+                          </items>
                         </Menu>
-                        <MenuItem fx:id="miExit" mnemonicParsing="false" onAction="#performExit" text="Exit" />
+                      <MenuItem fx:id="miExit" mnemonicParsing="false" onAction="#performExit" text="Exit" />
                         <MenuItem fx:id="miLogout" mnemonicParsing="false" onAction="#performLogout" text="Logout" />
-                     </items>
+                    </items>
                   </ContextMenu>
                </contextMenu>
             </Button>
@@ -166,7 +166,6 @@
                      <children>
                         <HBox fx:id="hboxChatBarId" alignment="TOP_RIGHT" prefHeight="32.0" prefWidth="600.0" spacing="4.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="2.0">
                            <children>
-                              <Label fx:id="receivernameID" prefHeight="39.0" prefWidth="372.0" text="Label" />
                               <ToggleSwitch fx:id="botSwitchBtnId" prefHeight="18.0" prefWidth="40.0" style="-fx-text-fill: #183152;" text="BOT " textFill="#e3e8fa" translateY="6.0" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="12.0" />

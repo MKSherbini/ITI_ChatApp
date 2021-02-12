@@ -20,7 +20,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
         try {
             con = ds.getConnection();
             String insertQuery = "insert into notifications\n" +
-                    "(content, sender, notifaction_date, seen)\n" +
+                    "(content, sender, notifaction_date, completed)\n" +
                     "values (?, ?, ?, ?)";
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, content);
