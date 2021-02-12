@@ -3,8 +3,10 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
@@ -53,6 +55,16 @@ public class LoginController implements Initializable {
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
 //        if (!allFieldsValid) return;
         //validate login with DB
+
+        //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
+        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+        //after validation register this client to the server
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            clientConnectionInter.register(user);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         // todo call the thread that gets the contacts list and display in the listView
         // same thread or method to be called after adding a new contact aka --> a friend request accept

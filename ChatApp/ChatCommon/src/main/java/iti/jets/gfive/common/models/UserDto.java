@@ -18,6 +18,10 @@ public class UserDto implements Serializable {
 
     public UserDto(){};
 
+    public UserDto(String phoneNumber, String password){
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
     public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate){
         this.phoneNumber = phoneNumber;
         this.username = username;

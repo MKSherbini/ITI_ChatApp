@@ -3,9 +3,11 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
@@ -25,6 +27,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -68,45 +71,18 @@ public class NewContactDialogController implements Initializable {
             addingContacts(phoneNumber.toString());
             System.out.println(phoneNumber.toString() + " Added to db");
         }
-        /*//1-check if this phone number is in the db registered?
-        UserDBCrudInter userServices = UserDBCrudService.getUserService();
-        boolean registered = true;
-        try {
-            registered = userServices.checkUserId(txtPhoneNumber.getText());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if(!registered){
-            // todo dialog or validation: already registered
-            System.out.println("user doesn't exists, registered: " + registered);
-            return;
-        }
-        //2-if registered go and send notification LATER :(
-        //3-assume notification is sent and accepted
-        //4-take the phone number and the current user's phone_number
-        //and send as strings to server to add in the contacts table
-        ModelsFactory modelsFactory = ModelsFactory.getInstance();
-        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-
-        ContactDBCrudInter contactDBCrudService = ContactDBCrudService.getContactService();
-        try {
-            int rowsAffected = contactDBCrudService.insertContactRecord(txtPhoneNumber.getText(),
-                    //currentUserModel.getPhoneNumber()
-                    "01234555555");
-            System.out.println("number of affected rows after contact insert: " + rowsAffected);
-            if(rowsAffected == 0) return;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        //5-update the contacts listView dunno how :( */
     }
 
     public void addingContacts(String contactNum){
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        System.out.println("item 0 in list view: " + listView.getItems().get(0).toString());
+        //System.out.println("item 0 in list view: " + listView.getItems().get(0).toString());
         //todo dialog or validation: user is stupid and trying to add his/herself!!
-        if(contactNum.equals(currentUserModel.getPhoneNumber())){
+//        if(contactNum.equals(currentUserModel.getPhoneNumber())){
+//            System.out.println("Are you trying to add yourself!!");
+//            return;
+//        }
+        if(contactNum.equals("01234555555")){
             System.out.println("Are you trying to add yourself!!");
             return;
         }
@@ -123,7 +99,25 @@ public class NewContactDialogController implements Initializable {
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
-        //2-if registered go and send notification LATER
+        //2-if registered go and send notification LATER, go and insert the notification in db
+        //2-go insert the notification in db
+        NotificationCrudInter notificationServices = NotificationDBCrudService.getNotificationService();
+        //todo replace with the commented line for the actual logged-in user
+//        String notificationContent = (currentUserModel.getUsername() +" with the phone number "
+//                 +currentUserModel.getPhoneNumber() +" is trying to add you");
+        String notificationContent = ("mahameho" +" with the phone number "
+                +"01234555555" +" is trying to add you");
+        long millis=System.currentTimeMillis();
+        Date currentDate = new Date(millis);
+        System.out.println("current date: " + currentDate.toString());
+        try {
+            int notifyRowsAffected = notificationServices.insertNotification(notificationContent,
+                    currentUserModel.getPhoneNumber(), currentDate, false);
+            System.out.println("rows affected after notification: " + notifyRowsAffected);
+            if(notifyRowsAffected == 0) return;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         //3-assume notification is sent and accepted
         //4-take the phone number and the current user's phone_number
         //and send as strings to server to add in the contacts table
