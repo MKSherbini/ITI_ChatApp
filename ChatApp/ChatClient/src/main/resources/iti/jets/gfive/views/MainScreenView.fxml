@@ -61,7 +61,7 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="392.0" layoutY="11.0" onMouseClicked="#showContextMenu" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="11.0">
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="392.0" layoutY="11.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="11.0">
                <image>
                   <Image url="@../icons/profile_icon.png" />
                </image>
@@ -131,7 +131,7 @@
 
       <AnchorPane layoutX="759.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="72.0" prefWidth="269.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="12.0">
          <children>
-            <Button fx:id="button" layoutY="8.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="50.0" text="Click " wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="btnFriendRequest" layoutY="8.0" mnemonicParsing="false" onAction="#openFriendRequesrDialog" prefHeight="35.0" prefWidth="60.0"  text="Friends" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.rightAnchor="-10" AnchorPane.topAnchor="-10">
                <children>
                   <Circle radius="10.0" stroke="BLACK" strokeType="INSIDE">

@@ -58,8 +58,9 @@ public class StageCoordinator {
         }
         if (!scenes.containsKey(viewName)) {
             try {
+
                 System.out.println("Created New Scene");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
                 Parent loginView = fxmlLoader.load();
                 Scene loginScene = new Scene(loginView);
                 SceneData loginSceneData = new SceneData(fxmlLoader, loginView, loginScene);

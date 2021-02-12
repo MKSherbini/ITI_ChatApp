@@ -31,6 +31,8 @@ public class  MainScreenController implements Initializable {
     @FXML
     public ImageView ibtnAddContct;
     @FXML
+    public Button btnFriendRequest;
+    @FXML
 private ImageView ivContextMenu;
 @FXML
 private Button btnContextMenu;
@@ -40,6 +42,7 @@ JFXPopup popupMenu ;
     private MenuItem miExit;
     @FXML
     private MenuItem miLogout,miAvailable,miBusy,miSleep,miOut;
+
     private Menu status;
 
    /* @FXML
@@ -106,8 +109,9 @@ JFXPopup popupMenu ;
             parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 600, 400);
             Stage stage = new Stage();
-            stage.setMaximized(false);
-            stage.initStyle(StageStyle.UTILITY);
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.showAndWait();
@@ -115,5 +119,23 @@ JFXPopup popupMenu ;
             e.printStackTrace();
         }
 
+    }
+    @FXML
+    public void openFriendRequesrDialog(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FriendRequestDialog.fxml"));
+        Parent parent = null;
+        try {
+            parent = fxmlLoader.load();
+            Scene scene = new Scene(parent, 600, 400);
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -46,6 +46,7 @@ public class LoginController implements Initializable {
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
 //        if (!allFieldsValid) return;
         //validate login with DB
+
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
     }

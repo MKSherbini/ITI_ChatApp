@@ -9,7 +9,6 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="root" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.NewContactDialogController">
    <children>
       <AnchorPane layoutX="-2.0" prefHeight="68.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -21,7 +20,7 @@
             </Label>
          </children>
       </AnchorPane>
-      <HBox layoutX="200.0" layoutY="349.0" spacing="20.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="349.0">
+      <HBox layoutX="200.0" layoutY="349.0" spacing="20.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
          <children>
             <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#performCancel" prefWidth="100.0" text="cancel" />
             <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#performAddContact" prefWidth="100.0" text="Add" />
