@@ -2,6 +2,7 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPopup;
+import iti.jets.gfive.ui.helpers.LoginManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,9 +39,7 @@ private ImageView ivContextMenu;
 private Button btnContextMenu;
 private ContextMenu contextMenu;
 JFXPopup popupMenu ;
-    @FXML
     private MenuItem miExit;
-    @FXML
     private MenuItem miLogout,miAvailable,miBusy,miSleep,miOut;
 
     private Menu status;
@@ -57,7 +56,13 @@ JFXPopup popupMenu ;
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
+        miExit.setOnAction((actionEvent)->{
+            LoginManager.getInstance().Exit();
+        });
         miLogout = new MenuItem("Logout");
+        miLogout.setOnAction((actionEvent)->{
+            LoginManager.getInstance().Logout();
+        });
         status= new Menu("Status");
         miAvailable = new MenuItem("Available");
         miBusy = new MenuItem("Busy");
@@ -70,7 +75,7 @@ JFXPopup popupMenu ;
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll( miExit , miLogout);
 
-        btnContextMenu.setContextMenu(contextMenu);
+//        btnContextMenu.setContextMenu(contextMenu);
         initPopup();
     }
    void  initPopup(){
@@ -85,14 +90,8 @@ JFXPopup popupMenu ;
         popupMenu.setAutoHide(true);
     }
 
-//    public void showContextMenu(MouseEvent mouseEvent) {
-//        contextMenu.show(btnContextMenu.getParent(),mouseEvent.getX(),mouseEvent.getY());
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-//    }
-
     public void showContextMenu(MouseEvent event) {
         contextMenu.show(btnContextMenu,Side.BOTTOM, -75,0);
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
 
     }
 
