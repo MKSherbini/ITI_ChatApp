@@ -21,12 +21,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
@@ -100,9 +102,11 @@ public class RegisterController implements Initializable {
         String selectedGenderValue = selectedRadioButton.getText();
         //System.out.println(selectedGenderValue + " <-- gender");
 
+        Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+       // Image image = new Image("/iti/jets/gfive/images/personal.jpg");
         //(1) creating the UserDto obj that will be transferred to the server.
         UserDto user = new UserDto(txt_registerPhone.getText(), txt_displayName.getText(),
-                txt_registerPass.getText(), selectedGenderValue, birthDate);
+                txt_registerPass.getText(), selectedGenderValue, birthDate ,image);
 
         //(2) getting the singleton UserDBCrudService instance that has the server's obj.
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
@@ -118,6 +122,7 @@ public class RegisterController implements Initializable {
             return;
         }
         try {
+
             //(3) calling the insert user service that inserts the user to the db
             int rowsAffected = userServices.insertUserRecord(user);
             System.out.println("number of affected rows after insert: " + rowsAffected);
@@ -136,6 +141,12 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_registerPhone.setText("01060800309");
+        txt_displayName.setText("salma");
+        txt_registerPass.setText("Salma@1");
+        txt_registerPassRepeat.setText("Salma@1");
+        txt_bDate.setValue(LocalDate.now());
+
         // binding
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();

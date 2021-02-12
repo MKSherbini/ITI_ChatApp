@@ -1,12 +1,12 @@
 package iti.jets.gfive.ui.models;
 
-import com.mysql.cj.jdbc.Blob;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 
+import java.sql.Blob;
 import java.time.LocalDate;
 
 public class CurrentUserModel {
@@ -21,6 +21,7 @@ public class CurrentUserModel {
     private final StringProperty status = new SimpleStringProperty();
     private ObjectProperty<Image> imageProperty = new SimpleObjectProperty<>();
     private ObjectProperty<LocalDate> birthDate= new SimpleObjectProperty<>();
+    private ObjectProperty<Blob> BlobProperty = new SimpleObjectProperty<>();
 
 
     public String getPhoneNumber() {

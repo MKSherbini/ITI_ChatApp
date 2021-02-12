@@ -21,6 +21,8 @@ module ChatServer {
     requires ab;
     requires java.rmi;
     requires ChatCommon;
+    requires java.desktop;
+    requires javafx.swing;
 
 
     exports iti.jets.gfive;
