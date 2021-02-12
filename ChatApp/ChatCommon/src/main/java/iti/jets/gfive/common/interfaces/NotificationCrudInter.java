@@ -5,5 +5,5 @@ import java.rmi.RemoteException;
 import java.sql.Date;
 
 public interface NotificationCrudInter extends Remote {
-    int insertNotification(String content, String senderId, Date date, boolean seen) throws RemoteException;
+    int insertNotification(String content, String senderId, Date date, boolean completed) throws RemoteException;
 }

@@ -12,7 +12,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
     DataSource ds;
     public NotificationCrudImpl() throws RemoteException {}
     @Override
-    public int insertNotification(String content, String senderId, Date date, boolean seen) throws RemoteException {
+    public int insertNotification(String content, String senderId, Date date, boolean completed) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -20,13 +20,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
         try {
             con = ds.getConnection();
             String insertQuery = "insert into notifications\n" +
-                    "(content, sender, notifaction_date, seen)\n" +
+                    "(content, sender, notifaction_date, completed)\n" +
                     "values (?, ?, ?, ?)";
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, content);
             preparedStatement.setString(2, senderId);
             preparedStatement.setDate(3, date);
-            preparedStatement.setBoolean(4, seen);
+            preparedStatement.setBoolean(4, completed);
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
