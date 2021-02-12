@@ -34,7 +34,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            String sql = "select * from user_data1 \n" +
+            String sql = "select * from user_data \n" +
                     " WHERE phone_number = ? and user_password =?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, phoneNumber);
@@ -81,21 +81,21 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            String insertQuery = "insert into user_data1\n" +
-                    "(phone_number, user_name, user_password, gender, date_birth,picture)\n" +
-                    "values (?, ?, ?, ?, ? ,?)";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            String insertQuery = "insert into user_data\n" +
+                    "(phone_number, user_name, user_password, gender, date_birth)\n" +
+                    "values (?, ?, ?, ?, ?)";
+            preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getPhoneNumber());
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getGender());
             preparedStatement.setDate(5, user.getBirthDate());
-            FileInputStream fileInputStream = new FileInputStream("C:\\Users\\A\\Desktop\\JavaProject_Team5ChatAPP\\ITI_ChatApp\\ChatApp\\ChatClient\\src\\main\\resources\\iti\\jets\\gfive\\images\\personal.jpg");
-            Image image = new Image(fileInputStream);
-            byte[] bytes = serializeToString(image);
-            preparedStatement.setBytes(6, bytes);
+//            FileInputStream fileInputStream = new FileInputStream("C:\\Users\\A\\Desktop\\JavaProject_Team5ChatAPP\\ITI_ChatApp\\ChatApp\\ChatClient\\src\\main\\resources\\iti\\jets\\gfive\\images\\personal.jpg");
+//            Image image = new Image(fileInputStream);
+//            byte[] bytes = serializeToString(image);
+//            preparedStatement.setBytes(6, bytes);
             rowsAffected = preparedStatement.executeUpdate();
-        } catch (SQLException | IOException throwable) {
+        } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
         if(con != null && preparedStatement != null){
@@ -149,14 +149,13 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         System.out.println("inside update");
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "update user_data1 set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
+            String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
             //"update users set num_points = ? where first_name = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
@@ -171,9 +170,9 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if (con != null && stmt != null) {
+        if (con != null && preparedStatement != null) {
             try {
-                stmt.close();
+                preparedStatement.close();
                 con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

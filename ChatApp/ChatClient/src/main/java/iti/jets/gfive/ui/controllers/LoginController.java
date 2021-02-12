@@ -64,9 +64,6 @@ public class LoginController implements Initializable {
         // validate field
 
         UserDto userDto = new UserDto();
-
-
-
         boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
         if (!allFieldsValid) return;
 
@@ -80,13 +77,14 @@ public class LoginController implements Initializable {
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
             System.out.println("name  "+userDto.getUsername());
             System.out.println("imag  "+userDto.getImage());
+            userDto.setPhoneNumber(txt_loginPhone.getText());
 
         //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
-        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
         //after validation register this client to the server
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
-            clientConnectionInter.register(user);
+            clientConnectionInter.register(userDto);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -96,7 +94,7 @@ public class LoginController implements Initializable {
         ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
         ArrayList<UserDto> contacts = null;
         try {
-            contacts = contactDBCrudInter.getContactsList("01234555555");
+            contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
             for (UserDto contact : contacts) {
                 System.out.println(contact);
             }
@@ -128,6 +126,7 @@ public class LoginController implements Initializable {
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
+        //stageCoordinator.switchToProfilePage();
     }
 
     @FXML

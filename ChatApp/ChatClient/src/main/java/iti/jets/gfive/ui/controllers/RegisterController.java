@@ -141,12 +141,6 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        txt_registerPhone.setText("01060800309");
-        txt_displayName.setText("salma");
-        txt_registerPass.setText("Salma@1");
-        txt_registerPassRepeat.setText("Salma@1");
-        txt_bDate.setValue(LocalDate.now());
-
         // binding
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();

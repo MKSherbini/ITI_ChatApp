@@ -57,6 +57,7 @@ public class ProfileController implements Initializable {
 
    @FXML
     void OnClickChangePhoto(ActionEvent event) throws FileNotFoundException {
+       //todo check the edit button, doesn't work with the picture!!
         //wait to update db
        FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);

@@ -78,14 +78,14 @@ public class NewContactDialogController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         //System.out.println("item 0 in list view: " + listView.getItems().get(0).toString());
         //todo dialog or validation: user is stupid and trying to add his/herself!!
-//        if(contactNum.equals(currentUserModel.getPhoneNumber())){
-//            System.out.println("Are you trying to add yourself!!");
-//            return;
-//        }
-        if(contactNum.equals("01234555555")){
+        if(contactNum.equals(currentUserModel.getPhoneNumber())){
             System.out.println("Are you trying to add yourself!!");
             return;
         }
+//        if(contactNum.equals("01234555555")){
+//            System.out.println("Are you trying to add yourself!!");
+//            return;
+//        }
         //1-check if this phone number is registered in the db?
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
         boolean registered = true;
@@ -103,10 +103,10 @@ public class NewContactDialogController implements Initializable {
         //2-go insert the notification in db
         NotificationCrudInter notificationServices = NotificationDBCrudService.getNotificationService();
         //todo replace with the commented line for the actual logged-in user
-//        String notificationContent = (currentUserModel.getUsername() +" with the phone number "
-//                 +currentUserModel.getPhoneNumber() +" is trying to add you");
-        String notificationContent = ("mahameho" +" with the phone number "
-                +"01234555555" +" is trying to add you");
+        String notificationContent = (currentUserModel.getUsername() +" with the phone number "
+                 +currentUserModel.getPhoneNumber() +" is trying to add you");
+//        String notificationContent = ("mahameho" +" with the phone number "
+//                +"01234555555" +" is trying to add you");
         long millis=System.currentTimeMillis();
         Date currentDate = new Date(millis);
         System.out.println("current date: " + currentDate.toString());
@@ -124,14 +124,14 @@ public class NewContactDialogController implements Initializable {
         ContactDBCrudInter contactDBCrudService = ContactDBCrudService.getContactService();
         try {
             int rowsAffected = contactDBCrudService.insertContactRecord(contactNum,
-                    //currentUserModel.getPhoneNumber()
-                    "01234555555");
+                    currentUserModel.getPhoneNumber());
+                    //"01234555555");
             System.out.println("number of affected rows after contact insert: " + rowsAffected);
             ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
             ArrayList<UserDto> contacts = null;
             try {
                 //5-update the contacts listView dunno yet
-                contacts = contactDBCrudInter.getContactsList("01234555555");
+                contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
                 ContactsListView c = ContactsListView.getInstance();
                 c.fillContacts(contacts);
             } catch (RemoteException e) {
