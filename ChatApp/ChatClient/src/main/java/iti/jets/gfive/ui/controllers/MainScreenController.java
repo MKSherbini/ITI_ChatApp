@@ -92,7 +92,14 @@ public class  MainScreenController implements Initializable {
     }
     @FXML
     public void openAddNewContactDialog(MouseEvent mouseEvent) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NewContactDialog.fxml"));
+        openDialog("NewContactDialog");
+    }
+    @FXML
+    public void openFriendRequestDialog(ActionEvent actionEvent) {
+        openDialog("FriendRequestDialog");
+    }
+    private void openDialog(String viewName){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml",viewName)));
         Parent parent = null;
         try {
             parent = fxmlLoader.load();
