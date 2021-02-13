@@ -1,8 +1,20 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.services.UserDBCrudService;
+import iti.jets.gfive.ui.controllers.RegisterController;
+import iti.jets.gfive.ui.models.CurrentUserModel;
+import javafx.scene.image.Image;
 
 import java.io.*;
+import java.rmi.RemoteException;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class LoginManager {
@@ -25,9 +37,70 @@ public class LoginManager {
         readCredentials();
     }
     public boolean canLogin(){
-        if (phone != null && password != null )
-            return true ;
+        if(!(phone.equals(null)||phone.equals(""))){
+            ModelsFactory.getInstance().getCurrentUserModel().setPhoneNumber(phone);
+        }
+        if(!(password.equals(null)||password.equals(""))){
+            ModelsFactory.getInstance().getCurrentUserModel().setPassword(password);
+            return true;
+        }
         return false;
+    }
+    public void initCurrentUser(){
+        UserDto userDto = new UserDto();
+        try {
+            UserDBCrudInter userServices = UserDBCrudService.getUserService();
+            System.out.println("befor");
+            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+            userDto = userServices.selectFromDB(phone, password);
+            System.out.println("name  "+userDto.getUsername());
+            System.out.println("imag  "+userDto.getImage());
+            userDto.setPhoneNumber(phone);
+
+            //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
+            //UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+            //after validation register this client to the server
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+            try {
+                clientConnectionInter.register(userDto);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            // todo call the thread that gets the contacts list and display in the listView
+            // same thread or method to be called after adding a new contact aka --> a friend request accept
+            ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
+            ArrayList<UserDto> contacts = null;
+            try {
+                contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
+                for (UserDto contact : contacts) {
+                    System.out.println(contact);
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            ContactsListView c = ContactsListView.getInstance();
+            c.fillContacts(contacts);
+            ModelsFactory modelsFactory = ModelsFactory.getInstance();
+            CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+            currentUserModel.setPhoneNumber(phone);
+            currentUserModel.setUsername(userDto.getUsername());
+            //in case the user did not enter the date in registeration
+            Date date = userDto.getBirthDate();
+            if(date != null) {
+                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+            }
+            currentUserModel.setCountry(userDto.getCountry());
+            currentUserModel.setGender(userDto.getGender());
+            currentUserModel.setEmail(userDto.getEmail());
+            currentUserModel.setPassword(password);
+            currentUserModel.setBio(userDto.getBio());
+            currentUserModel.setImage(userDto.getImage());
+
+        }catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
@@ -48,6 +121,9 @@ public class LoginManager {
             prop.setProperty(PHONE_NUMBER, ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
             if (action.equals(ACTION_EXIT)){
                 prop.setProperty(PASSWORD,  ModelsFactory.getInstance().getCurrentUserModel().getPassword());
+            }
+            if (action.equals(ACTION_LOGOUT)){
+                prop.setProperty(PASSWORD, "");
             }
             // save properties to project root folder
             prop.store(output, "The current user credentials  ");

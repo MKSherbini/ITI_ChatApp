@@ -5,6 +5,9 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.helpers.ContactsListView;
+import iti.jets.gfive.ui.helpers.LoginManager;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -60,7 +63,15 @@ public class  MainScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
+        miExit.setOnAction((actionEvent)-> {
+            LoginManager.getInstance().Exit();
+            Platform.exit();
+        });
         miLogout = new MenuItem("Logout");
+        miLogout.setOnAction((acrionEvent)-> {
+            LoginManager.getInstance().Logout();
+            StageCoordinator.getInstance().switchToLoginPage();
+        });
         status= new Menu("Status");
         miAvailable = new MenuItem("Available");
         miBusy = new MenuItem("Busy");

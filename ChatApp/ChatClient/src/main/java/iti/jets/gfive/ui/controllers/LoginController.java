@@ -80,7 +80,7 @@ public class LoginController implements Initializable {
             userDto.setPhoneNumber(txt_loginPhone.getText());
 
         //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
-//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+        //UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
         //after validation register this client to the server
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {

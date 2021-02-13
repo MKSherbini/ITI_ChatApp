@@ -1,6 +1,7 @@
 package iti.jets.gfive;
 
 import iti.jets.gfive.AIML.BotsManager;
+import iti.jets.gfive.ui.helpers.LoginManager;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -20,7 +21,15 @@ public class Main extends Application {
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
-        stageCoordinator.switchToLoginPage();
+        LoginManager loginManager = LoginManager.getInstance();
+        if (loginManager.canLogin()){
+            loginManager.initCurrentUser();
+            stageCoordinator.switchToMainPage();
+
+        }else{
+            stageCoordinator.switchToLoginPage();
+        }
+
         primaryStage.show();
 
 //        botsDemo();
