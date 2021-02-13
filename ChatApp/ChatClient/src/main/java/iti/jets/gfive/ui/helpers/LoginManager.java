@@ -26,17 +26,20 @@ public class LoginManager {
     private String phone , password;
     private static  LoginManager loginManager;
     private UserDto userDto = new UserDto();
-
-    public static LoginManager getInstance(){
+    //Synchronize only one instance
+    public synchronized static LoginManager getInstance(){
         if (loginManager ==null){
             loginManager = new LoginManager();
         }
         return loginManager;
     }
-
+    // this method to read data from properties file and inflate it into phone and password
     private LoginManager (){
         readCredentials();
     }
+    // checks that the user was exit or loged out the last time
+    // true  : user exited
+    // false : user loged out
     public boolean canLogin(){
         if(!(phone.equals(null)||phone.equals(""))){
             ModelsFactory.getInstance().getCurrentUserModel().setPhoneNumber(phone);
@@ -47,6 +50,7 @@ public class LoginManager {
         }
         return false;
     }
+    // This method to intitialize the user data once he opened the app if he was exit at the last time
     public void initCurrentUser(){
 
         try {
@@ -103,7 +107,7 @@ public class LoginManager {
             e.printStackTrace();
         }
     }
-
+    // This method unregister the user from the server
     public void unregisterCurrentUser(){
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
@@ -116,17 +120,24 @@ public class LoginManager {
     public boolean login(){
         return false;
     }
+    // This method unregister the user
+    // save user data
+    // remove the password from the current user model to force the user to login again once he logged out
     public void Logout(){
         unregisterCurrentUser();
         ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
+    // This method to
+    // unregister the user from the server and
+    // saves his phone and password to used in the next login to the application .
     public void Exit(){
         unregisterCurrentUser();
         //todo update the user status in the server
         saveCredentials(ACTION_EXIT);
     }
     // this method to write the user data to properties file
+    // saves his phone and password to used in the next login to the application
     private void saveCredentials(String action){
         try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
             Properties prop = new Properties();
@@ -144,6 +155,7 @@ public class LoginManager {
             io.printStackTrace();
         }
     }
+    // This method to read the saved password and phone number to perform implicit login
     private void  readCredentials(){
         Properties prop = null ;
         try (InputStream input = new FileInputStream("src/main/resources/config.properties")) {

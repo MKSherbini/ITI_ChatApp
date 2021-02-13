@@ -22,11 +22,16 @@ public class Main extends Application {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
         LoginManager loginManager = LoginManager.getInstance();
+        // check if the can login returned true this meaning that user just exit
+        // and his password and phone number saved and can enter
         if (loginManager.canLogin()){
+            //implicitly login the user
             loginManager.initCurrentUser();
+            //redirect user to main screen
             stageCoordinator.switchToMainPage();
 
         }else{
+            // redirect user to login screen
             stageCoordinator.switchToLoginPage();
         }
 
