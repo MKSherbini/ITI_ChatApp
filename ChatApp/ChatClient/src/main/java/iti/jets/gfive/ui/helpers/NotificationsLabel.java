@@ -61,4 +61,6 @@ public class NotificationsLabel extends UnicastRemoteObject implements Notificat
             }
         });
     }
+
+
 }

@@ -28,4 +28,13 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         });
         System.out.println("client " + user.getUsername() + "is removed from the pool");
     }
+
+    @Override
+    public void sendMsg(String receiverId) throws RemoteException {
+//        clientsPool.forEach(connectedClient -> {
+//            if(connectedClient.getClient().getPhoneNumber().equals(receiverId)){
+//                connectedClient.receiveMsg(Message obj)
+//            }
+//        });
+    }
 }
