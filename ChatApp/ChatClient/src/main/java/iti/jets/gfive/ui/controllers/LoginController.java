@@ -10,10 +10,9 @@ import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
-import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
-import iti.jets.gfive.ui.helpers.NotificationsLabel;
+import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
@@ -25,16 +24,10 @@ import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
-import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.rmi.RemoteException;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -85,7 +78,7 @@ public class LoginController implements Initializable {
         //after validation register this client to the server
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
-            NotificationsLabel notify = NotificationsLabel.getInstance();
+            NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
             clientConnectionInter.register(userDto, notify);
         } catch (RemoteException e) {
             e.printStackTrace();

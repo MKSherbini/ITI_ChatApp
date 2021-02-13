@@ -3,13 +3,10 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
-import iti.jets.gfive.ui.helpers.NotificationsLabel;
+import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
-import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.MessageDto;
-import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.MessageDBService;
-import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.models.CurrentUserModel;
@@ -38,7 +35,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -103,11 +99,11 @@ public class  MainScreenController implements Initializable {
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
 
-        NotificationsLabel n = NotificationsLabel.getInstance();
+        NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
         System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
-        NotificationsLabel n2 = NotificationsLabel.getInstance();
+        NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         System.out.println("calling the get instance again in the client");
     }
    void  initPopup(){

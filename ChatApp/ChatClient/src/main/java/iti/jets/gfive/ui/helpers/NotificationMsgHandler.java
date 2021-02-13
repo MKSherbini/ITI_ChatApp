@@ -1,26 +1,25 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
-import iti.jets.gfive.common.interfaces.NotificationsLabelInter;
 import iti.jets.gfive.common.models.NotificationDto;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class NotificationsLabel extends UnicastRemoteObject implements NotificationReceiveInter {
-    private static NotificationsLabel notificationsLabel = null;
+public class NotificationMsgHandler extends UnicastRemoteObject implements NotificationReceiveInter {
+    private static NotificationMsgHandler notificationsLabel = null;
     private Label notificationLabelId;
 
-    private NotificationsLabel() throws RemoteException {
+    private NotificationMsgHandler() throws RemoteException {
         super();
     }
 
-    public synchronized static NotificationsLabel getInstance(){
+    public synchronized static NotificationMsgHandler getInstance(){
         if(notificationsLabel == null){
             try {
                 System.out.println("creating new obj ");
-                return notificationsLabel = new NotificationsLabel();
+                return notificationsLabel = new NotificationMsgHandler();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

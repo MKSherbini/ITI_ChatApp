@@ -121,7 +121,6 @@ public class NewContactDialogController implements Initializable {
         try {
             int rowsAffected = contactDBCrudService.insertContactRecord(contactNum,
                     currentUserModel.getPhoneNumber());
-                    //"01234555555");
             System.out.println("number of affected rows after contact insert: " + rowsAffected);
             ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
             ArrayList<UserDto> contacts = null;
