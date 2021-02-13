@@ -101,10 +101,10 @@ public class  MainScreenController implements Initializable {
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
-        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+        //System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
-        System.out.println("calling the get instance again in the client");
+        //System.out.println("calling the get instance again in the client");
     }
    void  initPopup(){
         popupMenu = new JFXPopup();

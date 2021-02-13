@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.services.NotificationDBCrudService;
@@ -109,35 +110,36 @@ public class NewContactDialogController implements Initializable {
             System.out.println("rows affected after notification: " + notifyRowsAffected);
             if(notifyRowsAffected <= 1) return;
             //todo tell the server to go and increase the label
-            //notificationServices.sendNotification(contactNum);
-            notificationServices.sendNotification(currentUserModel.getPhoneNumber());
+            NotificationDto notif = new NotificationDto(notificationContent, currentUserModel.getPhoneNumber(),
+                    currentDate, false, contactNum);
+            notificationServices.sendNotification(notif);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         //3-assume notification is sent and accepted
         //4-take the phone number and the current user's phone_number
         //and send as strings to server to add in the contacts table
-        ContactDBCrudInter contactDBCrudService = ContactDBCrudService.getContactService();
-        try {
-            int rowsAffected = contactDBCrudService.insertContactRecord(contactNum,
-                    currentUserModel.getPhoneNumber());
-            System.out.println("number of affected rows after contact insert: " + rowsAffected);
-            ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
-            ArrayList<UserDto> contacts = null;
-            try {
-                //5-update the contacts listView dunno yet
-                contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
-                ContactsListView c = ContactsListView.getInstance();
-                c.fillContacts(contacts);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(rowsAffected == 0) return;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//        ContactDBCrudInter contactDBCrudService = ContactDBCrudService.getContactService();
+//        try {
+//            int rowsAffected = contactDBCrudService.insertContactRecord(contactNum,
+//                    currentUserModel.getPhoneNumber());
+//            System.out.println("number of affected rows after contact insert: " + rowsAffected);
+//            ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
+//            ArrayList<UserDto> contacts = null;
+//            try {
+//                //5-update the contacts listView dunno yet
+//                contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
+//                ContactsListView c = ContactsListView.getInstance();
+//                c.fillContacts(contacts);
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            if(rowsAffected == 0) return;
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void performNewContact(ActionEvent actionEvent) {

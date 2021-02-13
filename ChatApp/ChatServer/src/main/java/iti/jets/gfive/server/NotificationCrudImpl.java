@@ -75,7 +75,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             try{
                 while(rs.next()){
                     NotificationDto notification = new NotificationDto(
-                            Integer.parseInt(rs.getString("notification_id")),
+//                            Integer.parseInt(rs.getString("notification_id")),
                             rs.getString("content"),
                             rs.getString("sender"),
                             rs.getDate("notification_date"),
@@ -100,21 +100,16 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
     }
 
     @Override
-    public void sendNotification(String userId) throws RemoteException {
-        //todo check if the user is online in the pool
+    public void sendNotification(NotificationDto notif) throws RemoteException {
         ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
-            if(connectedClient.getClient().getPhoneNumber().equals(userId)){
+            if(connectedClient.getClient().getPhoneNumber().equals(notif.getReceiverId())){
                 try {
-                    connectedClient.getReceiveNotif().receive(null);
+                    connectedClient.getReceiveNotif().receive(notif);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
         });
-//        NotificationsLabelInter
-//                n = NotificationsLabel.getInstance();
-//        System.out.println(n + " nnn");
-//        n.increaseNotificationsNumber();
     }
 
 

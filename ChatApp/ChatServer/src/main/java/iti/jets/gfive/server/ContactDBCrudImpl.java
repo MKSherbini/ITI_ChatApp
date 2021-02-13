@@ -19,7 +19,6 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
     public int insertContactRecord(String contactId, String currentUserId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
@@ -30,6 +29,11 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, currentUserId);
             preparedStatement.setString(2, contactId);
+            rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected == 0) return rowsAffected;
+            preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setString(1, contactId);
+            preparedStatement.setString(2, currentUserId);
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();

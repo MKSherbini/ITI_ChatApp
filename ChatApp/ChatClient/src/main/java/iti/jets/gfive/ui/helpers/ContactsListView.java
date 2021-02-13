@@ -26,15 +26,6 @@ public class ContactsListView {
 
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
-//        contactsListViewId.setCellFactory(new Callback<ListView<BorderPane>, ListCell<BorderPane>>() {
-//            @Override
-//            public ListCell<BorderPane> call(ListView<BorderPane> borderPaneListView) {
-//                return new ListCell<BorderPane>(){
-//                    protected void updateItem()
-//                };
-//
-//            }
-//        });
     }
 
     public void fillContacts(ArrayList<UserDto> contacts){
