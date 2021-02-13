@@ -57,6 +57,7 @@ public class ContactsListView {
                         //todo still won't work with the method only by making the attribute public!
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
+                        controller.contactNumberLabel.setText(contact.getPhoneNumber());
                         System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
                     } catch (IOException e) {

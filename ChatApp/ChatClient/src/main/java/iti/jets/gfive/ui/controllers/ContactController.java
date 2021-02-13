@@ -18,6 +18,8 @@ public class ContactController implements Initializable {
 
     @FXML
     public Label contactNameLabel;
+    @FXML
+    public Label contactNumberLabel;
 
     public ContactController(){}
 

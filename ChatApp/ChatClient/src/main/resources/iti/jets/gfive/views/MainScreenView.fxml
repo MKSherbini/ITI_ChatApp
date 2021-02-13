@@ -198,7 +198,7 @@
                               <FontAwesomeIconView glyphName="PAPERCLIP" glyphStyle="-fx-fill: #e1e6fa" size="25" translateX="4.0" />
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="sendBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="73.0" styleClass="sendBtnId" stylesheets="@../styles/ChatAreaStyle.css" text="SEND" textFill="#e1e6fa">
+                        <JFXButton fx:id="sendBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="73.0" styleClass="sendBtnId" stylesheets="@../styles/ChatAreaStyle.css" text="SEND" textFill="#e1e6fa" onAction="#onClickSendButton">
                            <font>
                               <Font name="System Bold" size="11.0" />
                            </font>

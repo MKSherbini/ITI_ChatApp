@@ -9,5 +9,13 @@ public class ChatMessageController {
     private ImageView msgImgId;
 
     @FXML
-    private Label msgLabelId;
+    public Label msgLabelId;
+
+    public void setMsgImgId(ImageView msgImgId) {
+        this.msgImgId = msgImgId;
+    }
+    public void setMsgLabelId(Label label)
+    {
+        this.msgLabelId=label;
+    }
 }

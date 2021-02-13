@@ -3,12 +3,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
    <left>
       <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
    </left>
    <center>
-      <Label fx:id="contactNameLabel" prefHeight="78.0" prefWidth="214.0" text="test" BorderPane.alignment="CENTER" />
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="contactNameLabel" prefHeight="78.0" prefWidth="214.0" text="test" />
+            <Label fx:id="contactNumberLabel" prefHeight="17.0" prefWidth="219.0" text="Label" />
+         </children>
+      </VBox>
    </center>
 </BorderPane>

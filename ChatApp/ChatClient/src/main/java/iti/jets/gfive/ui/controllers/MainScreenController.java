@@ -3,8 +3,16 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
+import iti.jets.gfive.common.interfaces.MessageDBInter;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.MessageDBService;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
+import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.models.CurrentUserModel;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +27,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -28,6 +37,11 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class  MainScreenController implements Initializable {
@@ -50,6 +64,13 @@ public class  MainScreenController implements Initializable {
     private BorderPane chatAreaBorderPaneID;
     @FXML
     private Label receivernameID;
+    @FXML
+    private JFXButton sendBtnId;
+    @FXML
+    private TextField msgTxtFieldId;
+    @FXML
+    private ListView<AnchorPane> chatListView;
+    private Label receiverNumber;
    /* @FXML
     void showContxtMenu(MouseEvent event) {
     contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
@@ -128,23 +149,97 @@ public class  MainScreenController implements Initializable {
 
     }
     //click on the contact to start chat with him/her
+    //todo update main page with textaare instead of textfield in order to wrap long messages
     @FXML
-    public void onClickonContact(MouseEvent mouseEvent) {
+    public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
+        //fetch all message from db and update the list
+        //li
+
+
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+        
         System.out.println("pressed");
         ObservableList<BorderPane> selectedContact;
         selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
         for(BorderPane borderPane:selectedContact) {
             //get the name and image of the selected contact
-            Label label = (Label) borderPane.getCenter();
-            ImageView imageView =(ImageView) borderPane.getLeft();
-            System.out.println("label text is " +label.getText());
-            receivernameID.setText(label.getText());
+            VBox vBox = (VBox) borderPane.getCenter();
+            Label name =(Label) vBox.getChildren().get(0);
+             receiverNumber = (Label) vBox.getChildren().get(1);
+           // ImageView imageView =(ImageView) borderPane.getLeft();
+            System.out.println("label text is " +name.getText());
+            receivernameID.setText(name.getText());
             chatAreaBorderPaneID.setVisible(true);
+        }
+        final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+        System.out.println("number of list" +messageList.size());
+       // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    chatListView.getItems().clear();
 
+                    try {
+
+                        //todo still won't work with the method only by making the attribute public!
+                        //controller.setLabelValue(contact.getUsername());
+                        for(MessageDto messageDto:messageList) {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            ChatMessageController controller = fxmlLoader.getController();
+                            System.out.println("content of the message "+messageDto.getContent());
+                            controller.msgLabelId.setText(messageDto.getContent());
+                            msgTxtFieldId.setText("");
+                            chatListView.getItems().add(anchorPane);
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+           // chatListView.getItems().clear();
 
         }
 
 
+    @FXML
+    public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+
+
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+
+        String messsage = msgTxtFieldId.getText();
+        Date date = Date.valueOf(LocalDate.now());
+        MessageDto messageDto =new MessageDto("messagename" , currentUserModel.getPhoneNumber() ,receiverNumber.getText() ,"unseen",messsage ,date);
+        int rowaffected = messageServices.insertMessage(messageDto);
+        System.out.println("row inserted equal "+rowaffected);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                try {
+                    AnchorPane anchorPane = fxmlLoader.load();
+                    ChatMessageController controller = fxmlLoader.getController();
+                    //todo still won't work with the method only by making the attribute public!
+                    //controller.setLabelValue(contact.getUsername());
+                    controller.msgLabelId.setText(messsage);
+                    msgTxtFieldId.setText("");
+                    chatListView.getItems().add(anchorPane);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
     }
 
