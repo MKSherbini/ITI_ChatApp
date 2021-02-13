@@ -25,6 +25,7 @@ public class LoginManager {
 
     private String phone , password;
     private static  LoginManager loginManager;
+    private UserDto userDto = new UserDto();
 
     public static LoginManager getInstance(){
         if (loginManager ==null){
@@ -47,7 +48,7 @@ public class LoginManager {
         return false;
     }
     public void initCurrentUser(){
-        UserDto userDto = new UserDto();
+
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
             System.out.println("befor");
@@ -103,17 +104,29 @@ public class LoginManager {
         }
     }
 
-
+    public void unregisterCurrentUser(){
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            clientConnectionInter.unregister(userDto);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean login(){
         return false;
     }
     public void Logout(){
+        unregisterCurrentUser();
+        ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
     public void Exit(){
+        unregisterCurrentUser();
+        //todo update the user status in the server
         saveCredentials(ACTION_EXIT);
     }
+    // this method to write the user data to properties file
     private void saveCredentials(String action){
         try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
             Properties prop = new Properties();
@@ -125,7 +138,7 @@ public class LoginManager {
             if (action.equals(ACTION_LOGOUT)){
                 prop.setProperty(PASSWORD, "");
             }
-            // save properties to project root folder
+            // save the file to src/main/resources/config.properties
             prop.store(output, "The current user credentials  ");
         } catch (IOException io) {
             io.printStackTrace();

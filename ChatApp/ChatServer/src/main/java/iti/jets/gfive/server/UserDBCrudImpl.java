@@ -145,6 +145,11 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     }
 
     @Override
+    public int updateUserStaus(UserDto user) throws RemoteException {
+        return 0;
+    }
+
+    @Override
     public int updateUserRecord(UserDto user) throws RemoteException {
         System.out.println("inside update");
         ds = DataSourceFactory.getMySQLDataSource();

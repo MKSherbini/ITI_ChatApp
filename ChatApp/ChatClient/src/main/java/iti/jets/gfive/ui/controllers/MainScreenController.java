@@ -64,6 +64,7 @@ public class  MainScreenController implements Initializable {
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
         miExit.setOnAction((actionEvent)-> {
+
             LoginManager.getInstance().Exit();
             Platform.exit();
         });
