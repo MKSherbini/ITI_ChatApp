@@ -3,6 +3,8 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.common.models.MessageDto;
@@ -24,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
@@ -101,6 +104,11 @@ public class  MainScreenController implements Initializable {
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
+        n.setContactList(contactsListViewId);
+        n.setListView(chatListView);
+       // n.setChatarea(chatAreaBorderPaneID);
+        //n.setButton(contactsListViewId);
+
         System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
@@ -175,9 +183,21 @@ public class  MainScreenController implements Initializable {
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
         //fetch all message from db and update the list
         //li
-
-
-        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        chatListView.getItems().clear();
+        ObservableList<BorderPane> selectedContact;
+        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
+        for(BorderPane borderPane:selectedContact) {
+            //get the name and image of the selected contact
+            VBox vBox = (VBox) borderPane.getCenter();
+            HBox hbox =(HBox) vBox.getChildren().get(0);
+            Label name = (Label)hbox.getChildren().get(0);
+            receiverNumber = (Label) vBox.getChildren().get(1);
+            // ImageView imageView =(ImageView) borderPane.getLeft();
+            System.out.println("label text is " +name.getText());
+            receivernameID.setText(name.getText());
+            chatAreaBorderPaneID.setVisible(true);
+        }
+       /* ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
@@ -223,7 +243,7 @@ public class  MainScreenController implements Initializable {
 
                 }
             });
-           // chatListView.getItems().clear();
+           // chatListView.getItems().clear();*/
 
         }
 
@@ -239,6 +259,13 @@ public class  MainScreenController implements Initializable {
         String messsage = msgTxtFieldId.getText();
         Date date = Date.valueOf(LocalDate.now());
         MessageDto messageDto =new MessageDto("messagename" , currentUserModel.getPhoneNumber() ,receiverNumber.getText() ,"unseen",messsage ,date);
+        try {
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+            clientConnectionInter.sendMsg(messageDto);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         int rowaffected = messageServices.insertMessage(messageDto);
         System.out.println("row inserted equal "+rowaffected);
         Platform.runLater(new Runnable() {
@@ -253,12 +280,9 @@ public class  MainScreenController implements Initializable {
                     controller.msgLabelId.setText(messsage);
                     msgTxtFieldId.setText("");
                     chatListView.getItems().add(anchorPane);
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
