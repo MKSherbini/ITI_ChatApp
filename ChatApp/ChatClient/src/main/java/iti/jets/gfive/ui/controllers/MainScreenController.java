@@ -73,33 +73,16 @@ public class  MainScreenController implements Initializable {
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll( miExit , miLogout);
 
-        btnContextMenu.setContextMenu(contextMenu);
-        initPopup();
+//        btnContextMenu.setContextMenu(contextMenu);
+//        initPopup();
 
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
     }
-   void  initPopup(){
-        popupMenu = new JFXPopup();
-       VBox vBox= new VBox();
-       JFXButton btnExit = new JFXButton("Exit");
-       JFXButton btnLogout = new JFXButton("Logout");
-       Popup status =new Popup();
 
-       boolean b = vBox.getChildren().addAll(btnExit, btnLogout);
-       popupMenu . setPopupContent(vBox);
-        popupMenu.setAutoHide(true);
-    }
-
-//    public void showContextMenu(MouseEvent mouseEvent) {
-//        contextMenu.show(btnContextMenu.getParent(),mouseEvent.getX(),mouseEvent.getY());
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-//    }
 
     public void showContextMenu(MouseEvent event) {
-        contextMenu.show(btnContextMenu,Side.BOTTOM, -75,0);
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-
+        contextMenu.show(btnContextMenu,Side.BOTTOM, 0,0);
     }
 
     public void performExit(ActionEvent actionEvent) {
