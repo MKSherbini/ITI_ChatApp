@@ -6,6 +6,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ClientConnectionInter extends Remote {
-    void register(UserDto user) throws RemoteException;
+    void register(UserDto user, NotificationReceiveInter notif) throws RemoteException;
     void unregister(UserDto user) throws RemoteException;
 }

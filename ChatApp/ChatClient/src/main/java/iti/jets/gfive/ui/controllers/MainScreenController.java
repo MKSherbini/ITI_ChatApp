@@ -3,21 +3,16 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
-import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.ui.helpers.NotificationsLabel;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -47,6 +42,8 @@ public class  MainScreenController implements Initializable {
     private Menu status;
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
+    @FXML
+    private Label notificationLabelId;
 
    /* @FXML
     void showContxtMenu(MouseEvent event) {
@@ -78,6 +75,13 @@ public class  MainScreenController implements Initializable {
 
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
+
+        NotificationsLabel n = NotificationsLabel.getInstance();
+        n.setNotificationLabel(notificationLabelId);
+        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+        //System.out.println("notifaction label is initalizedddddd");
+        NotificationsLabel n2 = NotificationsLabel.getInstance();
+        System.out.println("calling the get instance again in the client");
     }
    void  initPopup(){
         popupMenu = new JFXPopup();
@@ -124,5 +128,22 @@ public class  MainScreenController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    public void OpenNotificationDialog(MouseEvent mouseEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationDialog.fxml"));
+        Parent parent = null;
+        try {
+            parent = fxmlLoader.load();
+            Scene scene = new Scene(parent, 600, 400);
+            Stage stage = new Stage();
+            stage.setMaximized(false);
+            stage.initStyle(StageStyle.UTILITY);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

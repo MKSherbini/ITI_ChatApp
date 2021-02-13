@@ -13,6 +13,7 @@ import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.NotificationsLabel;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
@@ -75,8 +76,8 @@ public class LoginController implements Initializable {
             System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
-            System.out.println("name  "+userDto.getUsername());
-            System.out.println("imag  "+userDto.getImage());
+            //System.out.println("name  "+userDto.getUsername());
+            //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(txt_loginPhone.getText());
 
         //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
@@ -84,7 +85,8 @@ public class LoginController implements Initializable {
         //after validation register this client to the server
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
-            clientConnectionInter.register(userDto);
+            NotificationsLabel notify = NotificationsLabel.getInstance();
+            clientConnectionInter.register(userDto, notify);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -95,9 +97,9 @@ public class LoginController implements Initializable {
         ArrayList<UserDto> contacts = null;
         try {
             contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
-            for (UserDto contact : contacts) {
-                System.out.println(contact);
-            }
+//            for (UserDto contact : contacts) {
+//                System.out.println(contact);
+//            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }

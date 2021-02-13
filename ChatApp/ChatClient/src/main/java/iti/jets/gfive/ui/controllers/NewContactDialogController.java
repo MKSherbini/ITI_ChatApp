@@ -14,7 +14,6 @@ import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -77,15 +76,11 @@ public class NewContactDialogController implements Initializable {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         //System.out.println("item 0 in list view: " + listView.getItems().get(0).toString());
-        //todo dialog or validation: user is stupid and trying to add his/herself!!
+        //todo dialog or validation: user is stupid and trying to add him/herself!!
         if(contactNum.equals(currentUserModel.getPhoneNumber())){
             System.out.println("Are you trying to add yourself!!");
             return;
         }
-//        if(contactNum.equals("01234555555")){
-//            System.out.println("Are you trying to add yourself!!");
-//            return;
-//        }
         //1-check if this phone number is registered in the db?
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
         boolean registered = true;
@@ -99,22 +94,23 @@ public class NewContactDialogController implements Initializable {
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
+        //todo add the same user twice - CHECK
         //2-if registered go and send notification LATER, go and insert the notification in db
         //2-go insert the notification in db
         NotificationCrudInter notificationServices = NotificationDBCrudService.getNotificationService();
-        //todo replace with the commented line for the actual logged-in user
         String notificationContent = (currentUserModel.getUsername() +" with the phone number "
                  +currentUserModel.getPhoneNumber() +" is trying to add you");
-//        String notificationContent = ("mahameho" +" with the phone number "
-//                +"01234555555" +" is trying to add you");
         long millis=System.currentTimeMillis();
         Date currentDate = new Date(millis);
-        System.out.println("current date: " + currentDate.toString());
+        //System.out.println("current date: " + currentDate.toString());
         try {
             int notifyRowsAffected = notificationServices.insertNotification(notificationContent,
-                    currentUserModel.getPhoneNumber(), currentDate, false);
+                    currentUserModel.getPhoneNumber(), currentDate, false, contactNum);
             System.out.println("rows affected after notification: " + notifyRowsAffected);
-            if(notifyRowsAffected == 0) return;
+            if(notifyRowsAffected <= 1) return;
+            //todo tell the server to go and increase the label
+            //notificationServices.sendNotification(contactNum);
+            notificationServices.sendNotification(currentUserModel.getPhoneNumber());
         } catch (RemoteException e) {
             e.printStackTrace();
         }

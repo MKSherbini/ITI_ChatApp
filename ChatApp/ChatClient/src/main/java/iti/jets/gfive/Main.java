@@ -22,7 +22,7 @@ public class Main extends Application {
         stageCoordinator.initStage(primaryStage);
         stageCoordinator.switchToLoginPage();
         primaryStage.show();
-
+        //todo unregister and unexport but which obj??
 //        botsDemo();
 
 //        Platform.exit();
