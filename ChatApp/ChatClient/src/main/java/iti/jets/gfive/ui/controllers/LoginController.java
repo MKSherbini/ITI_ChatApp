@@ -5,9 +5,12 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.interfaces.NotificationCrudInter;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.UserDBCrudService;
@@ -98,6 +101,7 @@ public class LoginController implements Initializable {
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
+            getNotifications(userDto);
             ModelsFactory modelsFactory = ModelsFactory.getInstance();
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
             currentUserModel.setPhoneNumber(txt_loginPhone.getText());
@@ -117,10 +121,22 @@ public class LoginController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
 //        stageCoordinator.switchToProfilePage();
+    }
+
+    public void getNotifications(UserDto user){
+        NotificationCrudInter notificationCrudInter = NotificationDBCrudService.getNotificationService();
+        try {
+            ArrayList<NotificationDto> notificationsList = notificationCrudInter.getNotificationList(user.getPhoneNumber());
+            NotificationMsgHandler notificationMsgHandler = NotificationMsgHandler.getInstance();
+            notificationMsgHandler.addNotifications(notificationsList);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean validateFields() {

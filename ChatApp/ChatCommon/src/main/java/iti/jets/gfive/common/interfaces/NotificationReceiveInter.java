@@ -9,4 +9,5 @@ import java.rmi.RemoteException;
 public interface NotificationReceiveInter extends Remote {
     void receive(NotificationDto notification) throws RemoteException;
     void receiveMsg(MessageDto messageDto) throws RemoteException;
+    void updateContactsList() throws RemoteException;
 }

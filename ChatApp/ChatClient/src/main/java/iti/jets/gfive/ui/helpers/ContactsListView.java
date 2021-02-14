@@ -26,15 +26,6 @@ public class ContactsListView {
 
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
-//        contactsListViewId.setCellFactory(new Callback<ListView<BorderPane>, ListCell<BorderPane>>() {
-//            @Override
-//            public ListCell<BorderPane> call(ListView<BorderPane> borderPaneListView) {
-//                return new ListCell<BorderPane>(){
-//                    protected void updateItem()
-//                };
-//
-//            }
-//        });
     }
 
     public void fillContacts(ArrayList<UserDto> contacts){
@@ -57,6 +48,7 @@ public class ContactsListView {
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
                         //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
+                        System.out.println(item.getChildren().get(0).toString() + " <------- borderPane");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -64,5 +56,7 @@ public class ContactsListView {
             }
         });
     }
+
+
 
 }

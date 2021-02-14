@@ -21,7 +21,6 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
     public int insertContactRecord(String contactId, String currentUserId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
@@ -32,6 +31,11 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, currentUserId);
             preparedStatement.setString(2, contactId);
+            rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected == 0) return rowsAffected;
+            preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setString(1, contactId);
+            preparedStatement.setString(2, currentUserId);
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -55,10 +59,8 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         ResultSet rs;
         try {
             con = ds.getConnection();
-            String query = "select u.* from contacts c \n" +
-                    "inner join user_data u \n" +
-                    "on u.phone_number = c.contact_id\n" +
-                    "where c.contact_id in(select contact_id from contacts where user_id = ?);";
+            String query = "select u.* from contacts c , user_data u\n" +
+                    "where u.phone_number = c.contact_id and user_id = ?";
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
@@ -95,4 +97,18 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         }
         return contactsList;
     }
+
+    @Override
+    public void updateUserContacts(String userId) throws RemoteException {
+        ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
+            if(connectedClient.getClient().getPhoneNumber().equals(userId)){
+                try {
+                    connectedClient.getReceiveNotif().updateContactsList();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }
