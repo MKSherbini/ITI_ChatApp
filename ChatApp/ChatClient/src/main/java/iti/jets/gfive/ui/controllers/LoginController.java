@@ -5,9 +5,12 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.interfaces.NotificationCrudInter;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.UserDBCrudService;
@@ -73,8 +76,6 @@ public class LoginController implements Initializable {
             //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(txt_loginPhone.getText());
 
-        //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
-//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
         //after validation register this client to the server
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
@@ -85,19 +86,16 @@ public class LoginController implements Initializable {
         }
 
         // todo call the thread that gets the contacts list and display in the listView
-        // same thread or method to be called after adding a new contact aka --> a friend request accept
         ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
         ArrayList<UserDto> contacts = null;
         try {
             contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
-//            for (UserDto contact : contacts) {
-//                System.out.println(contact);
-//            }
+            ContactsListView c = ContactsListView.getInstance();
+            c.fillContacts(contacts);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        ContactsListView c = ContactsListView.getInstance();
-        c.fillContacts(contacts);
+        getNotifications(userDto);
                 ModelsFactory modelsFactory = ModelsFactory.getInstance();
                 CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                 currentUserModel.setPhoneNumber(txt_loginPhone.getText());
@@ -122,6 +120,17 @@ public class LoginController implements Initializable {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
         //stageCoordinator.switchToProfilePage();
+    }
+
+    public void getNotifications(UserDto user){
+        NotificationCrudInter notificationCrudInter = NotificationDBCrudService.getNotificationService();
+        try {
+            ArrayList<NotificationDto> notificationsList = notificationCrudInter.getNotificationList(user.getPhoneNumber());
+            NotificationMsgHandler notificationMsgHandler = NotificationMsgHandler.getInstance();
+            notificationMsgHandler.addNotifications(notificationsList);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

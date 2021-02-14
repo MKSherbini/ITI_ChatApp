@@ -2,6 +2,7 @@ package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationsLabelInter;
+import iti.jets.gfive.common.models.NotifDBInsertion;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
@@ -15,12 +16,14 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
     DataSource ds;
     public NotificationCrudImpl() throws RemoteException {}
     @Override
-    public int insertNotification(String content, String senderId, Date date, boolean completed, String receiverId) throws RemoteException {
+    public NotifDBInsertion insertNotification(String content, String senderId, Date date, boolean completed, String receiverId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
+        NotifDBInsertion notifObj = new NotifDBInsertion(-1, -1);
         int rowsAffected = 0;
+        int notificationId = -1;
         try {
             con = ds.getConnection();
             String insertQuery = "insert into notifications\n" +
@@ -32,9 +35,11 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             preparedStatement.setDate(3, date);
             preparedStatement.setBoolean(4, completed);
             rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected == 0)
+                return notifObj;
             rs = preparedStatement.getGeneratedKeys();
             if(rs.next()){
-                int notificationId = rs.getInt(1);
+                notificationId = rs.getInt(1);
                 String query = "insert into notification_receivers\n" +
                         "(notification_id, receiver)\n" +
                         "values (?, ?)";
@@ -42,6 +47,8 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
                 preparedStatement.setInt(1, notificationId);
                 preparedStatement.setString(2, receiverId);
                 rowsAffected += preparedStatement.executeUpdate();
+                if(rowsAffected != 2)
+                    return notifObj;
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -53,7 +60,8 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
                 throwable.printStackTrace();
             }
         }
-        return rowsAffected;
+        notifObj.setNotifId(notificationId); notifObj.setRowsAffected(rowsAffected);
+        return notifObj;
     }
 
     @Override
@@ -73,12 +81,14 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
             try{
+                System.out.println("ResultSet" + rs);
                 while(rs.next()){
+                    System.out.println("ResultSet");
                     NotificationDto notification = new NotificationDto(
-//                            Integer.parseInt(rs.getString("notification_id")),
+                            Integer.parseInt(rs.getString("notification_id")),
                             rs.getString("content"),
                             rs.getString("sender"),
-                            rs.getDate("notification_date"),
+                            rs.getDate("notifaction_date"),
                             rs.getBoolean("completed"),
                             rs.getString("receiver"));
                     notificationList.add(notification);
@@ -110,6 +120,32 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
                 }
             }
         });
+    }
+
+    @Override
+    public int updateNotificationStatus(int notifId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        ArrayList<NotificationDto> notificationList = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            String query = "update notifications set completed = 1 where notification_id = ?;";
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setInt(1, notifId);
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if(con != null && preparedStatement != null){
+            try {
+                preparedStatement.close(); con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return rowsAffected;
     }
 
 

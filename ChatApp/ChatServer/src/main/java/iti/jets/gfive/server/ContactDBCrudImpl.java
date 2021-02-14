@@ -94,4 +94,18 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         }
         return contactsList;
     }
+
+    @Override
+    public void updateUserContacts(String userId) throws RemoteException {
+        ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
+            if(connectedClient.getClient().getPhoneNumber().equals(userId)){
+                try {
+                    connectedClient.getReceiveNotif().updateContactsList();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

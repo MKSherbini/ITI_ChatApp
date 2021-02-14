@@ -154,6 +154,7 @@ public class  MainScreenController implements Initializable {
     }
 
     public void OpenNotificationDialog(MouseEvent mouseEvent) {
+        notificationLabelId.setText("0");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationDialog.fxml"));
         Parent parent = null;
         try {

@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.NotifDBInsertion;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
@@ -105,12 +106,12 @@ public class NewContactDialogController implements Initializable {
         Date currentDate = new Date(millis);
         //System.out.println("current date: " + currentDate.toString());
         try {
-            int notifyRowsAffected = notificationServices.insertNotification(notificationContent,
+            NotifDBInsertion notifRecord = notificationServices.insertNotification(notificationContent,
                     currentUserModel.getPhoneNumber(), currentDate, false, contactNum);
-            System.out.println("rows affected after notification: " + notifyRowsAffected);
-            if(notifyRowsAffected <= 1) return;
+            System.out.println("rows affected after notification: " + notifRecord.getRowsAffected());
+            if(notifRecord.getRowsAffected() <= 1) return;
             //todo tell the server to go and increase the label
-            NotificationDto notif = new NotificationDto(notificationContent, currentUserModel.getPhoneNumber(),
+            NotificationDto notif = new NotificationDto(notifRecord.getNotifId(), notificationContent, currentUserModel.getPhoneNumber(),
                     currentDate, false, contactNum);
             notificationServices.sendNotification(notif);
         } catch (RemoteException e) {

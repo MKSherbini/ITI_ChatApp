@@ -127,7 +127,10 @@
                         </RadialGradient>
                      </fill>
                   </Circle>
-                  <Label fx:id="notificationLabelId" text="5" />
+                  <Label fx:id="notificationLabelId" text="0">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font></Label>
                </children>
             </StackPane>
          </children>
