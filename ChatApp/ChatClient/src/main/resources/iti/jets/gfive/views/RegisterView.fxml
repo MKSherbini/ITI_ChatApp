@@ -13,10 +13,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="500.0" prefWidth="450.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.RegisterController">
+<AnchorPane prefHeight="500.0" prefWidth="470.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.RegisterController">
    <children>
       <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="400.0" prefWidth="198.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <AnchorPane layoutX="95.0" layoutY="9.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="95.0" layoutY="9.0" prefHeight="400.0" prefWidth="420.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="lb_appName" layoutX="199.0" layoutY="23.0" text="ChillChat" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="23.0" />
             <Label layoutX="34.0" layoutY="64.0" text="Register an account" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="64.0" />
