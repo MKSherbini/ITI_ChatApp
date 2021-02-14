@@ -24,6 +24,8 @@ public class ContactController implements Initializable {
     public Label contactNumberLabel;
     @FXML
     public Button newButton;
+    @FXML
+    public Label newLabelID;
 
     public ContactController(){}
 
@@ -44,7 +46,7 @@ public class ContactController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //contactNameLabel = new Label();
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
-      //  n.setButton(newButton);
+
     }
 
 }

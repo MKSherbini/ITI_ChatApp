@@ -8,14 +8,14 @@
 
 <AnchorPane prefHeight="58.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ChatMessageController">
    <children>
-      <HBox prefHeight="165.0" prefWidth="588.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="4.0">
+      <HBox prefHeight="52.0" prefWidth="481.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="4.0">
          <children>
             <ImageView fx:id="msgImgId" fitHeight="48.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 50px;" HBox.hgrow="ALWAYS">
                <image>
                   <Image url="@../images/backgroup.png" />
                </image>
             </ImageView>
-            <Label fx:id="msgLabelId" prefHeight="48.0" prefWidth="425.0" styleClass="msgLabelId" stylesheets="@../styles/ChatAreaStyle.css" text="Text Message" wrapText="true" HBox.hgrow="ALWAYS" />
+            <Label fx:id="msgLabelId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="444.0" styleClass="msgLabelId" stylesheets="@../styles/ChatAreaStyle.css" text="Text Message" wrapText="true" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

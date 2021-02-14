@@ -59,6 +59,8 @@ public class  MainScreenController implements Initializable {
     private JFXListView<BorderPane> contactsListViewId;
     @FXML
     private Label notificationLabelId;
+    @FXML
+    private Label newLabelID;
 
     @FXML
     private BorderPane chatAreaBorderPaneID;
@@ -69,8 +71,12 @@ public class  MainScreenController implements Initializable {
     @FXML
     private TextField msgTxtFieldId;
     @FXML
+    private Label receivernumberID;
+    @FXML
     private ListView<AnchorPane> chatListView;
     private Label receiverNumber;
+
+    private Label newLabel ;
    /* @FXML
     void showContxtMenu(MouseEvent event) {
     contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
@@ -79,8 +85,12 @@ public class  MainScreenController implements Initializable {
 
 */
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        chatListView.scrollTo(chatListView.getItems().size()-1);
+       //chatListView.itemsProperty().addListener((observableValue, anchorPanes, t1) ->  chatListView.scrollTo(chatListView.getItems().size()-1));
+
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
         miLogout = new MenuItem("Logout");
@@ -108,12 +118,15 @@ public class  MainScreenController implements Initializable {
         n.setListView(chatListView);
         n.setChatarea(chatAreaBorderPaneID);
         n.setname(receivernameID);
+        n.setnumber(receivernumberID);
+        newLabel = n.getnewLabel();
+      //  n.setnewLabel(newLabelID);
         //n.setButton(contactsListViewId);
 
-        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+       // System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
-        System.out.println("calling the get instance again in the client");
+      //  System.out.println("calling the get instance again in the client");
     }
    void  initPopup(){
         popupMenu = new JFXPopup();
@@ -182,8 +195,23 @@ public class  MainScreenController implements Initializable {
     //todo update main page with textaare instead of textfield in order to wrap long messages
     @FXML
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
+
         //fetch all message from db and update the list
         //li
+        newLabel.setVisible(false);
+
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+//        try {
+//            BorderPane item = fxmlLoader.load();
+//            ContactController controller = fxmlLoader.getController();
+//            //todo still won't work with the method only by making the attribute public!
+//            //controller.setLabelValue(contact.getUsername());
+//            controller.newLabelID.setVisible(false);
+//            //System.out.println(item.getChildren().get(1).toString() + " chh");
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         chatListView.getItems().clear();
         ObservableList<BorderPane> selectedContact;
         selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
@@ -193,31 +221,35 @@ public class  MainScreenController implements Initializable {
             HBox hbox =(HBox) vBox.getChildren().get(0);
             Label name = (Label)hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
+
             // ImageView imageView =(ImageView) borderPane.getLeft();
-            System.out.println("label text is " +name.getText());
+        //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
+            receivernumberID.setText(receiverNumber.getText());
+
             chatAreaBorderPaneID.setVisible(true);
         }
-       /* ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
         
-        System.out.println("pressed");
-        ObservableList<BorderPane> selectedContact;
-        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
-        for(BorderPane borderPane:selectedContact) {
-            //get the name and image of the selected contact
-            VBox vBox = (VBox) borderPane.getCenter();
-            Label name =(Label) vBox.getChildren().get(0);
-             receiverNumber = (Label) vBox.getChildren().get(1);
-           // ImageView imageView =(ImageView) borderPane.getLeft();
-            System.out.println("label text is " +name.getText());
-            receivernameID.setText(name.getText());
-            chatAreaBorderPaneID.setVisible(true);
-        }
+//        System.out.println("pressed");
+//        ObservableList<BorderPane> selectedContact;
+//        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
+//        for(BorderPane borderPane:selectedContact) {
+//            //get the name and image of the selected contact
+//            VBox vBox = (VBox) borderPane.getCenter();
+//            Label name =(Label) vBox.getChildren().get(0);
+//             receiverNumber = (Label) vBox.getChildren().get(1);
+//           // ImageView imageView =(ImageView) borderPane.getLeft();
+//            System.out.println("label text is " +name.getText());
+//            receivernameID.setText(name.getText());
+//            chatAreaBorderPaneID.setVisible(true);
+//        }
         final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
-        System.out.println("number of list" +messageList.size());
+
+     //   System.out.println("number of list" +messageList.size());
        // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
             Platform.runLater(new Runnable() {
                 @Override
@@ -232,10 +264,14 @@ public class  MainScreenController implements Initializable {
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
                             AnchorPane anchorPane = fxmlLoader.load();
                             ChatMessageController controller = fxmlLoader.getController();
-                            System.out.println("content of the message "+messageDto.getContent());
+                         //   System.out.println("content of the message "+messageDto.getContent());
                             controller.msgLabelId.setText(messageDto.getContent());
                             msgTxtFieldId.setText("");
                             chatListView.getItems().add(anchorPane);
+                            if(receiverNumber.equals(messageDto.getReceiverNumber()))
+                            {
+
+                            }
                         }
 
                     } catch (IOException e) {
@@ -244,22 +280,29 @@ public class  MainScreenController implements Initializable {
 
                 }
             });
-           // chatListView.getItems().clear();*/
+
+        chatListView.scrollTo(chatListView.getItems().size()-1);
 
         }
 
 
     @FXML
     public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
+        if(msgTxtFieldId.getText().equals(""))
+        {
+            return;
+        }
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
 
+        //todo must retreive the image of the sender to db and send it as paramter in sendMsg
+
         String messsage = msgTxtFieldId.getText();
         Date date = Date.valueOf(LocalDate.now());
-        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
+       // System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
         MessageDto messageDto =new MessageDto("messagename" , currentUserModel.getPhoneNumber() ,receiverNumber.getText() ,"unseen",messsage ,date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -269,7 +312,7 @@ public class  MainScreenController implements Initializable {
         }
 
         int rowaffected = messageServices.insertMessage(messageDto);
-        System.out.println("row inserted equal "+rowaffected);
+       // System.out.println("row inserted equal "+rowaffected);
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -280,8 +323,12 @@ public class  MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     controller.msgLabelId.setText(messsage);
+                    //todo senderimg must update in it's chatarea
+                  //  controller.setMsgImgId();
                     msgTxtFieldId.setText("");
+
                     chatListView.getItems().add(anchorPane);
+                    chatListView.scrollTo(anchorPane);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
