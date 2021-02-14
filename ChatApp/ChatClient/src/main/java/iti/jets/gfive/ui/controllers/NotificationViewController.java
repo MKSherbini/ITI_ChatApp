@@ -53,6 +53,8 @@ public class NotificationViewController {
             c.fillContacts(contacts);
             notificationDBCrudService.updateNotificationStatus(this.notificationId);
             contactDBCrudInter.updateUserContacts(senderIdLabel.getText());
+            acceptBtnId.setDisable(true);
+            declineBtnId.setDisable(true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -62,6 +64,8 @@ public class NotificationViewController {
         notificationMsgHandler.decreaseNotificationsNumber();
         try {
             notificationDBCrudService.updateNotificationStatus(this.notificationId);
+            acceptBtnId.setDisable(true);
+            declineBtnId.setDisable(true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -56,15 +56,14 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         ResultSet rs;
         try {
             con = ds.getConnection();
-            String query = "select u.* from contacts c \n" +
-                    "inner join user_data u \n" +
-                    "on u.phone_number = c.contact_id\n" +
-                    "where c.contact_id in(select contact_id from contacts where user_id = ?);";
+            String query = "select u.* from contacts c , user_data u\n" +
+                    "where u.phone_number = c.contact_id and user_id = ?";
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
             try{
                 while(rs.next()){
+                    System.out.println(rs.getString("user_name") + "<----- record from db");
                     //todo use salma's UserDto's overloaded constructor instead of making one and solve conflicts
                     //todo set the profile picture
                     UserDto contact = new UserDto();
