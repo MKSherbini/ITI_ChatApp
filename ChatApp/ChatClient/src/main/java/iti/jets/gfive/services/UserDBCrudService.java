@@ -14,9 +14,8 @@ public class UserDBCrudService {
 
     public static UserDBCrudInter getUserService(){
         if(userDBCrudInter == null){
-            Registry registry = null;
             try {
-                registry = LocateRegistry.getRegistry(3000);
+                Registry registry = RegisteryObj.getInstance();
                 userDBCrudInter = (UserDBCrudInter) registry.lookup("UserDB-CRUD");
                 return userDBCrudInter;
             } catch (RemoteException | NotBoundException e) {

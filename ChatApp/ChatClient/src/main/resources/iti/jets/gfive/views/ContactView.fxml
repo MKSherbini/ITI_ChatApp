@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
+   <left>
+      <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <VBox prefHeight="54.0" prefWidth="180.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox>
+               <children>
+                  <Label fx:id="contactNameLabel" prefHeight="58.0" prefWidth="186.0" text="test" />
+                  <Label fx:id="newLabelID" style="-fx-background-color: green;" text="new" visible="false" />
+               </children>
+            </HBox>
+            <Label fx:id="contactNumberLabel" prefHeight="17.0" prefWidth="146.0" text="Label" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

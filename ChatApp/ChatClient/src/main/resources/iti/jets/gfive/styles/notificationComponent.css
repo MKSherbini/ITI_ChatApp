@@ -1,0 +1,11 @@
+.notificationContentId{
+    -fx-background-color: #C4D7ED;
+}
+.acceptBtnId{
+    -fx-background-color: #32CD32;
+    -fx-border-radius: 5px;
+}
+.declineBtnId{
+    -fx-background-color: #B22222;
+    -fx-border-radius: 5px;
+}

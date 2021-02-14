@@ -1,0 +1,21 @@
+.jfx-password-field,
+.jfx-text-field {
+    -fx-background-color: transparent;
+    -jfx-unfocus-color: #375D81;
+    -jfx-focus-color: #c4d7ed;
+    -fx-text-fill: #E1E6FA;
+    -fx-prompt-text-fill: #375D81;
+}
+
+.jfx-password-field:error,
+.jfx-text-field:error {
+    -jfx-focus-color: #FF4500;
+    -jfx-unfocus-color: #FF4500;
+    -fx-prompt-text-fill: #D34336;
+}
+
+.jfx-password-field .error-label,
+.jfx-text-field .error-label {
+    -fx-text-fill: #FF4500;
+    -fx-padding: -2 0 0 0;
+}

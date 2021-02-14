@@ -47,8 +47,8 @@
     -fx-background-color: #183152;
 }
 
-.loginHbox .jfx-password-field,
-.loginHbox .jfx-text-field {
+.jfx-password-field,
+.jfx-text-field {
     -fx-background-color: transparent;
     -jfx-unfocus-color: #375D81;
     -jfx-focus-color: #c4d7ed;
@@ -56,8 +56,8 @@
     -fx-prompt-text-fill: #375D81;
 }
 
-.loginHbox > * > .jfx-password-field:error,
-.loginHbox > * > .jfx-text-field:error {
+.jfx-password-field:error,
+.jfx-text-field:error {
     -jfx-focus-color: #FF4500;
     -jfx-unfocus-color: #FF4500;
     -fx-prompt-text-fill: #D34336;
@@ -72,3 +72,4 @@
     -fx-text-fill: #E1E6FA;
     -fx-background-color:  #375D81;
 }
+.

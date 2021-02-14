@@ -1,7 +1,13 @@
 package iti.jets.gfive.common.models;
 
-import java.io.Serializable;
+import javafx.scene.image.Image;
+
+import java.io.*;
+import java.sql.Blob;
 import java.sql.Date;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javafx.embed.swing.SwingFXUtils;
 
 public class UserDto implements Serializable {
     private String phoneNumber;
@@ -13,14 +19,43 @@ public class UserDto implements Serializable {
     private Date birthDate;
     private String bio;
     private String status;
+    private ArrayList<UserDto> contacts;
+    private transient Image image;
+   // private java.sql.Blob image;
+    //private byte[] image;
+    //private File image ;
 
-    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate){
+    public UserDto() {
+    }
+
+    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate ,Image image){
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.password = password;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.image = image;
+
+
     }
+    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate , String country , String email ,String bio){
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.country=country;
+        this.email =email;
+        this.bio =bio;
+        //this.image = new Image(UserDto.class.getResource("/images/personal.jpg").getPath());
+
+    }
+    public UserDto(String phoneNumber,Image image){
+        this.phoneNumber = phoneNumber;
+        this.image =image;
+    }
+
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -92,4 +127,40 @@ public class UserDto implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setContacts(ArrayList<UserDto> contacts){
+        this.contacts = contacts;
+    }
+
+    public ArrayList<UserDto> getContacts(){
+        return this.contacts;
+    }
+
+    public String toString(){
+        return ("Phone Number: " + this.phoneNumber + " Username: " + this.username);
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+
+    /*private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
+    }*/
+
+  /*  private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        //image = new Image(UserDto.class.getResource("/images/personal.jpg").getPath());
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", s); // todo generalise
+    }*/
+   /* private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
+    }*/
 }
