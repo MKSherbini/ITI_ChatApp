@@ -43,18 +43,9 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae ->{
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            try {
-                clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
-                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+           StageCoordinator.getInstance().unregisterCurrentUser();
         });
-//        botsDemo();
-
-//        Platform.exit();
-    }
+  }
 
     private void botsDemo() {
         BotsManager botsManager = BotsManager.getInstance();
