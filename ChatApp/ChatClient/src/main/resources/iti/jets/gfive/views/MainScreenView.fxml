@@ -22,6 +22,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.RadialGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Circle?>
@@ -143,7 +144,12 @@
                      <children>
                         <HBox fx:id="hboxChatBarId" alignment="TOP_RIGHT" prefHeight="32.0" prefWidth="600.0" spacing="4.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="2.0">
                            <children>
-                              <Label fx:id="receivernameID" prefHeight="39.0" prefWidth="372.0" text="Label" />
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="receivernameID" prefHeight="39.0" prefWidth="372.0" text="Label" />
+                                    <Label fx:id="receivernumberID" prefHeight="15.0" prefWidth="386.0" text="Label" />
+                                 </children>
+                              </VBox>
                               <ToggleSwitch fx:id="botSwitchBtnId" prefHeight="18.0" prefWidth="40.0" style="-fx-text-fill: #183152;" text="BOT " textFill="#e3e8fa" translateY="6.0" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="12.0" />

@@ -48,7 +48,7 @@ public class NewContactDialogController implements Initializable {
         iconBinder.bind(txtPhoneNumber, icon_loginPhone);
 
         Validator validator = Validator.getInstance();
-        validator.buildPhoneValidation(txtPhoneNumber);
+        validator.buildPhoneContactValidation(txtPhoneNumber); // todo check this
 
         phones = FXCollections.observableArrayList();
         listView.getItems().addAll(phones);

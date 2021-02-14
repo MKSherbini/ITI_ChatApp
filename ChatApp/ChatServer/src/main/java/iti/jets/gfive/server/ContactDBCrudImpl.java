@@ -5,6 +5,7 @@ import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
@@ -13,7 +14,8 @@ import java.util.ArrayList;
 public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBCrudInter {
     DataSource ds;
 
-    public ContactDBCrudImpl() throws RemoteException {}
+    public ContactDBCrudImpl() throws RemoteException {
+    }
 
     @Override
     public int insertContactRecord(String contactId, String currentUserId) throws RemoteException {
@@ -38,9 +40,10 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if(con != null && preparedStatement != null){
+        if (con != null && preparedStatement != null) {
             try {
-                preparedStatement.close(); con.close();
+                preparedStatement.close();
+                con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -48,7 +51,7 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         return rowsAffected;
     }
 
-    public ArrayList getContactsList(String userId) throws RemoteException{
+    public ArrayList<UserDto> getContactsList(String userId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         ArrayList<UserDto> contactsList = new ArrayList<>();
         Connection con = null;
@@ -61,9 +64,8 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
-            try{
-                while(rs.next()){
-                    System.out.println(rs.getString("user_name") + "<----- record from db");
+            try {
+                while (rs.next()) {
                     //todo use salma's UserDto's overloaded constructor instead of making one and solve conflicts
                     //todo set the profile picture
                     UserDto contact = new UserDto();
@@ -76,17 +78,19 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
                     contact.setBirthDate(rs.getDate("date_birth"));
                     contact.setBio(rs.getString("bio"));
                     contact.setStatus(rs.getString("user_status"));
+                    contact.setImage(UserDBCrudImpl.deserializeFromString(rs.getBytes("picture")));
                     contactsList.add(contact);
                 }
-            } catch (SQLException throwables) {
+            } catch (SQLException | IOException throwables) {
                 throwables.printStackTrace();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && preparedStatement != null){
+        if (con != null && preparedStatement != null) {
             try {
-                preparedStatement.close(); con.close();
+                preparedStatement.close();
+                con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

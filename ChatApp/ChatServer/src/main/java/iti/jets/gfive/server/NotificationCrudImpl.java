@@ -2,6 +2,8 @@ package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.models.NotifDBRecord;
+import iti.jets.gfive.common.interfaces.NotificationsLabelInter;
+import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.db.DataSourceFactory;
 

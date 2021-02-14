@@ -33,10 +33,14 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
 
     @Override
     public void sendMsg(MessageDto msg) throws RemoteException {
-//        clientsPool.forEach(connectedClient -> {
-//            if(connectedClient.getClient().getPhoneNumber().equals(receiverId)){
-//                connectedClient.receiveMsg(Message obj)
-//            }
-//        });
+        clientsPool.forEach(connectedClient -> {
+            if(connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())){
+                try {
+                    connectedClient.getReceiveNotif().receiveMsg(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

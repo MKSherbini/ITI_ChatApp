@@ -1,6 +1,7 @@
 package iti.jets.gfive.common.interfaces;
 
 import iti.jets.gfive.common.models.NotifDBRecord;
+import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 
 import java.rmi.Remote;

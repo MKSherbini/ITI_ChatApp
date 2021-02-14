@@ -61,7 +61,7 @@ public class LoginController implements Initializable {
         // validate field
 
         UserDto userDto = new UserDto();
-        boolean allFieldsValid = txt_loginPass.validate() & txt_loginPhone.validate();
+        boolean allFieldsValid = validateFields();
         if (!allFieldsValid) return;
 
         //validate login with DB
@@ -76,50 +76,56 @@ public class LoginController implements Initializable {
             //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(txt_loginPhone.getText());
 
-        //after validation register this client to the server
-        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-        try {
-            NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
-            clientConnectionInter.register(userDto, notify);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+            //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
+//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+            //after validation register this client to the server
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+            try {
+                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
+                clientConnectionInter.register(userDto, notify);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
 
-        // todo call the thread that gets the contacts list and display in the listView
-        ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
-        ArrayList<UserDto> contacts = null;
-        try {
-            contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
+            // todo call the thread that gets the contacts list and display in the listView
+            // same thread or method to be called after adding a new contact aka --> a friend request accept
+            ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
+            ArrayList<UserDto> contacts = null;
+            try {
+                contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
+//                for (UserDto contact : contacts) {
+//                    System.out.println(contact);
+//                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts);
+            c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
+            getNotifications(userDto);
+            ModelsFactory modelsFactory = ModelsFactory.getInstance();
+            CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+            currentUserModel.setPhoneNumber(txt_loginPhone.getText());
+            currentUserModel.setUsername(userDto.getUsername());
+            //in case the user did not enter the date in registeration
+            Date date = userDto.getBirthDate();
+            if (date != null) {
+                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+            }
+            currentUserModel.setCountry(userDto.getCountry());
+            currentUserModel.setGender(userDto.getGender());
+            currentUserModel.setEmail(userDto.getEmail());
+            currentUserModel.setPassword(txt_loginPass.getText());
+            currentUserModel.setBio(userDto.getBio());
+            currentUserModel.setImage(userDto.getImage());
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        getNotifications(userDto);
-                ModelsFactory modelsFactory = ModelsFactory.getInstance();
-                CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-                currentUserModel.setPhoneNumber(txt_loginPhone.getText());
-                currentUserModel.setUsername(userDto.getUsername());
-                //in case the user did not enter the date in registeration
-                Date date = userDto.getBirthDate();
-                if(date != null) {
-                    currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
-                }
-                currentUserModel.setCountry(userDto.getCountry());
-                currentUserModel.setGender(userDto.getGender());
-                currentUserModel.setEmail(userDto.getEmail());
-                currentUserModel.setPassword(txt_loginPass.getText());
-                currentUserModel.setBio(userDto.getBio());
-                currentUserModel.setImage(userDto.getImage());
-
-        }catch (RemoteException e)
-        {
-            e.printStackTrace();
-        }
+        
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
-        //stageCoordinator.switchToProfilePage();
+//        stageCoordinator.switchToProfilePage();
     }
 
     public void getNotifications(UserDto user){
@@ -131,6 +137,17 @@ public class LoginController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean validateFields() {
+        return txt_loginPass.validate() & txt_loginPhone.validate();
+    }
+
+    public void resetFieldsValidation() {
+        txt_loginPass.resetValidation();
+        txt_loginPhone.resetValidation();
+
+        // clear left for the binding
     }
 
     @FXML
@@ -158,7 +175,7 @@ public class LoginController implements Initializable {
         // validation
         Validator validator = Validator.getInstance();
 
-        validator.buildPhoneValidation(txt_loginPhone);
+        validator.buildPhoneLoginValidation(txt_loginPhone);
         validator.buildRequiredPasswordValidation(txt_loginPass);
 
     }

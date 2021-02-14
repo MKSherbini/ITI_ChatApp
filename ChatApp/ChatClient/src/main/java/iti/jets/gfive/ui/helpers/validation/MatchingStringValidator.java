@@ -7,8 +7,8 @@ import javafx.scene.control.TextInputControl;
 
 @DefaultProperty(value = "icon")
 public class MatchingStringValidator extends ValidatorBase {
-    private StringProperty string1;
     private StringProperty string2;
+    boolean shouldMatch = true;
 
     public MatchingStringValidator(String message) {
         super(message);
@@ -29,13 +29,16 @@ public class MatchingStringValidator extends ValidatorBase {
     private void evalTextInputField() {
         TextInputControl textField = (TextInputControl) srcControl.get();
         String text = (textField.getText() == null) ? "" : textField.getText(); // Treat null like empty string
-
-        hasErrors.set(!string1.get().equals(string2.get()));
+        hasErrors.set(shouldMatch != text.equals(string2.get()));
     }
 
-    public void setStrings(StringProperty string1, StringProperty string2) {
-        this.string1 = (string1);
+    public void setStringMatch(StringProperty string2) {
         this.string2 = (string2);
+    }
+
+    public void setStringMatch(StringProperty string2, boolean shouldMatch) {
+        this.string2 = (string2);
+        this.shouldMatch = shouldMatch;
     }
 
 }
