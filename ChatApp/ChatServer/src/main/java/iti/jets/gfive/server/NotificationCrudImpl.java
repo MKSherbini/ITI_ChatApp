@@ -1,8 +1,7 @@
 package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
-import iti.jets.gfive.common.interfaces.NotificationsLabelInter;
-import iti.jets.gfive.common.models.NotifDBInsertion;
+import iti.jets.gfive.common.models.NotifDBRecord;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
@@ -16,12 +15,12 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
     DataSource ds;
     public NotificationCrudImpl() throws RemoteException {}
     @Override
-    public NotifDBInsertion insertNotification(String content, String senderId, Date date, boolean completed, String receiverId) throws RemoteException {
+    public NotifDBRecord insertNotification(String content, String senderId, Date date, boolean completed, String receiverId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
-        NotifDBInsertion notifObj = new NotifDBInsertion(-1, -1);
+        NotifDBRecord notifObj = new NotifDBRecord(-1, -1);
         int rowsAffected = 0;
         int notificationId = -1;
         try {
@@ -76,14 +75,12 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             String query = "select * from notifications n\n" +
                     "join notification_receivers r \n" +
                     "on n.notification_id = r.notification_id\n" +
-                    "where r.receiver = ?;";
+                    "where r.receiver = ? and completed = 0;";
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
             try{
-                System.out.println("ResultSet" + rs);
                 while(rs.next()){
-                    System.out.println("ResultSet");
                     NotificationDto notification = new NotificationDto(
                             Integer.parseInt(rs.getString("notification_id")),
                             rs.getString("content"),

@@ -2,11 +2,11 @@ package iti.jets.gfive.common.models;
 
 import java.io.Serializable;
 
-public class NotifDBInsertion implements Serializable {
+public class NotifDBRecord implements Serializable {
     int rowsAffected;
     int notifId;
 
-    public NotifDBInsertion(int rowsAffected, int notifId){
+    public NotifDBRecord(int rowsAffected, int notifId){
         this.rowsAffected = rowsAffected;
         this.notifId = notifId;
     }

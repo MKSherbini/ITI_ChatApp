@@ -34,6 +34,7 @@ public class NotificationViewController {
     public int notificationId;
 
     NotificationMsgHandler notificationMsgHandler = NotificationMsgHandler.getInstance();
+    NotificationCrudInter notificationDBCrudService = NotificationDBCrudService.getNotificationService();
 
     public void acceptContact(ActionEvent actionEvent) {
         notificationMsgHandler.decreaseNotificationsNumber();
@@ -47,14 +48,11 @@ public class NotificationViewController {
             if(rowsAffected == 0) return;
             ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
             ArrayList<UserDto> contacts = null;
-            try {
-                contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
-                ContactsListView c = ContactsListView.getInstance();
-                c.fillContacts(contacts);
-                contactDBCrudInter.updateUserContacts(senderIdLabel.getText());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
+            ContactsListView c = ContactsListView.getInstance();
+            c.fillContacts(contacts);
+            notificationDBCrudService.updateNotificationStatus(this.notificationId);
+            contactDBCrudInter.updateUserContacts(senderIdLabel.getText());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -62,7 +60,6 @@ public class NotificationViewController {
 
     public void declineContact(ActionEvent actionEvent) {
         notificationMsgHandler.decreaseNotificationsNumber();
-        NotificationCrudInter notificationDBCrudService = NotificationDBCrudService.getNotificationService();
         try {
             notificationDBCrudService.updateNotificationStatus(this.notificationId);
         } catch (RemoteException e) {

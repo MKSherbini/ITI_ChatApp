@@ -8,7 +8,7 @@ import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.rmi.NoSuchObjectException;
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.Scanner;
@@ -29,11 +29,11 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae ->{
-//            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-//            clientConnectionInter.unregister();
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
             try {
+                clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
                 UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
-            } catch (NoSuchObjectException e) {
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
