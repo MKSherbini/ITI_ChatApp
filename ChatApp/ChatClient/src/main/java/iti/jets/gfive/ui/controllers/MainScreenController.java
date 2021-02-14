@@ -106,7 +106,8 @@ public class  MainScreenController implements Initializable {
         n.setNotificationLabel(notificationLabelId);
         n.setContactList(contactsListViewId);
         n.setListView(chatListView);
-       // n.setChatarea(chatAreaBorderPaneID);
+        n.setChatarea(chatAreaBorderPaneID);
+        n.setname(receivernameID);
         //n.setButton(contactsListViewId);
 
         System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
@@ -258,6 +259,7 @@ public class  MainScreenController implements Initializable {
 
         String messsage = msgTxtFieldId.getText();
         Date date = Date.valueOf(LocalDate.now());
+        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
         MessageDto messageDto =new MessageDto("messagename" , currentUserModel.getPhoneNumber() ,receiverNumber.getText() ,"unseen",messsage ,date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();

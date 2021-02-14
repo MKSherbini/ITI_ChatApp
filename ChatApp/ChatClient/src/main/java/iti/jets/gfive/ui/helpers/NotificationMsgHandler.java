@@ -23,6 +23,8 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     private ListView<AnchorPane> listView;
     private Button newButton;
     private ListView<BorderPane> contactsList;
+    private BorderPane borderPane;
+    private Label name;
 
     private NotificationMsgHandler() throws RemoteException {
         super();
@@ -49,16 +51,23 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     public void setListView(ListView<AnchorPane> list) {
-        System.out.println("list" +list);
         listView = list;
     }
     public void setContactList(ListView<BorderPane> list) {
         contactsList = list;
     }
+    public void setChatarea(BorderPane borderPane)
+    {
+        this.borderPane =borderPane;
+    }
     public void setButton(Button b)
     {
 
         newButton=b;
+    }
+    public void setname(Label name)
+    {
+        this.name=name;
     }
 //    public void increaseNotificationsNumber(){
 ////        int notificationsNumber = Integer.parseInt(this.notificationLabelId.getText());
@@ -86,44 +95,52 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             }
         });
     }
-//todo load another fxml for receving the msg to put the photo on the left
+
     @Override
     public void receiveMsg(MessageDto messageDto) throws RemoteException {
         //el mafrod de kolha tb2a fel action bta3 el button
 
         Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-//                    ObservableList<BorderPane> list = contactsList.getItems();
-//                    for (BorderPane item : list)
-//                    {
-//                        VBox vBox = (VBox) item.getCenter();
-//                        Label receiverNumber = (Label) vBox.getChildren().get(1);
-//                        if(receiverNumber.getText().equals(messageDto.getSenderNumber()))
-//                        {
-//                            System.out.println("inside the match buttton");
-//                            Button b = new Button();
-//                            item.setRight(b);
-//                            b.setOnAction(actionEvent -> {
-//                                try{
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                    AnchorPane anchorPane = fxmlLoader.load();
-                    ChatMessageController controller = fxmlLoader.getController();
-                    System.out.println("content of the message " + messageDto.getContent());
-                    controller.msgLabelId.setText(messageDto.getContent());
-                    // msgTxtFieldId.setText("");
-                    listView.getItems().add(anchorPane);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+                              @Override
+                              public void run() {
 
-                            });
+                                  ObservableList<BorderPane> list = contactsList.getItems();
+                                  for (BorderPane item : list) {
+                                      VBox vBox = (VBox) item.getCenter();
+                                      HBox hbox =(HBox) vBox.getChildren().get(0);
+                                      Label senderName = (Label)hbox.getChildren().get(0);
 
-                            //newButton.setVisible(true);
+                                      Label receiverNumber = (Label) vBox.getChildren().get(1);
+                                      if (receiverNumber.getText().equals(messageDto.getSenderNumber())) {
+                                          System.out.println("inside the match buttton");
+                                          Button b = new Button("new");
+                                          item.setRight(b);
+                                          b.setOnAction(actionEvent -> {
+                                              try {
+                                                  b.setVisible(false);
+                                                  name.setText(senderName.getText());
+                                                  borderPane.setVisible(true);
+
+                                                  FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                                                  AnchorPane anchorPane = fxmlLoader.load();
+                                                  ChatMessageController controller = fxmlLoader.getController();
+                                                  System.out.println("content of the message " + messageDto.getContent());
+                                                  controller.msgLabelId.setText(messageDto.getContent());
+                                                  // msgTxtFieldId.setText("");
+                                                  listView.getItems().add(anchorPane);
+                                              } catch (IOException e) {
+                                                  e.printStackTrace();
+                                              }
 
 
+                                          });
+
+                                          //newButton.setVisible(true);
+                                          break;
+                                      }
+                                  }
+                              }
+                          });
                     //load contactview controller.phonenumber ==messgaedto.phonenumber
                     //get the items in the list and check if it's phone = phone
 
