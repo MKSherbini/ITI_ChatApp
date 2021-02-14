@@ -10,9 +10,9 @@ import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
-import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
@@ -24,16 +24,10 @@ import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
-import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.rmi.RemoteException;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -75,8 +69,8 @@ public class LoginController implements Initializable {
             System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
-            System.out.println("name  " + userDto.getUsername());
-            System.out.println("imag  " + userDto.getImage());
+            //System.out.println("name  "+userDto.getUsername());
+            //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(txt_loginPhone.getText());
 
             //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
@@ -84,7 +78,8 @@ public class LoginController implements Initializable {
             //after validation register this client to the server
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
             try {
-                clientConnectionInter.register(userDto);
+                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
+                clientConnectionInter.register(userDto, notify);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -95,14 +90,14 @@ public class LoginController implements Initializable {
             ArrayList<UserDto> contacts = null;
             try {
                 contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
-                for (UserDto contact : contacts) {
-                    System.out.println(contact);
-                }
+//                for (UserDto contact : contacts) {
+//                    System.out.println(contact);
+//                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-//            ContactsListView c = ContactsListView.getInstance();
-//            c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
+            ContactsListView c = ContactsListView.getInstance();
+            c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
             ModelsFactory modelsFactory = ModelsFactory.getInstance();
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
             currentUserModel.setPhoneNumber(txt_loginPhone.getText());
@@ -124,8 +119,8 @@ public class LoginController implements Initializable {
         }
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-//        stageCoordinator.switchToMainPage();
-        stageCoordinator.switchToProfilePage();
+        stageCoordinator.switchToMainPage();
+//        stageCoordinator.switchToProfilePage();
     }
 
     public boolean validateFields() {

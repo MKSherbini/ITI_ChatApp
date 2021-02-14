@@ -7,6 +7,7 @@ import java.sql.Blob;
 import java.sql.Date;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+
 import javafx.embed.swing.SwingFXUtils;
 
 public class UserDto implements Serializable {
@@ -21,14 +22,14 @@ public class UserDto implements Serializable {
     private String status;
     private ArrayList<UserDto> contacts;
     private transient Image image;
-   // private java.sql.Blob image;
+    // private java.sql.Blob image;
     //private byte[] image;
     //private File image ;
 
     public UserDto() {
     }
 
-    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate ,Image image){
+    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate, Image image) {
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.password = password;
@@ -38,21 +39,23 @@ public class UserDto implements Serializable {
 
 
     }
-    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate , String country , String email ,String bio){
+
+    public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate, String country, String email, String bio) {
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.password = password;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.country=country;
-        this.email =email;
-        this.bio =bio;
+        this.country = country;
+        this.email = email;
+        this.bio = bio;
         //this.image = new Image(UserDto.class.getResource("/images/personal.jpg").getPath());
 
     }
-    public UserDto(String phoneNumber,Image image){
+
+    public UserDto(String phoneNumber, Image image) {
         this.phoneNumber = phoneNumber;
-        this.image =image;
+        this.image = image;
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -63,7 +66,9 @@ public class UserDto implements Serializable {
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
-//        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); 72kb
+        if (image == null) System.out.println("fimageeeeeeee");
+        if (image != null) System.out.println("gimageeeeeeee");
+//        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); //72kb
 
     }
 
@@ -139,15 +144,15 @@ public class UserDto implements Serializable {
         this.status = status;
     }
 
-    public void setContacts(ArrayList<UserDto> contacts){
+    public void setContacts(ArrayList<UserDto> contacts) {
         this.contacts = contacts;
     }
 
-    public ArrayList<UserDto> getContacts(){
+    public ArrayList<UserDto> getContacts() {
         return this.contacts;
     }
 
-    public String toString(){
+    public String toString() {
         return ("Phone Number: " + this.phoneNumber + " Username: " + this.username);
     }
 

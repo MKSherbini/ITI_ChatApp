@@ -123,7 +123,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "update user_data1 set picture = ? WHERE phone_number = ?";
+            String insertQuery = "update user_data set picture = ? WHERE phone_number = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             //null
             System.out.println("imaaage " + user.getImage());

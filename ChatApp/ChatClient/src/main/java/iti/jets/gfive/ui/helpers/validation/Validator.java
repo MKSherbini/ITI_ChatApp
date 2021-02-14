@@ -34,6 +34,7 @@ public class Validator {
 
     public void buildPhoneLoginValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        addDBExistingPhoneValidation(phone, true);
         setValidateOnEvent(phone);
     }
 
