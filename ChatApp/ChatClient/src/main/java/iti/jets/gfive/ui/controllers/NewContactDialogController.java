@@ -52,7 +52,7 @@ public class NewContactDialogController implements Initializable {
         iconBinder.bind(txtPhoneNumber, icon_loginPhone);
 
         Validator validator = Validator.getInstance();
-        validator.buildPhoneValidation(txtPhoneNumber);
+        validator.buildPhoneLoginValidation(txtPhoneNumber);
 
         phones = FXCollections.observableArrayList();
         listView.getItems().addAll(phones);
