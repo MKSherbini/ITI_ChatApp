@@ -3,6 +3,8 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.common.models.MessageDto;
@@ -103,7 +105,12 @@ public class  MainScreenController implements Initializable {
     // this method define the action of the status menu items to change the status on gui and on the db.
     private void applyMenUItemAction(String statusName) {
         statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
-
+        try {
+            int rows = UserDBCrudService.getUserService().updateUserStatus(new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName));
+            System.out.println("status updated  : "+ rows);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
     // this method binds the status image property on the imageview status image property
     private void bindIvStatusImage(String imageName){

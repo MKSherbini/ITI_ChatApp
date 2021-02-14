@@ -55,6 +55,11 @@ public class UserDto implements Serializable {
         this.image =image;
     }
 
+    public UserDto(String phoneNumber, String status) {
+        this .phoneNumber = phoneNumber;
+        this .status = status;
+    }
+
 
     public String getPhoneNumber() {
         return phoneNumber;
