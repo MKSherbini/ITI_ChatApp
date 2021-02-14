@@ -11,6 +11,8 @@ import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,13 +22,13 @@ import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -39,18 +41,19 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class  MainScreenController implements Initializable {
+    public static final String URL_RESOURCE= "/iti/jets/gfive/icons/%s.png";
+    public static final String AWAY = "away";
+    public static final String AVAILABLE = "available";
+    public static final String OFFLINE = "offline";
+    public static final String BUSY = "busy";
     @FXML
     public ImageView ibtnAddContct;
-    @FXML
-    private ImageView ivContextMenu;
+
     @FXML
     private Button btnContextMenu;
     private ContextMenu contextMenu;
-    JFXPopup popupMenu ;
-    @FXML
     private MenuItem miExit;
-    @FXML
-    private MenuItem miLogout,miAvailable,miBusy,miSleep,miOut;
+    private MenuItem miLogout,miAvailable,miBusy, miAway, miOffline;
     private Menu status;
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
@@ -68,72 +71,71 @@ public class  MainScreenController implements Initializable {
     @FXML
     private ListView<AnchorPane> chatListView;
     private Label receiverNumber;
-   /* @FXML
-    void showContxtMenu(MouseEvent event) {
-    contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
-        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-    }
+    @FXML
+    private ImageView ivStatus;
+    Property<Image> statusImage;
 
-*/
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    // this method intialize the context menu and its items actions
+    private void initializeContextMenu(){
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
         miLogout = new MenuItem("Logout");
         status= new Menu("Status");
         miAvailable = new MenuItem("Available");
+        miAvailable.setOnAction((action)-> applyMenUItemAction(AVAILABLE));
+        miAvailable.setGraphic(getConfiguredImageView(new Image(getClass().getResource(String.format(URL_RESOURCE,AVAILABLE)).toString())));
         miBusy = new MenuItem("Busy");
-        miSleep = new MenuItem("Sleep");
-        miOut = new MenuItem("Out");
+        miBusy.setOnAction((action)-> applyMenUItemAction(BUSY));
+        miBusy.setGraphic(getConfiguredImageView(new Image(getClass().getResource(String.format(URL_RESOURCE,BUSY)).toString())));
+        miAway = new MenuItem("Away");
+        miAway.setOnAction((action)-> applyMenUItemAction(AWAY));
+        miAway.setGraphic(getConfiguredImageView(new Image(getClass().getResource(String.format(URL_RESOURCE,AWAY)).toString())));
+        miOffline = new MenuItem("Offline");
+        miOffline.setOnAction((action)->applyMenUItemAction(OFFLINE));
+        miOffline.setGraphic(getConfiguredImageView(new Image(getClass().getResource(String.format(URL_RESOURCE,OFFLINE)).toString())));
         status.getItems().add(miAvailable);
-        status.getItems().add(miOut);
-        status.getItems().add(miSleep);
         status.getItems().add(miBusy);
+        status.getItems().add(miAway);
+        status.getItems().add(miOffline);
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll( miExit , miLogout);
+    }
+    // this method define the action of the status menu items to change the status on gui and on the db.
+    private void applyMenUItemAction(String statusName) {
+        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
 
-        btnContextMenu.setContextMenu(contextMenu);
-        initPopup();
-
+    }
+    // this method binds the status image property on the imageview status image property
+    private void bindIvStatusImage(String imageName){
+        statusImage = new SimpleObjectProperty<>();
+        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,imageName)).toString()));
+        statusImage.bindBidirectional(ivStatus.imageProperty());
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        bindIvStatusImage("available");
+        initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
         System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
-        //System.out.println("notifaction label is initalizedddddd");
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         System.out.println("calling the get instance again in the client");
     }
-   void  initPopup(){
-        popupMenu = new JFXPopup();
-       VBox vBox= new VBox();
-       JFXButton btnExit = new JFXButton("Exit");
-       JFXButton btnLogout = new JFXButton("Logout");
-       Popup status =new Popup();
-
-       boolean b = vBox.getChildren().addAll(btnExit, btnLogout);
-       popupMenu . setPopupContent(vBox);
-        popupMenu.setAutoHide(true);
+    // this method create new image view object and fit its width and height to 20 px .
+    public ImageView getConfiguredImageView(Image image){
+        ImageView iv = new ImageView(image);
+        iv.setFitWidth(20);
+        iv.setFitHeight(20);
+        return iv;
     }
-
-//    public void showContextMenu(MouseEvent mouseEvent) {
-//        contextMenu.show(btnContextMenu.getParent(),mouseEvent.getX(),mouseEvent.getY());
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-//    }
-
+    // this method register the context menu on the btnContextMenu .
     public void showContextMenu(MouseEvent event) {
-        contextMenu.show(btnContextMenu,Side.BOTTOM, -75,0);
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-
+        contextMenu.show(btnContextMenu,Side.BOTTOM, 0,0);
     }
-
-    public void performExit(ActionEvent actionEvent) {
-    }
-
-    public void performLogout(ActionEvent actionEvent) {
-    }
+    // this method opens new contact dialog
     @FXML
     public void openAddNewContactDialog(MouseEvent mouseEvent) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NewContactDialog.fxml"));

@@ -120,7 +120,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String insertQuery = "update user_data1 set picture = ? WHERE phone_number = ?";
+            String insertQuery = "update user_data set picture = ? WHERE phone_number = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             //null
             System.out.println("imaaage " +user.getImage());
@@ -131,6 +131,39 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             rowsAffected = preparedStatement.executeUpdate();
             System.out.println("rowaffected "+rowsAffected);
         } catch (SQLException | IOException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null) {
+            try {
+                stmt.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public int updateUserStatus(UserDto user) throws RemoteException {
+        System.out.println("inside the updateUserStatus ");
+
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+           String insertQuery = "update user_data set user_status = ? WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            //null
+            System.out.println("update the status of  " +user.getStatus());
+             preparedStatement.setString(1,user.getStatus());
+            preparedStatement.setString(2, user.getPhoneNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("rowaffected "+rowsAffected);
+        } catch (SQLException  throwables) {
             throwables.printStackTrace();
         }
         if (con != null && stmt != null) {

@@ -8,12 +8,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -53,7 +49,7 @@
          <children>
             <ImageView fx:id="ibtnAddContct" fitHeight="39.0" fitWidth="38.0" layoutX="326.0" layoutY="12.0" onMouseClicked="#openAddNewContactDialog" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.399999999999999" AnchorPane.leftAnchor="325.6" AnchorPane.rightAnchor="13.600000000000023" AnchorPane.topAnchor="12.0">
                <image>
-                  <Image url="@../icons/add_contact_icon.png" />
+                  <Image url="@../icons/add-contact.png" />
                </image></ImageView>
             <JFXTextField layoutX="86.0" layoutY="20.0" promptText="Search" AnchorPane.bottomAnchor="20.799999999999997" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="141.20000000000002" AnchorPane.topAnchor="20.0">
                <font>
@@ -68,54 +64,59 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="392.0" layoutY="11.0" onMouseClicked="#showContextMenu" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="11.0">
-               <image>
-                  <Image url="@../icons/profile_icon.png" />
-               </image>
-            </ImageView>
             <Text fill="#fafafa" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="120.80003356933582" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="18.2734375">
                <font>
                   <Font size="24.0" />
                </font>
             </Text>
-            <ComboBox layoutX="322.0" layoutY="11.0" prefHeight="26.0" prefWidth="60.0" AnchorPane.rightAnchor="122.0" AnchorPane.topAnchor="11.0">
-               <styleClass>
-                  <String fx:value="context-menu" />
-                  <String fx:value="left-container" />
-               </styleClass></ComboBox>
-            <Button fx:id="btnContextMenu" layoutX="438.0" layoutY="7.0" mnemonicParsing="false" onMouseClicked="#showContextMenu" prefHeight="35.0" prefWidth="35.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0">
+            <Button fx:id="btnContextMenu" layoutX="438.0" layoutY="7.0" mnemonicParsing="false" onMouseClicked="#showContextMenu" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0">
                <graphic>
-                  <ImageView fx:id="ivContextMenu" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="ivContextMenu" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons/menu-icon_2.png" />
                      </image>
                   </ImageView>
-               </graphic>
-               <contextMenu>
-                  <ContextMenu anchorX="40.0" anchorY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" x="0.0" y="0.0">
-                     <items>
-                        <Menu mnemonicParsing="false" text="Status">
-                           <items>
-                              <MenuItem mnemonicParsing="false" text="Busy" />
-                              <MenuItem mnemonicParsing="false" text="Available" />
-                              <MenuItem mnemonicParsing="false" text="Sleep" />
-                           </items>
-                        </Menu>
-                        <MenuItem fx:id="miExit" mnemonicParsing="false" onAction="#performExit" text="Exit" />
-                        <MenuItem fx:id="miLogout" mnemonicParsing="false" onAction="#performLogout" text="Logout" />
-                     </items>
-                  </ContextMenu>
-               </contextMenu>
-            </Button>
+               </graphic></Button>
+            <AnchorPane layoutX="400.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="35.0" AnchorPane.rightAnchor="70.8" AnchorPane.topAnchor="12.0">
+               <children>
+                  <Button fx:id="button1" layoutY="8.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView fx:id="btnNotification1" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/profile_icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0">
+                     <children>
+                        <Circle fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/away.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+               </children>
+            </AnchorPane>
          </children></AnchorPane>
       <JFXListView fx:id="contactsListViewId" layoutX="75.0" layoutY="62.0" onMousePressed="#onClickonContact" prefHeight="526.0" prefWidth="378.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="59.60000000000002" />
       <Line endX="-100.0" endY="525.3999633789062" layoutX="552.0" layoutY="63.0" startX="-100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="451.5" AnchorPane.topAnchor="59.60000000000002" />
 
 
-      <AnchorPane layoutX="759.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="72.0" prefWidth="269.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="12.0">
+      <AnchorPane layoutX="759.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="35.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="12.0">
          <children>
-            <Button fx:id="button" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#OpenNotificationDialog" prefHeight="35.0" prefWidth="50.0" text="Click " wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.rightAnchor="-10" AnchorPane.topAnchor="-10">
+            <Button fx:id="button" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#OpenNotificationDialog" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <graphic>
+                  <ImageView fx:id="btnNotification" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/bell.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-4.0">
                <children>
                   <Circle radius="10.0" stroke="BLACK" strokeType="INSIDE">
                      <fill>
@@ -132,9 +133,9 @@
             </StackPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="454.0" layoutY="61.0" prefHeight="526.0" prefWidth="506.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="454.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="61.0">
+      <AnchorPane layoutX="454.0" layoutY="61.0" prefHeight="526.0" prefWidth="506.0" visible="false" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="454.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="61.0">
          <children>
-            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
                   <AnchorPane prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                      <children>
