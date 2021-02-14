@@ -4,6 +4,7 @@ import iti.jets.gfive.AIML.BotsManager;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
+import iti.jets.gfive.ui.helpers.LoginManager;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -25,22 +26,26 @@ public class Main extends Application {
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
-        stageCoordinator.switchToLoginPage();
+        LoginManager loginManager = LoginManager.getInstance();
+        // check if the can login returned true this meaning that user just exit
+        // and his password and phone number saved and can enter
+        if (loginManager.canLogin()){
+            //implicitly login the user
+            loginManager.initCurrentUser();
+            //redirect user to main screen
+            stageCoordinator.switchToMainPage();
+
+        }else{
+            // redirect user to login screen
+            stageCoordinator.switchToLoginPage();
+        }
+
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae ->{
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            try {
-                clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
-                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+           StageCoordinator.getInstance().unregisterCurrentUser();
         });
-//        botsDemo();
-
-//        Platform.exit();
-    }
+  }
 
     private void botsDemo() {
         BotsManager botsManager = BotsManager.getInstance();

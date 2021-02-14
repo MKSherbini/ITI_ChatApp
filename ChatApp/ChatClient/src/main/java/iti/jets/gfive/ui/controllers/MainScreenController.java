@@ -14,6 +14,9 @@ import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import iti.jets.gfive.ui.helpers.LoginManager;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -93,7 +96,16 @@ public class  MainScreenController implements Initializable {
 
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
+        miExit.setOnAction((actionEvent)-> {
+            //todo fix the exit and the main  class
+            LoginManager.getInstance().Exit();
+            Platform.exit();
+        });
         miLogout = new MenuItem("Logout");
+        miLogout.setOnAction((acrionEvent)-> {
+            LoginManager.getInstance().Logout();
+            StageCoordinator.getInstance().switchToLoginPage();
+        });
         status= new Menu("Status");
         miAvailable = new MenuItem("Available");
         miBusy = new MenuItem("Busy");
@@ -106,8 +118,8 @@ public class  MainScreenController implements Initializable {
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll( miExit , miLogout);
 
-        btnContextMenu.setContextMenu(contextMenu);
-        initPopup();
+//        btnContextMenu.setContextMenu(contextMenu);
+//        initPopup();
 
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
@@ -129,27 +141,10 @@ public class  MainScreenController implements Initializable {
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         //System.out.println("calling the get instance again in the client");
     }
-   void  initPopup(){
-        popupMenu = new JFXPopup();
-       VBox vBox= new VBox();
-       JFXButton btnExit = new JFXButton("Exit");
-       JFXButton btnLogout = new JFXButton("Logout");
-       Popup status =new Popup();
 
-       boolean b = vBox.getChildren().addAll(btnExit, btnLogout);
-       popupMenu . setPopupContent(vBox);
-        popupMenu.setAutoHide(true);
-    }
-
-//    public void showContextMenu(MouseEvent mouseEvent) {
-//        contextMenu.show(btnContextMenu.getParent(),mouseEvent.getX(),mouseEvent.getY());
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-//    }
 
     public void showContextMenu(MouseEvent event) {
-        contextMenu.show(btnContextMenu,Side.BOTTOM, -75,0);
-//        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
-
+        contextMenu.show(btnContextMenu,Side.BOTTOM, 0,0);
     }
 
     public void performExit(ActionEvent actionEvent) {
@@ -159,7 +154,14 @@ public class  MainScreenController implements Initializable {
     }
     @FXML
     public void openAddNewContactDialog(MouseEvent mouseEvent) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NewContactDialog.fxml"));
+        openDialog("NewContactDialog");
+    }
+    @FXML
+    public void openFriendRequestDialog(ActionEvent actionEvent) {
+        openDialog("FriendRequestDialog");
+    }
+    private void openDialog(String viewName){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml",viewName)));
         Parent parent = null;
         try {
             parent = fxmlLoader.load();
