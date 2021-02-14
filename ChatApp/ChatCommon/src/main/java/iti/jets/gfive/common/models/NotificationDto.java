@@ -1,8 +1,9 @@
 package iti.jets.gfive.common.models;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class NotificationDto {
+public class NotificationDto implements Serializable{
     int id;
     String content;
     String senderId;

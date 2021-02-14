@@ -31,10 +31,12 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         try {
             con = ds.getConnection();
             String sql = "select * from message \n" +
-                    " WHERE sender_id = ? and receiver_id =?";
+                    " WHERE (sender_id = ? and receiver_id =?) or (sender_id=? and receiver_id=?) ";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, senderNumber);
             preparedStatement.setString(2, receiverNumber);
+            preparedStatement.setString(3, receiverNumber);
+            preparedStatement.setString(4, senderNumber);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 messageDto = new MessageDto();

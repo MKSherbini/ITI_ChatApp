@@ -22,20 +22,25 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void unregister(UserDto user) throws RemoteException {
+    public void unregister(NotificationReceiveInter notif) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
-            if(connectedClient.getClient().equals(user))
+            if(connectedClient.getReceiveNotif().equals(notif)){
                 clientsPool.remove(connectedClient);
+                System.out.println("client " + connectedClient.getClient().getPhoneNumber() + " is removed from the pool");
+            }
         });
-        System.out.println("client " + user.getUsername() + "is removed from the pool");
     }
 
     @Override
     public void sendMsg(MessageDto msg) throws RemoteException {
-//        clientsPool.forEach(connectedClient -> {
-//            if(connectedClient.getClient().getPhoneNumber().equals(receiverId)){
-//                connectedClient.receiveMsg(Message obj)
-//            }
-//        });
+        clientsPool.forEach(connectedClient -> {
+            if(connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())){
+                try {
+                    connectedClient.getReceiveNotif().receiveMsg(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

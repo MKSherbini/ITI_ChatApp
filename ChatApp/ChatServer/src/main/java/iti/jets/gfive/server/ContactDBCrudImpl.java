@@ -5,6 +5,7 @@ import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
@@ -13,13 +14,13 @@ import java.util.ArrayList;
 public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBCrudInter {
     DataSource ds;
 
-    public ContactDBCrudImpl() throws RemoteException {}
+    public ContactDBCrudImpl() throws RemoteException {
+    }
 
     @Override
     public int insertContactRecord(String contactId, String currentUserId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
@@ -31,12 +32,18 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             preparedStatement.setString(1, currentUserId);
             preparedStatement.setString(2, contactId);
             rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected == 0) return rowsAffected;
+            preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setString(1, contactId);
+            preparedStatement.setString(2, currentUserId);
+            rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if(con != null && preparedStatement != null){
+        if (con != null && preparedStatement != null) {
             try {
-                preparedStatement.close(); con.close();
+                preparedStatement.close();
+                con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -44,7 +51,7 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         return rowsAffected;
     }
 
-    public ArrayList getContactsList(String userId) throws RemoteException{
+    public ArrayList<UserDto> getContactsList(String userId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         ArrayList<UserDto> contactsList = new ArrayList<>();
         Connection con = null;
@@ -52,15 +59,13 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         ResultSet rs;
         try {
             con = ds.getConnection();
-            String query = "select u.* from contacts c \n" +
-                    "inner join user_data u \n" +
-                    "on u.phone_number = c.contact_id\n" +
-                    "where c.contact_id in(select contact_id from contacts where user_id = ?);";
+            String query = "select u.* from contacts c , user_data u\n" +
+                    "where u.phone_number = c.contact_id and user_id = ?";
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, userId);
             rs = preparedStatement.executeQuery();
-            try{
-                while(rs.next()){
+            try {
+                while (rs.next()) {
                     //todo use salma's UserDto's overloaded constructor instead of making one and solve conflicts
                     //todo set the profile picture
                     UserDto contact = new UserDto();
@@ -73,21 +78,37 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
                     contact.setBirthDate(rs.getDate("date_birth"));
                     contact.setBio(rs.getString("bio"));
                     contact.setStatus(rs.getString("user_status"));
+                    contact.setImage(UserDBCrudImpl.deserializeFromString(rs.getBytes("picture")));
                     contactsList.add(contact);
                 }
-            } catch (SQLException throwables) {
+            } catch (SQLException | IOException throwables) {
                 throwables.printStackTrace();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(con != null && preparedStatement != null){
+        if (con != null && preparedStatement != null) {
             try {
-                preparedStatement.close(); con.close();
+                preparedStatement.close();
+                con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         }
         return contactsList;
     }
+
+    @Override
+    public void updateUserContacts(String userId) throws RemoteException {
+        ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
+            if(connectedClient.getClient().getPhoneNumber().equals(userId)){
+                try {
+                    connectedClient.getReceiveNotif().updateContactsList();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

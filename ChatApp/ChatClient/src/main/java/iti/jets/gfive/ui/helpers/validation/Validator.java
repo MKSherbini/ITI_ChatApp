@@ -5,8 +5,9 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
-
-import java.util.Map;
+import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.models.CurrentUserModel;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 // todo create a builder to add multiple validators then register with event
 // add additional validators
@@ -27,16 +28,33 @@ public class Validator {
     }
 
     public void buildEmailValidation(JFXTextField email) {
-        addRegexValidation(email, emailRgx, "Must be in format name@domain.com");
+        addNonEmptyRegexValidation(email, emailRgx, "Must be empty or in format name@domain.com");
         setValidateOnEvent(email);
     }
 
-    public void buildPhoneValidation(JFXTextField phone) {
+    public void buildPhoneLoginValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        addDBExistingPhoneValidation(phone, true);
+        setValidateOnEvent(phone);
+    }
+
+    public void buildPhoneRegisterValidation(JFXTextField phone) {
+        addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        addDBExistingPhoneValidation(phone);
+        setValidateOnEvent(phone);
+    }
+
+    public void buildPhoneContactValidation(JFXTextField phone) {
+        addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        addMatchValidation(phone, currentUserModel.phoneNumberProperty(), false, "Can't add self"); // todo make sure currentUserModel is actually valid
+        addDBExistingPhoneValidation(phone, true);
         setValidateOnEvent(phone);
     }
 
     //    "Must contain at least one uppercase letter, one lowercase letter, one number and one special character"
+    // todo show the user currently using that password
     public void buildPasswordValidation(JFXPasswordField password) {
         addBoundsValidation(password, 4, 8);
         addRegexValidation(password, "(?=.*[a-z]).*", "Must contain at least one lower letter");
@@ -75,7 +93,13 @@ public class Validator {
 
     private void addMatchValidation(JFXPasswordField field, JFXPasswordField matches, String errorMsg) {
         MatchingStringValidator validator = new MatchingStringValidator(errorMsg);
-        validator.setStrings(field.textProperty(), matches.textProperty());
+        validator.setStringMatch(matches.textProperty());
+        field.getValidators().add(validator);
+    }
+
+    private void addMatchValidation(JFXTextField field, javafx.beans.property.StringProperty matches, boolean shouldMatch, String errorMsg) {
+        MatchingStringValidator validator = new MatchingStringValidator(errorMsg);
+        validator.setStringMatch(matches, shouldMatch);
         field.getValidators().add(validator);
     }
 
@@ -99,6 +123,20 @@ public class Validator {
         textField.getValidators().add(validator);
     }
 
+    private void addDBExistingPhoneValidation(JFXTextField textField) {
+        addDBExistingPhoneValidation(textField, false);
+    }
+
+    private void addDBExistingPhoneValidation(JFXTextField textField, boolean shouldExist) {
+        ExistingPhoneNumberValidator validator;
+        if (shouldExist) {
+            validator = new ExistingPhoneNumberValidator("Phone number doesn't exist", true);
+        } else {
+            validator = new ExistingPhoneNumberValidator("Phone number already exists");
+        }
+        textField.getValidators().add(validator);
+    }
+
     private void addRegexValidation(JFXTextField textField, String regex, String errorMsg) {
         RegexValidator regexValidator = new RegexValidator(errorMsg);
         regexValidator.setRegexPattern(regex);
@@ -111,7 +149,13 @@ public class Validator {
         textField.getValidators().add(regexValidator);
     }
 
+    private void addNonEmptyRegexValidation(JFXTextField textField, String regex, String errorMsg) {
+        NonEmptyRegexValidator regexValidator = new NonEmptyRegexValidator(regex, errorMsg);
+        textField.getValidators().add(regexValidator);
+    }
+
     private void setValidateOnEvent(JFXDatePicker textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
@@ -120,6 +164,7 @@ public class Validator {
     }
 
     private void setValidateOnEvent(JFXTextField textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
@@ -128,10 +173,29 @@ public class Validator {
     }
 
     private void setValidateOnEvent(JFXPasswordField textField) {
+        setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
             if (newVal != null && !newVal) {
                 textField.validate();
             }
         });
+    }
+
+    // fas-exclamation, fas-exclamation-circle, fas-exclamation-triangle, fas-info-circle
+    // fas-khanda, fas-lightbulb, fas-minus-circle, fas-question-circle,
+    // fas-skull, mdi2s-skull-outline, mdi2s-skull-scan-outline, mdi2s-skull, mdi2s-skull-crossbones-outline
+    private void setErrorIcon(JFXTextField textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
+    private void setErrorIcon(JFXDatePicker textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
+    private void setErrorIcon(JFXPasswordField textField) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
     }
 }

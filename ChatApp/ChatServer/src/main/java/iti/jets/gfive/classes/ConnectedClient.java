@@ -1,6 +1,7 @@
 package iti.jets.gfive.classes;
 
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
+import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.UserDto;
 
 public class ConnectedClient {
@@ -27,4 +28,5 @@ public class ConnectedClient {
     public void setReceiveNotif(NotificationReceiveInter receiveNotif) {
         this.receiveNotif = receiveNotif;
     }
+
 }

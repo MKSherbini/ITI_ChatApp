@@ -1,16 +1,22 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.ui.controllers.LoginController;
+import iti.jets.gfive.ui.controllers.RegisterController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class StageCoordinator {
-
+    private boolean closed= false;
     private static Stage primaryStage;
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
@@ -32,14 +38,23 @@ public class StageCoordinator {
     public void switchToLoginPage() {
         var viewName = "LoginView";
 
+        if (scenes.containsKey(viewName)) {
+            LoginController controller = scenes.get(viewName).getLoader().getController();
+            controller.validateFields();
+        }
         loadView(viewName);
     }
 
     public void switchToRegisterPage() {
         var viewName = "RegisterView";
 
+        if (scenes.containsKey(viewName)) {
+            RegisterController controller = scenes.get(viewName).getLoader().getController();
+            controller.resetFields();
+        }
         loadView(viewName);
     }
+
     public void switchToUpdateProfilePage() {
         var viewName = "UpdateProfileView";
 
@@ -81,5 +96,21 @@ public class StageCoordinator {
     public void switchToMainPage() {
         var viewName = "MainScreenView";
         loadView(viewName);
+    }
+    // This method unregister the user from the server
+    public  void unregisterCurrentUser(){
+        if(closed) {
+            return;
+        }
+        closed=true;
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
