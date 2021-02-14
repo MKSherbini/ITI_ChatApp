@@ -5,11 +5,7 @@ import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.controllers.ContactController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,15 +26,6 @@ public class ContactsListView {
 
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
-//        contactsListViewId.setCellFactory(new Callback<ListView<BorderPane>, ListCell<BorderPane>>() {
-//            @Override
-//            public ListCell<BorderPane> call(ListView<BorderPane> borderPaneListView) {
-//                return new ListCell<BorderPane>(){
-//                    protected void updateItem()
-//                };
-//
-//            }
-//        });
     }
 
     public void fillContacts(ArrayList<UserDto> contacts){
@@ -57,15 +44,19 @@ public class ContactsListView {
                         //todo still won't work with the method only by making the attribute public!
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
-                        System.out.println(item.getChildren().get(1).toString() + " chh");
+                        //System.out.println(item.getChildren().get(1).toString() + " chh");
+                        controller.contactNumberLabel.setText(contact.getPhoneNumber());
+                        //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
+                        System.out.println(item.getChildren().get(0).toString() + " <------- borderPane");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-//                    fxmlLoader.setController(contactController);
                 }
             }
         });
     }
+
+
 
 }

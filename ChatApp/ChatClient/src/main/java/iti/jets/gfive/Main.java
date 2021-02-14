@@ -1,11 +1,16 @@
 package iti.jets.gfive;
 
 import iti.jets.gfive.AIML.BotsManager;
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.LoginManager;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.Scanner;
 //import org.alicebot.ab.configuration.BotConfiguration;
@@ -36,7 +41,16 @@ public class Main extends Application {
         }
 
         primaryStage.show();
-
+        //todo unregister and unexport but which obj??
+        primaryStage.setOnCloseRequest(ae ->{
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+            try {
+                clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
 //        botsDemo();
 
 //        Platform.exit();

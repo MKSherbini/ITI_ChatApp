@@ -1,5 +1,7 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.ui.controllers.LoginController;
+import iti.jets.gfive.ui.controllers.RegisterController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,14 +34,23 @@ public class StageCoordinator {
     public void switchToLoginPage() {
         var viewName = "LoginView";
 
+        if (scenes.containsKey(viewName)) {
+            LoginController controller = scenes.get(viewName).getLoader().getController();
+            controller.validateFields();
+        }
         loadView(viewName);
     }
 
     public void switchToRegisterPage() {
         var viewName = "RegisterView";
 
+        if (scenes.containsKey(viewName)) {
+            RegisterController controller = scenes.get(viewName).getLoader().getController();
+            controller.resetFields();
+        }
         loadView(viewName);
     }
+
     public void switchToUpdateProfilePage() {
         var viewName = "UpdateProfileView";
 
