@@ -293,6 +293,10 @@ public class  MainScreenController implements Initializable {
 //            receivernameID.setText(name.getText());
 //            chatAreaBorderPaneID.setVisible(true);
 //        }
+        if(receiverNumber==null)
+        {
+            return;
+        }
         final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
 
         //   System.out.println("number of list" +messageList.size());
