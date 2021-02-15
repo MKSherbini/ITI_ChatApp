@@ -210,6 +210,8 @@ public class  MainScreenController implements Initializable {
             stage.setMaximized(false);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
+            //todo when undecorated the window is no longer movable!
+            //stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException e) {
