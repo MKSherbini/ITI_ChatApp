@@ -85,25 +85,23 @@ public class  MainScreenController implements Initializable {
     private Label receiverNumber;
 
     private Label newLabel ;
-   /* @FXML
+   @FXML
     void showContxtMenu(MouseEvent event) {
-    contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
-        popupMenu.show(btnContextMenu.getParent(), JFXPopup.PopupVPosition.BOTTOM, JFXPopup.PopupHPosition.LEFT ,btnContextMenu.getLayoutX(),btnContextMenu.getLayoutY());
+        contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
+
+    }
+    // this method binds the status image property on the imageview status image property
+    private void bindIvStatusImage(String imageName){
+        statusImage = new SimpleObjectProperty<>();
+        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,imageName)).toString()));
+        statusImage.bindBidirectional(ivStatus.imageProperty());
     }
     @FXML
     private ImageView ivStatus;
     Property<Image> statusImage;
 
     // this method intialize the context menu and its items actions
-    private void initializeContextMenu(){
-*/
-
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        chatListView.scrollTo(chatListView.getItems().size()-1);
-       //chatListView.itemsProperty().addListener((observableValue, anchorPanes, t1) ->  chatListView.scrollTo(chatListView.getItems().size()-1));
-
+    private void initializeContextMenu() {
         contextMenu = new ContextMenu();
         miExit = new MenuItem("Exit");
         miExit.setOnAction((actionEvent)-> {
@@ -136,25 +134,30 @@ public class  MainScreenController implements Initializable {
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll( miExit , miLogout);
     }
+
+
+
+
+
+
     // this method define the action of the status menu items to change the status on gui and on the db.
     private void applyMenUItemAction(String statusName) {
-        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
+        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
         try {
-            int rows = UserDBCrudService.getUserService().updateUserStatus(new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName));
+            UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName);
+            user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
+            int rows = UserDBCrudService.getUserService().updateUserStatus(user);
             System.out.println("status updated  : "+ rows);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
-    // this method binds the status image property on the imageview status image property
-    private void bindIvStatusImage(String imageName){
-        statusImage = new SimpleObjectProperty<>();
-        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE,imageName)).toString()));
-        statusImage.bindBidirectional(ivStatus.imageProperty());
-    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        bindIvStatusImage("available");
+        chatListView.scrollTo(chatListView.getItems().size() - 1);
+//        bindIvStatusImage(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
         initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);

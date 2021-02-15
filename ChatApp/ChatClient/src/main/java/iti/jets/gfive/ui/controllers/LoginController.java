@@ -72,6 +72,9 @@ public class LoginController implements Initializable {
             System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
+            if(userDto==null){
+                return ;
+            }
             //System.out.println("name  "+userDto.getUsername());
             //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(txt_loginPhone.getText());

@@ -57,7 +57,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 Image image = deserializeFromString(bytes);
                 user.setImage(image);
 
-
+                return user;
             }
         } catch (SQLException | NullPointerException | IOException throwables) {
             throwables.printStackTrace();
@@ -71,7 +71,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 throwable.printStackTrace();
             }
         }
-        return user;
+        return null;
     }
 
     @Override
