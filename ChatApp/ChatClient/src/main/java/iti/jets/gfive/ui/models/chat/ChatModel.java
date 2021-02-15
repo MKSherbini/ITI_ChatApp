@@ -1,4 +1,4 @@
-package iti.jets.gfive.ui.models.serialization;
+package iti.jets.gfive.ui.models.chat;
 
 import java.util.ArrayList;
 import java.util.List;

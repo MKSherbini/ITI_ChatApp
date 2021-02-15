@@ -1,8 +1,6 @@
-package iti.jets.gfive.ui.models.serialization;
+package iti.jets.gfive.ui.models.chat;
 
-import jakarta.xml.bind.annotation.XmlAccessOrder;
 import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorOrder;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import java.util.Date;
