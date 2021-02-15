@@ -21,6 +21,7 @@ module ChatClient {
     requires ab;
     requires ChatCommon;
     requires java.rmi;
+    requires jakarta.xml.bind;
 
 
     exports iti.jets.gfive;

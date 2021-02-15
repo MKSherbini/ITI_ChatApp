@@ -1,0 +1,70 @@
+<html lang="en">
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="ie=edge" http-equiv="X-UA-Compatible">
+        <title>ITI Chat Application</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="chat-app-wrapper">
+            <nav>
+                <div class="nav-left-section">
+                    <img class="logo" src="./assets/logo.svg"><span id="title">ChatApp</span>
+                </div>
+                <div class="nav-right-section">
+                    <span class="welcome-messsage" id="loggedInUsername">ali</span><img class="avatar" id="loggedInUserAvatar" src="https://data.cometchat.com/assets/images/avatars/captainamerica.png">
+                </div>
+            </nav>
+            <div class="chat">
+                <div class="container">
+                    <div class="msg-header">
+                        <div class="active">
+                            <h5>SpongeChat</h5>
+                        </div>
+                    </div>
+                    <div class="chat-page">
+                        <div class="msg-inbox">
+                            <div class="chats" id="chats">
+                                <div class="msg-page" id="msg-page">
+                                    <div>
+                                        <div id="group-message-holder">
+                                            <div class="outgoing-chats old-chats">
+                                                <div class="outgoing-chats-msg">
+                                                    <p>Hello spongebob</p>
+                                                </div>
+                                                <div class="outgoing-chats-img">
+                                                    <img alt="" class="avatar" src="https://data.cometchat.com/assets/images/avatars/captainamerica.png">
+                                                </div>
+                                            </div>
+                                            <div class="received-chats old-chats">
+                                                <div class="received-chats-img">
+                                                    <img alt="Avatar" class="avatar" src="https://data.cometchat.com/assets/images/avatars/captainamerica.png">
+                                                </div>
+                                                <div class="received-msg">
+                                                    <div class="received-msg-inbox">
+                                                        <p>
+                                                            <span id="message-sender-id">spongebob</span>
+                                                            <br>
+                                                            Hello ali
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script><script src="https://unpkg.com/@cometchat-pro/chat@1.8/CometChat.js" type="text/javascript"></script>
+    </body>
+</html>
