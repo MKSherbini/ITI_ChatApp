@@ -267,7 +267,7 @@ public class  MainScreenController implements Initializable {
             receiverNumber = (Label) vBox.getChildren().get(1);
 
             // ImageView imageView =(ImageView) borderPane.getLeft();
-        //    System.out.println("label text is " +name.getText());
+            //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
             receivernumberID.setText(receiverNumber.getText());
 
@@ -277,7 +277,7 @@ public class  MainScreenController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
-        
+
 //        System.out.println("pressed");
 //        ObservableList<BorderPane> selectedContact;
 //        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
@@ -293,42 +293,41 @@ public class  MainScreenController implements Initializable {
 //        }
         final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
 
-     //   System.out.println("number of list" +messageList.size());
-       // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    chatListView.getItems().clear();
+        //   System.out.println("number of list" +messageList.size());
+        // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                chatListView.getItems().clear();
 
-                    try {
+                try {
 
-                        //todo still won't work with the method only by making the attribute public!
-                        //controller.setLabelValue(contact.getUsername());
-                        for(MessageDto messageDto:messageList) {
-                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                            AnchorPane anchorPane = fxmlLoader.load();
-                            ChatMessageController controller = fxmlLoader.getController();
-                         //   System.out.println("content of the message "+messageDto.getContent());
-                            controller.msgLabelId.setText(messageDto.getContent());
-                            msgTxtFieldId.setText("");
-                            chatListView.getItems().add(anchorPane);
-                            if(receiverNumber.equals(messageDto.getReceiverNumber()))
-                            {
+                    //todo still won't work with the method only by making the attribute public!
+                    //controller.setLabelValue(contact.getUsername());
+                    for(MessageDto messageDto:messageList) {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        ChatMessageController controller = fxmlLoader.getController();
+                        //   System.out.println("content of the message "+messageDto.getContent());
+                        controller.msgLabelId.setText(messageDto.getContent());
+                        msgTxtFieldId.setText("");
+                        chatListView.getItems().add(anchorPane);
+                        if(receiverNumber.equals(messageDto.getReceiverNumber()))
+                        {
 
-                            }
                         }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+
+            }
+        });
 
         chatListView.scrollTo(chatListView.getItems().size()-1);
 
-        }
-
+    }
 
     @FXML
     public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
