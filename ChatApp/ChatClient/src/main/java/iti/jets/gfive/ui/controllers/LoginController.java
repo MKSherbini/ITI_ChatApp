@@ -103,6 +103,7 @@ public class LoginController implements Initializable {
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
             currentUserModel.setPhoneNumber(txt_loginPhone.getText());
             currentUserModel.setUsername(userDto.getUsername());
+            currentUserModel.setStatus(userDto.getStatus());
             //in case the user did not enter the date in registeration
             Date date = userDto.getBirthDate();
             if (date != null) {
