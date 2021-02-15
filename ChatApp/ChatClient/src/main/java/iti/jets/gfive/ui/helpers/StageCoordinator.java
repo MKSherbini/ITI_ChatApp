@@ -1,6 +1,7 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.controllers.LoginController;
 import iti.jets.gfive.ui.controllers.RegisterController;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StageCoordinator {
-    private boolean closed= false;
+    //    private boolean closed = false;
     private static Stage primaryStage;
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
@@ -97,12 +98,14 @@ public class StageCoordinator {
         var viewName = "MainScreenView";
         loadView(viewName);
     }
+
+    // todo fix this shit
     // This method unregister the user from the server
-    public  void unregisterCurrentUser(){
-        if(closed) {
+    public void unregisterCurrentUser() {
+        if (!registered) {
             return;
         }
-        closed=true;
+        registered = false;
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
             clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
@@ -110,7 +113,21 @@ public class StageCoordinator {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
 
+    boolean registered = false;
 
+    public void registerUser(UserDto userDto) {
+        if (registered) return;
+        registered = true;
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
+//            UnicastRemoteObject.exportObject(notify, 8000);
+
+            clientConnectionInter.register(userDto, notify);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -15,7 +15,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     public ClientConnectionImpl() throws RemoteException {}
 
     @Override
-    public void register(UserDto user, NotificationReceiveInter notif) throws RemoteException {
+    public void register(UserDto user, NotificationReceiveInter notif) {
         ConnectedClient client = new ConnectedClient(user, notif);
         clientsPool.add(client);
         System.out.println("client " + user.getPhoneNumber() + " is added to the pool");

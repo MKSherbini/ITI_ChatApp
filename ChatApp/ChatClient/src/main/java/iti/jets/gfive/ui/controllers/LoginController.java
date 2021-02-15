@@ -72,8 +72,8 @@ public class LoginController implements Initializable {
             System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
-            if(userDto==null){
-                return ;
+            if (userDto == null) {
+                return;
             }
             //System.out.println("name  "+userDto.getUsername());
             //System.out.println("imag  "+userDto.getImage());
@@ -82,13 +82,7 @@ public class LoginController implements Initializable {
             //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
 //        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
             //after validation register this client to the server
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            try {
-                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
-                clientConnectionInter.register(userDto, notify);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            StageCoordinator.getInstance().registerUser(userDto);
 
             // todo call the thread that gets the contacts list and display in the listView
             // same thread or method to be called after adding a new contact aka --> a friend request accept
@@ -124,14 +118,15 @@ public class LoginController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        
+
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
 //        stageCoordinator.switchToProfilePage();
     }
 
-    public void getNotifications(UserDto user){
+
+    public void getNotifications(UserDto user) {
         NotificationCrudInter notificationCrudInter = NotificationDBCrudService.getNotificationService();
         try {
             ArrayList<NotificationDto> notificationsList = notificationCrudInter.getNotificationList(user.getPhoneNumber());

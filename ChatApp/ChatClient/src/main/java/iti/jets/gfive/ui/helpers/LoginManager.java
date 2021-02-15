@@ -19,39 +19,43 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class LoginManager {
-    public static final String PHONE_NUMBER = "PHONE_NUMBER" ;
-    public static final String PASSWORD = "PASSWORD" ;
-    public static final String ACTION_LOGOUT = "ACTION_LOGOUT" ;
-    public static final String ACTION_EXIT = "ACTION_EXIT" ;
+    public static final String PHONE_NUMBER = "PHONE_NUMBER";
+    public static final String PASSWORD = "PASSWORD";
+    public static final String ACTION_LOGOUT = "ACTION_LOGOUT";
+    public static final String ACTION_EXIT = "ACTION_EXIT";
 
-    private String phone , password;
-    private static  LoginManager loginManager;
+    private String phone, password;
+    private static LoginManager loginManager;
     private UserDto userDto = new UserDto();
+
     //Synchronize only one instance
-    public synchronized static LoginManager getInstance(){
-        if (loginManager ==null){
+    public synchronized static LoginManager getInstance() {
+        if (loginManager == null) {
             loginManager = new LoginManager();
         }
         return loginManager;
     }
+
     // this method to read data from properties file and inflate it into phone and password
-    private LoginManager (){
+    private LoginManager() {
         readCredentials();
     }
+
     // checks that the user was exit or loged out the last time
     // true  : user exited
     // false : user loged out
-    public boolean canLogin(){
-        if(!(phone.equals(null)||phone.equals(""))){
+    public boolean canLogin() {
+        if (!(phone.equals(null) || phone.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPhoneNumber(phone);
         }
-        if(!(password.equals(null)||password.equals(""))){
+        if (!(password.equals(null) || password.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPassword(password);
             return true;
         }
         return false;
     }
-    public void getNotifications(UserDto user){
+
+    public void getNotifications(UserDto user) {
         NotificationCrudInter notificationCrudInter = NotificationDBCrudService.getNotificationService();
         try {
             ArrayList<NotificationDto> notificationsList = notificationCrudInter.getNotificationList(user.getPhoneNumber());
@@ -61,8 +65,9 @@ public class LoginManager {
             e.printStackTrace();
         }
     }
+
     // This method to intitialize the user data once he opened the app if he was exit at the last time
-    public void initCurrentUser(){
+    public void initCurrentUser() {
 
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
@@ -76,13 +81,14 @@ public class LoginManager {
             //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
 //        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
             //after validation register this client to the server
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            try {
-                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
-                clientConnectionInter.register(userDto, notify);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+//            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+//            try {
+//                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
+//                clientConnectionInter.register(userDto, notify);
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
+            StageCoordinator.getInstance().registerUser(userDto);
 
             // todo call the thread that gets the contacts list and display in the listView
             // same thread or method to be called after adding a new contact aka --> a friend request accept
@@ -122,37 +128,47 @@ public class LoginManager {
     }
 
 
-    public boolean login(){
+    public boolean login() {
         return false;
     }
+
     // This method unregister the user
     // save user data
     // remove the password from the current user model to force the user to login again once he logged out
-    public void Logout(){
+    public void Logout() {
         // todo fix the undergister
-        StageCoordinator.getInstance().unregisterCurrentUser();
+//        StageCoordinator.getInstance().unregisterCurrentUser();
+        // todo fix this bs
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
+
     // This method to
     // unregister the user from the server and
     // saves his phone and password to used in the next login to the application .
-    public void Exit(){
+    public void Exit() {
         StageCoordinator.getInstance().unregisterCurrentUser();
         //todo update the user status in the server
         saveCredentials(ACTION_EXIT);
     }
+
     // this method to write the user data to properties file
     // saves his phone and password to used in the next login to the application
-    private void saveCredentials(String action){
+    private void saveCredentials(String action) {
         try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
             Properties prop = new Properties();
             // set the properties value
             prop.setProperty(PHONE_NUMBER, ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
-            if (action.equals(ACTION_EXIT)){
-                prop.setProperty(PASSWORD,  ModelsFactory.getInstance().getCurrentUserModel().getPassword());
+            if (action.equals(ACTION_EXIT)) {
+                prop.setProperty(PASSWORD, ModelsFactory.getInstance().getCurrentUserModel().getPassword());
             }
-            if (action.equals(ACTION_LOGOUT)){
+            if (action.equals(ACTION_LOGOUT)) {
                 prop.setProperty(PASSWORD, "");
             }
             // save the file to src/main/resources/config.properties
@@ -161,17 +177,18 @@ public class LoginManager {
             io.printStackTrace();
         }
     }
+
     // This method to read the saved password and phone number to perform implicit login
-    private void  readCredentials(){
-        Properties prop = null ;
+    private void readCredentials() {
+        Properties prop = null;
         try (InputStream input = new FileInputStream("src/main/resources/config.properties")) {
             prop = new Properties();
             // load a properties file
             prop.load(input);
             // get the property value and print it out
-            if(null != prop){
+            if (null != prop) {
                 phone = prop.getProperty(PHONE_NUMBER);
-                password = prop . getProperty(PASSWORD);
+                password = prop.getProperty(PASSWORD);
             }
 
         } catch (IOException ex) {
