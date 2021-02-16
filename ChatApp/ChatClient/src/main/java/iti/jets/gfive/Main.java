@@ -25,30 +25,30 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws SQLException {
-        var m = Marshaltor.getInstance();
-        m.marshalChat();
-        Platform.exit();
-//        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-//        stageCoordinator.initStage(primaryStage);
-//        LoginManager loginManager = LoginManager.getInstance();
-//        // check if the can login returned true this meaning that user just exit
-//        // and his password and phone number saved and can enter
-//        if (loginManager.canLogin()){
-//            //implicitly login the user
-//            loginManager.initCurrentUser();
-//            //redirect user to main screen
-//            stageCoordinator.switchToMainPage();
-//
-//        }else{
-//            // redirect user to login screen
-//            stageCoordinator.switchToLoginPage();
-//        }
-//
-//        primaryStage.show();
-//        //todo unregister and unexport but which obj??
-//        primaryStage.setOnCloseRequest(ae ->{
-//           StageCoordinator.getInstance().unregisterCurrentUser();
-//        });
+        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
+        stageCoordinator.initStage(primaryStage);
+        LoginManager loginManager = LoginManager.getInstance();
+        // check if the can login returned true this meaning that user just exit
+        // and his password and phone number saved and can enter
+        if (loginManager.canLogin()) {
+            //implicitly login the user
+            loginManager.initCurrentUser();
+            //redirect user to main screen
+            stageCoordinator.switchToMainPage();
+
+        } else {
+            // redirect user to login screen
+            stageCoordinator.switchToLoginPage();
+        }
+
+        primaryStage.show();
+        //todo unregister and unexport but which obj??
+        primaryStage.setOnCloseRequest(ae -> {
+            StageCoordinator.getInstance().unregisterCurrentUser();
+        });
+//        var m = Marshaltor.getInstance();
+//        m.marshalChat();
+//        Platform.exit();
     }
 
     private void botsDemo() {

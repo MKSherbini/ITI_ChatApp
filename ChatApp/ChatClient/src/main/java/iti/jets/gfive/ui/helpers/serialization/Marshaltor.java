@@ -53,12 +53,12 @@ public class Marshaltor {
     }
 
 
-    public void marshalChat() {
-        ChatModel chatModel = new ChatModel();
-        chatModel.setChatOwner("ali");
-        chatModel.setChatName("SpongeChat2");
-        chatModel.getMessages().add(new MessageModel("chat", "ali", "spongebob", "sent", "Hello spongebob", new Date()));
-        chatModel.getMessages().add(new MessageModel("chat", "spongebob", "ali", "sent", "Hello ali", new Date()));
+    public void marshalChat(ChatModel chatModel) {
+//        ChatModel chatModel = new ChatModel();
+//        chatModel.setChatOwner("ali");
+//        chatModel.setChatName("SpongeChat2");
+//        chatModel.getMessages().add(new MessageModel("chat", "ali", "spongebob", "sent", "Hello spongebob", new Date()));
+//        chatModel.getMessages().add(new MessageModel("chat", "spongebob", "ali", "sent", "Hello ali", new Date()));
 
         // getScene().getWindow()
         File outputHtml = directoryChooser.showDialog(null);

@@ -23,6 +23,12 @@ public class MessageModel {
         this.messageDate = messageDate;
     }
 
+    public MessageModel(String senderName, String receiverName, String content) {
+        this.senderName = senderName;
+        this.receiverName = receiverName;
+        this.content = content;
+    }
+
     public String getMessageName() {
         return messageName;
     }

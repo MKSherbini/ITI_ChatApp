@@ -153,7 +153,7 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </ToggleSwitch>
-                              <Button fx:id="saveBtnId" lineSpacing="2.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="50.0" styleClass="saveBtnId" stylesheets="@../styles/ChatAreaStyle.css" text="SAVE" textFill="#e1e6fa" HBox.hgrow="ALWAYS">
+                              <Button fx:id="saveBtnId" lineSpacing="2.0" mnemonicParsing="false" onAction="#onClickSaveChat" prefHeight="30.0" prefWidth="50.0" styleClass="saveBtnId" stylesheets="@../styles/ChatAreaStyle.css" text="SAVE" textFill="#e1e6fa" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="11.0" />
                                  </font>
