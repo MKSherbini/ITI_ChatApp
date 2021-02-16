@@ -219,6 +219,8 @@ public class MainScreenController implements Initializable {
             stage.setMaximized(false);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
+            //todo when undecorated the window is no longer movable!
+            //stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException e) {
@@ -301,7 +303,11 @@ public class MainScreenController implements Initializable {
 //            receivernameID.setText(name.getText());
 //            chatAreaBorderPaneID.setVisible(true);
 //        }
-        final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        if(receiverNumber==null)
+        {
+            return;
+        }
+        final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
 
         //   System.out.println("number of list" +messageList.size());
         // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
