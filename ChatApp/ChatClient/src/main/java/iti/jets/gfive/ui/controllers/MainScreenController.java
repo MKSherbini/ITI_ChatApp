@@ -242,7 +242,7 @@ public class  MainScreenController implements Initializable {
 
         //fetch all message from db and update the list
         //li
-        newLabel.setVisible(false);
+
 
 //        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
 //        try {
@@ -265,6 +265,11 @@ public class  MainScreenController implements Initializable {
             HBox hbox =(HBox) vBox.getChildren().get(0);
             Label name = (Label)hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
+            if(borderPane.getRight()!=null)
+            {
+                newLabel.setVisible(false);
+                System.out.println("right of borderpane equals null");
+            }
 
             // ImageView imageView =(ImageView) borderPane.getLeft();
             //    System.out.println("label text is " +name.getText());
@@ -309,6 +314,9 @@ public class  MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     for(MessageDto messageDto:messageList) {
+                        //hmsek msg msg w acheck law el cuurentuser.number ==messagedto.sender set allignment b right
+                        //else set alignemnt b left
+                        //lsa el sora
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
                         AnchorPane anchorPane = fxmlLoader.load();
                         ChatMessageController controller = fxmlLoader.getController();
@@ -316,10 +324,7 @@ public class  MainScreenController implements Initializable {
                         controller.msgLabelId.setText(messageDto.getContent());
                         msgTxtFieldId.setText("");
                         chatListView.getItems().add(anchorPane);
-                        if(receiverNumber.equals(messageDto.getReceiverNumber()))
-                        {
 
-                        }
                     }
 
                 } catch (IOException e) {
