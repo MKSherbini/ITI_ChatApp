@@ -5,9 +5,12 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.util.function.Predicate;
 
 // todo create a builder to add multiple validators then register with event
 // add additional validators
@@ -46,10 +49,14 @@ public class Validator {
 
     public void buildPhoneContactValidation(JFXTextField phone) {
         addRegexValidation(phone, phoneRgx, "Must be in format 01XXXXXXXXX");
+
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         addMatchValidation(phone, currentUserModel.phoneNumberProperty(), false, "Can't add self"); // todo make sure currentUserModel is actually valid
+
         addDBExistingPhoneValidation(phone, true);
+
+        addPredicateValidation(phone, "Contact already exists", s -> !ContactsListView.getInstance().contactExist(s));
         setValidateOnEvent(phone);
     }
 
@@ -134,6 +141,12 @@ public class Validator {
         } else {
             validator = new ExistingPhoneNumberValidator("Phone number already exists");
         }
+        textField.getValidators().add(validator);
+    }
+
+    private void addPredicateValidation(JFXTextField textField, String errorMessage, Predicate<String> predicate) {
+        PredicateValidator validator = new PredicateValidator(errorMessage, predicate);
+
         textField.getValidators().add(validator);
     }
 
