@@ -3,6 +3,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
     <xsl:template match="chat-conversation">
+        <xsl:variable name="owner" select="chatOwner"/>
+
         <html lang="en">
 
             <head>
@@ -15,7 +17,7 @@
                       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap"/>
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap"/>
-                <link rel="stylesheet" href="css/style.css"/>
+                <link rel="stylesheet" href="assets/css/style.css"/>
             </head>
 
             <body>
@@ -31,7 +33,7 @@
                                 <xsl:value-of select="chatOwner"/>
                             </span>
                             <img id="loggedInUserAvatar"
-                                 src="https://data.cometchat.com/assets/images/avatars/captainamerica.png"
+                                 src="{concat('assets/',$owner,'.png')}"
                                  class="avatar"/>
                         </div>
                     </nav>
@@ -53,8 +55,8 @@
                                             <div>
                                                 <div id="group-message-holder">
 
-                                                    <xsl:variable name="owner" select="chatOwner"/>
                                                     <xsl:for-each select="//message">
+                                                        <xsl:variable name="imagePath" select="image"/>
                                                         <xsl:choose>
                                                             <xsl:when test="senderName=$owner">
                                                                 <div class="outgoing-chats old-chats">
@@ -64,7 +66,7 @@
                                                                         </p>
                                                                     </div>
                                                                     <div class="outgoing-chats-img">
-                                                                        <img src="https://data.cometchat.com/assets/images/avatars/captainamerica.png"
+                                                                        <img src="{concat($imagePath,'')}"
                                                                              alt="" class="avatar"/>
                                                                     </div>
                                                                 </div>
@@ -72,7 +74,7 @@
                                                             <xsl:otherwise>
                                                                 <div class="received-chats old-chats">
                                                                     <div class="received-chats-img">
-                                                                        <img src="https://data.cometchat.com/assets/images/avatars/captainamerica.png"
+                                                                        <img src="{concat($imagePath,'')}"
                                                                              alt="Avatar" class="avatar"/>
                                                                     </div>
 

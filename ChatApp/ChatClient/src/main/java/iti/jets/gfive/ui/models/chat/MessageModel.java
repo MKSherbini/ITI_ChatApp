@@ -7,12 +7,15 @@ import java.util.Date;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MessageModel {
-    private String messageName;
+    transient private String messageName;
     private String senderName;
+    transient private String senderPhone;
     private String receiverName;
-    private String state;
+    transient private String receiverPhone;
+    transient private String state;
     private String content;
-    private Date messageDate;
+    transient private Date messageDate;
+    private String image;
 
     public MessageModel(String messageName, String senderName, String receiverName, String state, String content, Date messageDate) {
         this.messageName = messageName;
@@ -23,9 +26,9 @@ public class MessageModel {
         this.messageDate = messageDate;
     }
 
-    public MessageModel(String senderName, String receiverName, String content) {
-        this.senderName = senderName;
-        this.receiverName = receiverName;
+    public MessageModel(String senderPhone, String receiverPhone, String content) {
+        this.senderPhone = senderPhone;
+        this.receiverPhone = receiverPhone;
         this.content = content;
     }
 
@@ -75,5 +78,29 @@ public class MessageModel {
 
     public void setMessageDate(Date messageDate) {
         this.messageDate = messageDate;
+    }
+
+    public String getSenderPhone() {
+        return senderPhone;
+    }
+
+    public void setSenderPhone(String senderPhone) {
+        this.senderPhone = senderPhone;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = "assets/" + image;
     }
 }

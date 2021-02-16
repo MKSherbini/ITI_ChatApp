@@ -400,15 +400,15 @@ public class MainScreenController implements Initializable {
         }
         if (messageList == null) return;
 
-        Map<String, String> map = new HashMap<>();
-        map.put(receiverNumber.getText(), receivernameID.getText());
-        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
+//        Map<String, String> map = new HashMap<>();
+//        map.put(receiverNumber.getText(), receivernameID.getText());
+//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
 
         ChatModel chatModel = new ChatModel();
         chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
         chatModel.setChatOwner(currentUserModel.getUsername());
         messageList.forEach(messageDto -> {
-            chatModel.getMessages().add(new MessageModel(map.get(messageDto.getSenderNumber()), map.get(messageDto.getReceiverNumber()), messageDto.getContent()));
+            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
         });
 
         var m = Marshaltor.getInstance();

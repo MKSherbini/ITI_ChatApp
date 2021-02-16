@@ -23,6 +23,8 @@ module ChatClient {
     requires java.rmi;
     requires jakarta.xml.bind;
     requires org.apache.commons.io;
+    requires javafx.swing;
+
 
     exports iti.jets.gfive;
     opens iti.jets.gfive.ui.controllers;

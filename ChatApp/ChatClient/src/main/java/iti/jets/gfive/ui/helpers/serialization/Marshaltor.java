@@ -1,16 +1,19 @@
 package iti.jets.gfive.ui.helpers.serialization;
 
+import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.models.chat.ChatModel;
 import iti.jets.gfive.ui.models.chat.MessageModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,10 +24,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 
 // cuz why not
 public class Marshaltor {
@@ -68,14 +70,19 @@ public class Marshaltor {
         ByteArrayOutputStream out = null;
         ByteArrayInputStream pipe = null;
         try {
+            prepareFolder(outputHtml, chatModel);
+            prepareMessage(outputHtml, chatModel);
             jabeontext = JAXBContext.newInstance(ChatModel.class);
             Marshaller marshaller = jabeontext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             out = new ByteArrayOutputStream();
             marshaller.marshal(chatModel, out);
+//            marshaller.marshal(chatModel, new FileWriter("chat.xml"));
+
             pipe = new ByteArrayInputStream(out.toByteArray());
             GenerateHTMLFromXML(outputHtml, pipe);
-        } catch (JAXBException e) {
+
+        } catch (JAXBException | IOException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -87,7 +94,51 @@ public class Marshaltor {
         }
     }
 
-    public void GenerateHTMLFromXML(File htmlFile, ByteArrayInputStream xmlFile) {
+    private void prepareFolder(File dirTarget, ChatModel chatModel) throws IOException {
+        FileUtils.copyDirectory(new File(this.getClass().getResource("/chatExportFiles").getPath()), dirTarget);
+    }
+
+    private void prepareMessage(File dirTarget, ChatModel chatModel) {
+        Map<String, UserDto> userMap = new HashMap<>();
+        chatModel.getMessages().forEach(messageModel -> {
+            var receiver = setupUser(userMap, dirTarget, messageModel.getReceiverPhone());
+            var sender = setupUser(userMap, dirTarget, messageModel.getSenderPhone());
+            messageModel.setImage(sender.getUsername() + ".png");
+            messageModel.setReceiverName(receiver.getUsername());
+            messageModel.setSenderName(sender.getUsername());
+        });
+    }
+
+
+    void saveImage(UserDto user, File dirTarget) {
+        try {
+            System.out.println("user==null = " + (user == null));
+            System.out.println("user.getImage()==null = " + (user.getImage() == null));
+
+            var file = new File(String.format("%s/assets/%s.png", dirTarget.getAbsolutePath(), user.getUsername()));
+            file.createNewFile();
+            ImageIO.write(SwingFXUtils.fromFXImage(user.getImage(), null), "png", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    UserDto setupUser(Map<String, UserDto> userMap, File dirTarget, String user) {
+        if (!userMap.containsKey(user)) {
+            try {
+                System.out.println("user = " + user);
+                var userDto = UserDBCrudService.getUserService().selectFromDB(user); // todo check nulls
+                userMap.put(user, userDto);
+                saveImage(userDto, dirTarget);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return userMap.get(user);
+    }
+
+    private void GenerateHTMLFromXML(File htmlFile, ByteArrayInputStream xmlFile) {
         File xsltFile = new File(getClass().getResource("/chat.xslt").getPath());
         try {
 //            if (htmlFile.getName().toLowerCase(Locale.ROOT).endsWith(".html"))
@@ -96,9 +147,8 @@ public class Marshaltor {
 //                htmlFile = new File(htmlFile.getAbsolutePath() + ".html");
 //                htmlFile.createNewFile();
 //            }
-            System.out.println(this.getClass().getResource("/chatExportFiles").getPath());
-            System.out.println(htmlFile.getAbsolutePath());
-            FileUtils.copyDirectory(new File(this.getClass().getResource("/chatExportFiles").getPath()), htmlFile);
+//            System.out.println(this.getClass().getResource("/chatExportFiles").getPath());
+//            System.out.println(htmlFile.getAbsolutePath());
             htmlFile = new File(htmlFile.getAbsolutePath() + "/chat.html");
             htmlFile.createNewFile();
             GenerateHTMLFromXMLBasedOnXslt(htmlFile, xmlFile, xsltFile);
