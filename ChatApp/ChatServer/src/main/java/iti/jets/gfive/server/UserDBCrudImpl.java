@@ -26,6 +26,52 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     }
 
     @Override
+    public UserDto selectFromDB(String phoneNumber) throws RemoteException {
+        UserDto user = new UserDto();
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            String sql = "select * from user_data \n" +
+                    " WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, phoneNumber);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                user = new UserDto();
+                user.setUsername(resultSet.getString("user_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setGender(resultSet.getString("gender"));
+                user.setCountry(resultSet.getString("country"));
+                user.setBirthDate(resultSet.getDate("date_birth"));
+                user.setBio(resultSet.getString("bio"));
+                user.setStatus(resultSet.getString("user_status"));
+                byte[] bytes = {};
+                bytes = resultSet.getBytes("picture");
+                Image image = deserializeFromString(bytes);
+                user.setImage(image);
+
+                return user;
+            }
+        } catch (SQLException | NullPointerException | IOException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null && resultSet != null) {
+            try {
+                stmt.close();
+                con.close();
+                resultSet.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public UserDto selectFromDB(String phoneNumber, String password) throws RemoteException {
         UserDto user = new UserDto();
         ds = DataSourceFactory.getMySQLDataSource();

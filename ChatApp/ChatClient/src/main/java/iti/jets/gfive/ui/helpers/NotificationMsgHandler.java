@@ -266,13 +266,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         return this.notificationsListId;
     }
     public void addNotifications(ArrayList<NotificationDto> notifications){
-        System.out.println(notifications.size() + "<-------------1");
+        //System.out.println(notifications.size() + "<-------------1");
         for (NotificationDto notification: notifications) {
+            increaseNotificationsNumber();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
             try {
                 BorderPane item = fxmlLoader.load();
                 NotificationViewController controller = fxmlLoader.getController();
-                System.out.println(notification.getContent() + "<-------------2");
+                //System.out.println(notification.getContent() + "<-------------2");
                 controller.notificationContentId.setText(notification.getContent());
                 controller.senderIdLabel.setText(notification.getSenderId());
                 controller.notificationId = notification.getId();

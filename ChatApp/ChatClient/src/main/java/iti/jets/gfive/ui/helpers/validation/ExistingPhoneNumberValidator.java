@@ -40,7 +40,8 @@ public class ExistingPhoneNumberValidator extends ValidatorBase {
         boolean registered = false;
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
-            registered = userServices.checkUserId(text);
+            if (userServices != null)
+                registered = userServices.checkUserId(text);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

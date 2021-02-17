@@ -2,8 +2,6 @@ package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.models.NotifDBRecord;
-import iti.jets.gfive.common.interfaces.NotificationsLabelInter;
-import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
@@ -119,6 +117,38 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
                 }
             }
         });
+    }
+
+    @Override
+    public boolean pendingNotification(String senderId, String receiverId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        boolean notificationExists = false;
+        try {
+            con = ds.getConnection();
+            String query = "select * from notifications n, notification_receivers nr \n" +
+                    "where n.notification_id = nr.notification_id\n" +
+                    "and n.sender= ? and nr.receiver= ? and n.completed = 0;";
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, senderId);
+            preparedStatement.setString(2, receiverId);
+            rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                notificationExists = true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if(con != null && preparedStatement != null){
+            try {
+                preparedStatement.close(); con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return notificationExists;
     }
 
     @Override

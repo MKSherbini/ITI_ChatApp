@@ -14,7 +14,10 @@ import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.services.MessageDBService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.serialization.Marshaltor;
 import iti.jets.gfive.ui.models.CurrentUserModel;
+import iti.jets.gfive.ui.models.chat.ChatModel;
+import iti.jets.gfive.ui.models.chat.MessageModel;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -47,7 +50,9 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -224,6 +229,8 @@ public class MainScreenController implements Initializable {
             stage.setMaximized(false);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
+            //todo when undecorated the window is no longer movable!
+            //stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException e) {
@@ -337,6 +344,7 @@ public class MainScreenController implements Initializable {
                         }
                         msgTxtFieldId.setText("");
                         chatListView.getItems().add(anchorPane);
+                        if (receiverNumber.equals(messageDto.getReceiverNumber())) {
 
                     }
 
@@ -353,7 +361,6 @@ public class MainScreenController implements Initializable {
 
     @FXML
     public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
-
         if (msgTxtFieldId.getText().equals("")) {
             return;
         }
@@ -415,4 +422,30 @@ public class MainScreenController implements Initializable {
 
     }
 
+    public void onClickSaveChat(ActionEvent actionEvent) {
+        if (receiverNumber.getText().length() == 0) return;
+        CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+        List<MessageDto> messageList = null;
+        try {
+            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        if (messageList == null) return;
+
+//        Map<String, String> map = new HashMap<>();
+//        map.put(receiverNumber.getText(), receivernameID.getText());
+//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
+
+        ChatModel chatModel = new ChatModel();
+        chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+        chatModel.setChatOwner(currentUserModel.getUsername());
+        messageList.forEach(messageDto -> {
+            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+        });
+
+        var m = Marshaltor.getInstance();
+        m.marshalChat(chatModel);
+    }
 }
