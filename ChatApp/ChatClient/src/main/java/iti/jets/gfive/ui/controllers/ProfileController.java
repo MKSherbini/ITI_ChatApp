@@ -99,6 +99,13 @@ public class ProfileController implements Initializable {
 
     }
 
+    @FXML
+    void onClickBack(ActionEvent event)
+    {
+        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
+        stageCoordinator.switchToMainPage();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

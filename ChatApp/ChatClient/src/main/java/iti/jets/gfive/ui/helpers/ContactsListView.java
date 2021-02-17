@@ -44,6 +44,8 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
+                        controller.contactImg.setImage(contact.getImage());
+                        //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
                     } catch (IOException e) {
                         e.printStackTrace();

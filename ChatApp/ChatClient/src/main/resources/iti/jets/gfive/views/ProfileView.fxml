@@ -27,7 +27,7 @@
                               <Image url="@../images/personal.jpg" />
                            </image>
                         </ImageView>
-                        <JFXButton onAction="#OnClickChangePhoto" layoutX="60.0" layoutY="48.0" prefHeight="31.0" prefWidth="45.0" text=" ">
+                        <JFXButton layoutX="60.0" layoutY="48.0" onAction="#OnClickChangePhoto" prefHeight="31.0" prefWidth="45.0" text=" ">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -153,6 +153,17 @@
       <Pane prefHeight="400.0" prefWidth="64.0" style="-fx-background-color: linear-gradient(to right bottom, #E1E6FA, #C4D7ED, #ABC8E2, #375D81, #183152); -fx-border-radius: 30;" BorderPane.alignment="CENTER" />
    </right>
    <left>
-      <AnchorPane prefHeight="400.0" prefWidth="59.0" style="-fx-background-color: linear-gradient(to right bottom, #E1E6FA, #C4D7ED, #ABC8E2, #375D81, #183152);" BorderPane.alignment="CENTER" />
+      <AnchorPane prefHeight="400.0" prefWidth="59.0" style="-fx-background-color: linear-gradient(to right bottom, #E1E6FA, #C4D7ED, #ABC8E2, #375D81, #183152);" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton onAction="#onClickBack" prefHeight="31.0" prefWidth="57.0" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/backarrow.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+         </children></AnchorPane>
    </left>
 </BorderPane>

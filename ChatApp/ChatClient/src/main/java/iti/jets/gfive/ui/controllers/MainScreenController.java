@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.UserDBCrudService;
@@ -28,6 +29,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -205,6 +207,14 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
+    public void onClickProfile(ActionEvent event)
+    {
+        System.out.println("Inside the onclick of the photo");
+        StageCoordinator stageCoordinator = StageCoordinator.getInstance();
+        stageCoordinator.switchToProfilePage();
+    }
+
+    @FXML
     public void openFriendRequestDialog(ActionEvent actionEvent) {
         openDialog("FriendRequestDialog");
     }
@@ -252,14 +262,6 @@ public class MainScreenController implements Initializable {
     @FXML
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
 
-        //fetch all message from db and update the list
-        //li
-        newLabel.setVisible(false);
-
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
-//        try {
-//            BorderPane item = fxmlLoader.load();
-//            ContactController controller = fxmlLoader.getController();
 //            //todo still won't work with the method only by making the attribute public!
 //            //controller.setLabelValue(contact.getUsername());
 //            controller.newLabelID.setVisible(false);
@@ -277,6 +279,10 @@ public class MainScreenController implements Initializable {
             HBox hbox = (HBox) vBox.getChildren().get(0);
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
+            if (borderPane.getRight() != null) {
+                newLabel.setVisible(false);
+                System.out.println("right of borderpane equals null");
+            }
 
             // ImageView imageView =(ImageView) borderPane.getLeft();
             //    System.out.println("label text is " +name.getText());
@@ -303,11 +309,10 @@ public class MainScreenController implements Initializable {
 //            receivernameID.setText(name.getText());
 //            chatAreaBorderPaneID.setVisible(true);
 //        }
-        if(receiverNumber==null)
-        {
+        if (receiverNumber == null) {
             return;
         }
-        final  List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+        final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
 
         //   System.out.println("number of list" +messageList.size());
         // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
@@ -321,22 +326,32 @@ public class MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     for (MessageDto messageDto : messageList) {
+
+                        //select picture from user_data where user_id = sender_id
+                        //select picture from user_data where user_id= recevierid
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
                         AnchorPane anchorPane = fxmlLoader.load();
                         ChatMessageController controller = fxmlLoader.getController();
+
                         //   System.out.println("content of the message "+messageDto.getContent());
                         controller.msgLabelId.setText(messageDto.getContent());
+                        if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                            controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                            // controller.msgImgId.setImage(senderimg);
+
+                        } else {
+                            //  controller.msgImgId.setImage(recevierpicyure);
+                        }
                         msgTxtFieldId.setText("");
                         chatListView.getItems().add(anchorPane);
                         if (receiverNumber.equals(messageDto.getReceiverNumber())) {
 
                         }
-                    }
 
-                } catch (IOException e) {
+                    }
+                }catch(IOException e){
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -364,6 +379,7 @@ public class MainScreenController implements Initializable {
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
             clientConnectionInter.sendMsg(messageDto);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -373,6 +389,13 @@ public class MainScreenController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                UserDBCrudInter userServices = UserDBCrudService.getUserService();
+                Image senderImag = null;
+
+                  //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                    senderImag = currentUserModel.getImage();
+
+
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
                 try {
                     AnchorPane anchorPane = fxmlLoader.load();
@@ -380,8 +403,13 @@ public class MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     controller.msgLabelId.setText(messsage);
+                     controller.msgImgId.setImage(senderImag);
+
+
+                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
                     //todo senderimg must update in it's chatarea
-                    //  controller.setMsgImgId();
+                    controller.msgImgId.setImage(senderImag);
+
                     msgTxtFieldId.setText("");
 
                     chatListView.getItems().add(anchorPane);

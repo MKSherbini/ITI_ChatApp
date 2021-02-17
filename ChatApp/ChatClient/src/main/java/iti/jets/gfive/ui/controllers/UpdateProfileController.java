@@ -64,7 +64,7 @@ public class UpdateProfileController implements Initializable {
         Date date=null;
         //check for email validation
         boolean emailvalidation = false;
-        if(!EmailID.getText().equals(""))
+        if(EmailID!=null)
         {
             emailvalidation =  EmailID.validate();
         }
@@ -105,6 +105,7 @@ public class UpdateProfileController implements Initializable {
             {
                 e.printStackTrace();
             }
+            
 
 
             //update user object

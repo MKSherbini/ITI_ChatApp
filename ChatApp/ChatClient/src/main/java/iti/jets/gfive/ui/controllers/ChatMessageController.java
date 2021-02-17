@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 
 public class ChatMessageController {
     @FXML
-    private ImageView msgImgId;
+    public ImageView msgImgId;
 
     @FXML
     public Label msgLabelId;
