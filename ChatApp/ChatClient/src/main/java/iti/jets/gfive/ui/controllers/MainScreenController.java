@@ -255,14 +255,6 @@ public class MainScreenController implements Initializable {
     @FXML
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
 
-        //fetch all message from db and update the list
-        //li
-
-
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
-//        try {
-//            BorderPane item = fxmlLoader.load();
-//            ContactController controller = fxmlLoader.getController();
 //            //todo still won't work with the method only by making the attribute public!
 //            //controller.setLabelValue(contact.getUsername());
 //            controller.newLabelID.setVisible(false);
