@@ -14,6 +14,7 @@ public interface UserDBCrudInter extends Remote {
     int updateUserRecord(UserDto user) throws RemoteException;
     int updateUserPhoto(UserDto user) throws RemoteException;
     int updateUserStatus(UserDto user) throws RemoteException;
+    Image selectUserImage(String number) throws RemoteException;
     int deleteUser(UserDto user) throws RemoteException;
     boolean checkUserId(String userId) throws RemoteException;
 }

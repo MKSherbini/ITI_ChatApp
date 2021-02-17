@@ -16,7 +16,7 @@ public class ContactController implements Initializable {
     private BorderPane contactComponent;
 
     @FXML
-    private ImageView contactImg;
+    public ImageView contactImg;
 
     @FXML
     public Label contactNameLabel;

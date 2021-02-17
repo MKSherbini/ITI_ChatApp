@@ -121,8 +121,8 @@ public class LoginController implements Initializable {
 
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-        stageCoordinator.switchToMainPage();
-//        stageCoordinator.switchToProfilePage();
+       stageCoordinator.switchToMainPage();
+
     }
 
 
