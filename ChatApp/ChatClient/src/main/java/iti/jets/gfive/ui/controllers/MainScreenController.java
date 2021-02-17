@@ -346,12 +346,12 @@ public class MainScreenController implements Initializable {
                         chatListView.getItems().add(anchorPane);
                         if (receiverNumber.equals(messageDto.getReceiverNumber())) {
 
-                    }
+                        }
 
-                } catch (IOException e) {
+                    }
+                }catch(IOException e){
                     e.printStackTrace();
                 }
-
             }
         });
 
