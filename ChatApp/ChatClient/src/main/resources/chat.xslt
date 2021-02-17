@@ -43,7 +43,9 @@
                             <div class="msg-header">
                                 <div class="active">
                                     <h5>
-                                        <xsl:value-of select="chatName"/>
+                                        <b>#
+                                            <xsl:value-of select="chatName"/>
+                                        </b>
                                     </h5>
                                 </div>
                             </div>

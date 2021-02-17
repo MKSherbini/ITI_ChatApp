@@ -65,7 +65,6 @@ public class LoginController implements Initializable {
         if (!allFieldsValid) return;
 
         //validate login with DB
-        //todo validation on textfiled of login
         //todo get and set the picture
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
