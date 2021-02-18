@@ -8,6 +8,7 @@ import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.ui.controllers.FileMessageController;
 import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
@@ -222,6 +223,46 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 
     }
 
+    @Override
+    public void receiveFile(MessageDto messageDto, int msgRecordId) throws RemoteException{
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ObservableList<BorderPane> list = contactsList.getItems();
+                //System.out.println("inside the condition  " + number.getText() + "  " + messageDto.getSenderNumber());
+                if (borderPane.isVisible() && number.getText().equals(messageDto.getSenderNumber())) {
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        FileMessageController controller = fxmlLoader.getController();
+                        controller.fileNameLabelId.setText(messageDto.getMessageName());
+                        controller.recordID.setText(String.valueOf(msgRecordId));
+                        listView.getItems().add(anchorPane);
+                        listView.scrollTo(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    System.out.println("inside else");
+                    for (BorderPane item : list) {
+                        VBox vBox = (VBox) item.getCenter();
+                        HBox hbox = (HBox) vBox.getChildren().get(0);
+                        Label senderName = (Label) hbox.getChildren().get(0);
+                        Label receiverNumber = (Label) vBox.getChildren().get(1);
+                        if (receiverNumber.getText().equals(messageDto.getSenderNumber())) {
+                            System.out.println("inside the match buttton");
+                            // newLabel.setVisible(true);
+                            label.setStyle("-fx-background-color: green;");
+                            item.setRight(label);
+                            label.setVisible(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
     public void decreaseNotificationsNumber(){
         Platform.runLater(new Runnable() {
             @Override

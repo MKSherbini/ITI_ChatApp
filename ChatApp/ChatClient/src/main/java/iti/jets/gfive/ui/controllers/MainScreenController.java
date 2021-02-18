@@ -410,6 +410,7 @@ public class MainScreenController implements Initializable {
             }
 
             int rowaffected = messageServices.insertMessage(messageDto);
+            // System.out.println("id of the record, if -1 then failed "+rowaffected);
             // System.out.println("row inserted equal "+rowaffected);
             Platform.runLater(new Runnable() {
                 @Override
@@ -447,7 +448,7 @@ public class MainScreenController implements Initializable {
             });
         }
         else{
-            String filePath = msgTxtFieldId.getText();
+            String filePath = msgTxtAreaID.getText();
             File fileToSend = new File(filePath);
             try {
                 FileInputStream fis = new FileInputStream(fileToSend);
@@ -458,33 +459,39 @@ public class MainScreenController implements Initializable {
                 System.out.println(c + "int c");
                 System.out.println(fileData.toString() + "fileData byte array");
                 Date date = Date.valueOf(LocalDate.now());
-                MessageDto fileMessageDto = new MessageDto("file", currentUserModel.getPhoneNumber(),
+                MessageDto fileMessageDto = new MessageDto(fileToSend.getName(), currentUserModel.getPhoneNumber(),
                         receiverNumber.getText(), "unseen", fileData,date);
                 try {
                     ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                    //clientConnectionInter.sendMsg(fileMessageDto);
-                    int rowsffected = messageServices.insertMessage(fileMessageDto);
+                    int msgRecordID = messageServices.insertMessage(fileMessageDto);
+                    if(msgRecordID == -1){
+                        System.out.println("id of the record, if -1 then failed to insert "+ msgRecordID);
+                        return;
+                    }
+                    clientConnectionInter.sendFile(fileMessageDto, msgRecordID);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                            try {
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                FileMessageController controller = fxmlLoader.getController();
+                                //todo still won't work with the method only by making the attribute public!
+                                controller.fileNameLabelId.setText(fileToSend.getName());
+                                controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.recordID.setText(String.valueOf(msgRecordID));
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
+                                chatListView.scrollTo(anchorPane);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    //clientConnectionInter.sendMsg();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
-                        try {
-                            AnchorPane anchorPane = fxmlLoader.load();
-                            FileMessageController controller = fxmlLoader.getController();
-                            //todo still won't work with the method only by making the attribute public!
-                            controller.fileNameLabelId.setText(fileToSend.getName());
-                            controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
-                            msgTxtFieldId.setText("");
-                            chatListView.getItems().add(anchorPane);
-                            chatListView.scrollTo(anchorPane);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -527,7 +534,7 @@ public class MainScreenController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(null);
         if(selectedFile != null){
             fileFlag = true;
-            msgTxtFieldId.setText(selectedFile.getPath());
+            msgTxtAreaID.setText(selectedFile.getPath());
             System.out.println(selectedFile.getPath() + "inside the attach btn method");
         }
     }
