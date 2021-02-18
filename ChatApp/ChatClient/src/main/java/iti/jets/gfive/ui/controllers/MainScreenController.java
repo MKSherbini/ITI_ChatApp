@@ -105,7 +105,7 @@ public class MainScreenController implements Initializable {
     private Menu status;
     private Property<String> statusProperty = new SimpleObjectProperty<>("available");
 
-    private Label newLabel;
+
 
     @FXML
     void showContxtMenu(MouseEvent event) {
