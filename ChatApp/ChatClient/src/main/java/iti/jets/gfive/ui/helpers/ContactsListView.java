@@ -36,6 +36,10 @@ public class ContactsListView {
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
     }
+    /*
+        this method update the contact status in the contact list view
+        when he changes it
+     */
     public void changeContactStatus(UserDto user){
         Platform.runLater(new Runnable() {
             @Override
@@ -44,10 +48,8 @@ public class ContactsListView {
                     VBox v= (VBox) item.getChildren().get(1);
                     Label lblPhone = (Label) v.getChildren().get(1);
                     if(lblPhone.getText().equals(user.getPhoneNumber())){
-//                        Label statusLabel= (Label)item.getChildren().get(2);
-//                        statusLabel.setText(user.getStatus());
-                        StackPane stackPane = (StackPane) item.getChildren().get(2);
-                        ((ImageView)(stackPane.getChildren().get(1))).setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,user.getStatus())).toString()));
+                       StackPane stackPane = (StackPane) item.getChildren().get(2);
+                       ((ImageView)(stackPane.getChildren().get(1))).setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,user.getStatus())).toString()));
                     }
                 });
             }
