@@ -4,6 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.shape.Circle?>
 <BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
    <left>
       <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
@@ -22,6 +23,16 @@
       </VBox>
    </center>
    <right>
-      <Label fx:id="lblStatus" text="Label" BorderPane.alignment="CENTER" />
+      <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0">
+         <children>
+            <Circle fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+            <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/away.png" />
+               </image>
+            </ImageView>
+         </children>
+      </StackPane>
+<!--      <Label fx:id="lblStatus" text="Label" BorderPane.alignment="CENTER" />-->
    </right>
 </BorderPane>

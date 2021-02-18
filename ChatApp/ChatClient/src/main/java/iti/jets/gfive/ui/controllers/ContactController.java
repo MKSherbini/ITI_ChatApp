@@ -13,6 +13,9 @@ import java.util.ResourceBundle;
 
 public class ContactController implements Initializable {
     @FXML
+    public
+    ImageView ivStatus;
+    @FXML
     private BorderPane contactComponent;
 
     @FXML

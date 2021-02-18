@@ -3,10 +3,14 @@ package iti.jets.gfive.ui.helpers;
 import com.jfoenix.controls.JFXListView;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.controllers.ContactController;
+import iti.jets.gfive.ui.controllers.MainScreenController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.w3c.dom.Text;
 
@@ -40,8 +44,10 @@ public class ContactsListView {
                     VBox v= (VBox) item.getChildren().get(1);
                     Label lblPhone = (Label) v.getChildren().get(1);
                     if(lblPhone.getText().equals(user.getPhoneNumber())){
-                        Label statusLabel= (Label)item.getChildren().get(2);
-                        statusLabel.setText(user.getStatus());
+//                        Label statusLabel= (Label)item.getChildren().get(2);
+//                        statusLabel.setText(user.getStatus());
+                        StackPane stackPane = (StackPane) item.getChildren().get(2);
+                        ((ImageView)(stackPane.getChildren().get(1))).setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,user.getStatus())).toString()));
                     }
                 });
             }
@@ -63,7 +69,8 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
-                        controller.lblStatus.setText(contact.getStatus());
+                        controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,contact.getStatus())).toString()));
+//                        controller.lblStatus.setText(contact.getStatus());
                         controller.contactImg.setImage(contact.getImage());
                         //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
