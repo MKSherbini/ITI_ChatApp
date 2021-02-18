@@ -31,6 +31,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -42,6 +43,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -49,6 +51,7 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -80,6 +83,8 @@ public class MainScreenController implements Initializable {
     private Label notificationLabelId;
     @FXML
     private Label newLabelID;
+    @FXML
+    private Text CurrentUserNameID;
 
     @FXML
     private BorderPane chatAreaBorderPaneID;
@@ -88,11 +93,15 @@ public class MainScreenController implements Initializable {
     @FXML
     private JFXButton sendBtnId;
     @FXML
-    private TextField msgTxtFieldId;
+    private TextArea msgTxtAreaID;
     @FXML
     private Label receivernumberID;
     @FXML
     private ListView<AnchorPane> chatListView;
+    @FXML
+    private ImageView ReceiverImgID;
+    @FXML
+    private ImageView profilepictureID;
     private Label receiverNumber;
 
     private Label newLabel;
@@ -167,6 +176,10 @@ public class MainScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        CurrentUserNameID.setText(currentUserModel.getUsername());
+        profilepictureID.setImage(currentUserModel.getImage());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
 //        bindIvStatusImage(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
         initializeContextMenu();
@@ -284,6 +297,9 @@ public class MainScreenController implements Initializable {
             HBox hbox = (HBox) vBox.getChildren().get(0);
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
+            ImageView receiverimage = (ImageView) borderPane.getLeft();
+            System.out.println("-------------->"+receiverimage);
+            //to check if there is a new message or not
             if (borderPane.getRight() != null) {
                 newLabel.setVisible(false);
                 System.out.println("right of borderpane equals null");
@@ -293,6 +309,7 @@ public class MainScreenController implements Initializable {
             //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
             receivernumberID.setText(receiverNumber.getText());
+            ReceiverImgID.setImage(receiverimage.getImage());
 
             chatAreaBorderPaneID.setVisible(true);
         }
@@ -342,12 +359,14 @@ public class MainScreenController implements Initializable {
                         controller.msgLabelId.setText(messageDto.getContent());
                         if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
                             controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                            controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+
                             // controller.msgImgId.setImage(senderimg);
 
                         } else {
                             //  controller.msgImgId.setImage(recevierpicyure);
                         }
-                        msgTxtFieldId.setText("");
+                        msgTxtAreaID.setText("");
                         chatListView.getItems().add(anchorPane);
                         if (receiverNumber.equals(messageDto.getReceiverNumber())) {
 
@@ -366,7 +385,7 @@ public class MainScreenController implements Initializable {
 
     @FXML
     public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
-        if (msgTxtFieldId.getText().equals("")) {
+        if (msgTxtAreaID.getText().equals("")) {
             return;
         }
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
@@ -378,12 +397,13 @@ public class MainScreenController implements Initializable {
         //todo must retreive the image of the sender to db and send it as paramter in sendMsg
 
         if(fileFlag == false){
-            String messsage = msgTxtFieldId.getText();
-            Date date = Date.valueOf(LocalDate.now());
-            MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
-            try {
-                ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                clientConnectionInter.sendMsg(messageDto);
+        String messsage = msgTxtAreaID.getText();
+        Date date = Date.valueOf(LocalDate.now());
+        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
+        MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+        try {
+            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+            clientConnectionInter.sendMsg(messageDto);
 
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -401,21 +421,22 @@ public class MainScreenController implements Initializable {
                     senderImag = currentUserModel.getImage();
 
 
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                    try {
-                        AnchorPane anchorPane = fxmlLoader.load();
-                        ChatMessageController controller = fxmlLoader.getController();
-                        //todo still won't work with the method only by making the attribute public!
-                        //controller.setLabelValue(contact.getUsername());
-                        controller.msgLabelId.setText(messsage);
-                        controller.msgImgId.setImage(senderImag);
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                try {
+                    AnchorPane anchorPane = fxmlLoader.load();
+                    ChatMessageController controller = fxmlLoader.getController();
+                    //todo still won't work with the method only by making the attribute public!
+                    //controller.setLabelValue(contact.getUsername());
+                    controller.msgLabelId.setText(messsage);
+                   //  controller.msgImgId.setImage(senderImag);
 
 
-                        controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                        //todo senderimg must update in it's chatarea
-                        controller.msgImgId.setImage(senderImag);
+                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                    controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                    //todo senderimg must update in it's chatarea
+//                    controller.msgImgId.setImage(senderImag);
 
-                        msgTxtFieldId.setText("");
+                    msgTxtAreaID.setText("");
 
                         chatListView.getItems().add(anchorPane);
                         chatListView.scrollTo(anchorPane);

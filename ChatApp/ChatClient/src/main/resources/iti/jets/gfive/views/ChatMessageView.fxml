@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane prefHeight="58.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ChatMessageController">
    <children>
-      <HBox prefHeight="52.0" prefWidth="481.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="4.0">
+      <HBox layoutY="5.0" prefHeight="51.0" prefWidth="471.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="5.0">
          <children>
-            <ImageView fx:id="msgImgId" fitHeight="48.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 50px;" HBox.hgrow="ALWAYS">
-               <image>
-                  <Image url="@../images/backgroup.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="msgLabelId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="444.0" styleClass="msgLabelId" stylesheets="@../styles/ChatAreaStyle.css" text="Text Message" wrapText="true" HBox.hgrow="ALWAYS" />
+            <Label fx:id="msgLabelId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="464.0" styleClass="msgLabelId" stylesheets="@../styles/ChatAreaStyle.css" text="Text Message" wrapText="true" HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets left="7.0" right="7.0" />
+               </padding></Label>
          </children>
       </HBox>
    </children>
