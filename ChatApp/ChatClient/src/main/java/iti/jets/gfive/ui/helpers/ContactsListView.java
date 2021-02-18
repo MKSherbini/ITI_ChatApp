@@ -8,13 +8,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ContactsListView {
     private static ContactsListView contactsListView;
     private JFXListView<BorderPane> contactsListViewId;
+    FXMLLoader fxmlLoader;
 
     private ContactsListView(){}
 
@@ -28,6 +31,22 @@ public class ContactsListView {
 
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
+    }
+    public void changeContactStatus(UserDto user){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                contactsListViewId.getItems().forEach(item->{
+                    VBox v= (VBox) item.getChildren().get(1);
+                    Label lblPhone = (Label) v.getChildren().get(1);
+                    if(lblPhone.getText().equals(user.getPhoneNumber())){
+                        Label statusLabel= (Label)item.getChildren().get(2);
+                        statusLabel.setText(user.getStatus());
+                    }
+                });
+            }
+        });
+
     }
 
     public void fillContacts(ArrayList<UserDto> contacts){
@@ -44,6 +63,7 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
+                        controller.lblStatus.setText(contact.getStatus());
                         controller.contactImg.setImage(contact.getImage());
                         //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);

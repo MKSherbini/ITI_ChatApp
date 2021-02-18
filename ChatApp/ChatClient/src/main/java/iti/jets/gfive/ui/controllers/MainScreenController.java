@@ -69,10 +69,7 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private Button btnContextMenu;
-    private ContextMenu contextMenu;
-    private MenuItem miExit;
-    private MenuItem miLogout, miAvailable, miBusy, miAway, miOffline;
-    private Menu status;
+
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
     @FXML
@@ -98,9 +95,17 @@ public class MainScreenController implements Initializable {
     private ImageView ReceiverImgID;
     @FXML
     private ImageView profilepictureID;
+    @FXML
+    private ImageView ivStatus;
     private Label receiverNumber;
+    private Label newLabel ;
+    private ContextMenu contextMenu;
+    private MenuItem miExit;
+    private MenuItem miLogout,miAvailable,miBusy, miAway, miOffline;
+    private Menu status;
+    private Property<String> statusProperty = new SimpleObjectProperty<>("available");
 
-    private Label newLabel;
+
 
     @FXML
     void showContxtMenu(MouseEvent event) {
@@ -109,15 +114,13 @@ public class MainScreenController implements Initializable {
     }
 
     // this method binds the status image property on the imageview status image property
-    private void bindIvStatusImage(String imageName) {
-        statusImage = new SimpleObjectProperty<>();
-        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE, imageName)).toString()));
-        statusImage.bindBidirectional(ivStatus.imageProperty());
+    private void changeStatusUi(){
+        statusProperty.bindBidirectional(ModelsFactory.getInstance().getCurrentUserModel().statusProperty());
+        statusProperty.addListener((opserver,old,newval)->ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,newval)).toString())));
+        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,ModelsFactory.getInstance().getCurrentUserModel().getStatus())).toString()));
     }
 
-    @FXML
-    private ImageView ivStatus;
-    Property<Image> statusImage;
+
 
     // this method intialize the context menu and its items actions
     private void initializeContextMenu() {
@@ -157,12 +160,18 @@ public class MainScreenController implements Initializable {
 
     // this method define the action of the status menu items to change the status on gui and on the db.
     private void applyMenUItemAction(String statusName) {
-        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, statusName)).toString()));
         try {
             UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName);
             user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
             int rows = UserDBCrudService.getUserService().updateUserStatus(user);
-            System.out.println("status updated  : " + rows);
+            if (rows > 0 ){
+                ModelsFactory.getInstance().getCurrentUserModel().statusProperty().setValue(statusName);
+                changeStatusUi();
+                ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
+            }
+            ClientConnectionService.getClientConnService().puplishStatus(user);
+
+            System.out.println("status updated  : "+ rows);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -176,7 +185,8 @@ public class MainScreenController implements Initializable {
         CurrentUserNameID.setText(currentUserModel.getUsername());
         profilepictureID.setImage(currentUserModel.getImage());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
-//        bindIvStatusImage(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        System.out.println(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        changeStatusUi();
         initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
@@ -467,5 +477,9 @@ public class MainScreenController implements Initializable {
 
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
+    }
+    public void changeContactStatus(UserDto user) {
+//        ContactsListView.getInstance().changeContactStatus(user);
+        System.out.println(user.getUsername()+" ------->"+ user.getStatus());
     }
 }

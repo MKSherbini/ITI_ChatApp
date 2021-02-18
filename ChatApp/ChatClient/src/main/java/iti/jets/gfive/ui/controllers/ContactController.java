@@ -23,6 +23,8 @@ public class ContactController implements Initializable {
     @FXML
     public Label contactNumberLabel;
     @FXML
+    public Label lblStatus;
+    @FXML
     public Button newButton;
     @FXML
     public Label newLabelID;
