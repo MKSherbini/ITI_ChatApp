@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -126,7 +127,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
  //todo must make another fxml to receive a message with photo in the leftside
     @Override
     public void receiveMsg(MessageDto messageDto) throws RemoteException {
-
+        List<MessageDto> messageList = new ArrayList<>();
 
         Platform.runLater(new Runnable() {
             @Override
@@ -146,6 +147,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                         System.out.println("content of the message " + messageDto.getContent());
                         //el mafrod akhod el senderid w aro7 ageb sorto
                         controller.msgLabelId.setText(messageDto.getContent());
+
                         // controller.setMsgImgId();
                         // msgTxtFieldId.setText("");
 
@@ -171,7 +173,10 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                             // newLabel.setVisible(true);
                             label.setStyle("-fx-background-color: green;");
 
+
                             item.setRight(label);
+                            label.setVisible(true);
+
 //                                              b.setOnAction(actionEvent -> {
 //                                                  try {
 //                                                      b.setVisible(false);
@@ -191,10 +196,11 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 //
 //
 //                                              });
+                            break;
                         }
 
                         //newButton.setVisible(true);
-                        break;
+
                     }
                 }
             }
@@ -275,13 +281,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         return this.notificationsListId;
     }
     public void addNotifications(ArrayList<NotificationDto> notifications){
-        System.out.println(notifications.size() + "<-------------1");
+        //System.out.println(notifications.size() + "<-------------1");
         for (NotificationDto notification: notifications) {
+            increaseNotificationsNumber();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
             try {
                 BorderPane item = fxmlLoader.load();
                 NotificationViewController controller = fxmlLoader.getController();
-                System.out.println(notification.getContent() + "<-------------2");
+                //System.out.println(notification.getContent() + "<-------------2");
                 controller.notificationContentId.setText(notification.getContent());
                 controller.senderIdLabel.setText(notification.getSenderId());
                 controller.notificationId = notification.getId();

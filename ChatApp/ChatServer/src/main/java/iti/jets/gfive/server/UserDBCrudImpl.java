@@ -26,6 +26,52 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     }
 
     @Override
+    public UserDto selectFromDB(String phoneNumber) throws RemoteException {
+        UserDto user = new UserDto();
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            String sql = "select * from user_data \n" +
+                    " WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, phoneNumber);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                user = new UserDto();
+                user.setUsername(resultSet.getString("user_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setGender(resultSet.getString("gender"));
+                user.setCountry(resultSet.getString("country"));
+                user.setBirthDate(resultSet.getDate("date_birth"));
+                user.setBio(resultSet.getString("bio"));
+                user.setStatus(resultSet.getString("user_status"));
+                byte[] bytes = {};
+                bytes = resultSet.getBytes("picture");
+                Image image = deserializeFromString(bytes);
+                user.setImage(image);
+
+                return user;
+            }
+        } catch (SQLException | NullPointerException | IOException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null && resultSet != null) {
+            try {
+                stmt.close();
+                con.close();
+                resultSet.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public UserDto selectFromDB(String phoneNumber, String password) throws RemoteException {
         UserDto user = new UserDto();
         ds = DataSourceFactory.getMySQLDataSource();
@@ -159,15 +205,15 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-           String insertQuery = "update user_data set user_status = ? WHERE phone_number = ?";
+            String insertQuery = "update user_data set user_status = ? WHERE phone_number = ?";
             PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
             //null
-            System.out.println("update the status of  " +user.getStatus());
-             preparedStatement.setString(1,user.getStatus());
+            System.out.println("update the status of  " + user.getStatus());
+            preparedStatement.setString(1, user.getStatus());
             preparedStatement.setString(2, user.getPhoneNumber());
             rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("rowaffected "+rowsAffected);
-        } catch (SQLException  throwables) {
+            System.out.println("rowaffected " + rowsAffected);
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         if (con != null && stmt != null) {
@@ -188,31 +234,41 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         Connection con = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
-        try {
-            con = ds.getConnection();
-            String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
-            //"update users set num_points = ? where first_name = ?";
-            preparedStatement = con.prepareStatement(insertQuery);
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getEmail());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getGender());
-            preparedStatement.setString(5, user.getCountry());
-            preparedStatement.setDate(6, user.getBirthDate());
-            preparedStatement.setString(7, user.getBio());
-            preparedStatement.setString(8, user.getPhoneNumber());
-            System.out.println("inside 2");
-            rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("towsaffected" + rowsAffected);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        if(user.getBio() != null && user.getBio().length()>200)
+        {
+            System.out.println("Bio entered is too long");
+
         }
-        if (con != null && preparedStatement != null) {
+        else {
             try {
-                preparedStatement.close();
-                con.close();
+                con = ds.getConnection();
+                String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
+                //"update users set num_points = ? where first_name = ?";
+                preparedStatement = con.prepareStatement(insertQuery);
+                preparedStatement.setString(1, user.getUsername());
+                preparedStatement.setString(2, user.getEmail());
+                preparedStatement.setString(3, user.getPassword());
+                preparedStatement.setString(4, user.getGender());
+                preparedStatement.setString(5, user.getCountry());
+                preparedStatement.setDate(6, user.getBirthDate());
+
+                preparedStatement.setString(7, user.getBio());
+
+                preparedStatement.setString(8, user.getPhoneNumber());
+                System.out.println("inside 2");
+                rowsAffected = preparedStatement.executeUpdate();
+                System.out.println("towsaffected" + rowsAffected);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            }
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
             }
         }
         return rowsAffected;
@@ -295,5 +351,43 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         return arr;
     }
 
+    @Override
+    public Image selectUserImage(String number) throws RemoteException {
+        Image img = null;
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            String sql = "select picture from user_data \n" +
+                    " WHERE phone_number = ?";
+            preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, number);
 
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                byte[] bytes = {};
+                bytes = resultSet.getBytes("picture");
+                Image image = deserializeFromString(bytes);
+
+                img = image;
+                return image;
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
+        return img;
+    }
 }

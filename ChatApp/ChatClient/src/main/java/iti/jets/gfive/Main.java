@@ -6,7 +6,9 @@ import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.LoginManager;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
+import iti.jets.gfive.ui.helpers.serialization.Marshaltor;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
@@ -23,19 +25,18 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws SQLException {
-
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
         LoginManager loginManager = LoginManager.getInstance();
         // check if the can login returned true this meaning that user just exit
         // and his password and phone number saved and can enter
-        if (loginManager.canLogin()){
+        if (loginManager.canLogin()) {
             //implicitly login the user
             loginManager.initCurrentUser();
             //redirect user to main screen
             stageCoordinator.switchToMainPage();
 
-        }else{
+        } else {
             // redirect user to login screen
             stageCoordinator.switchToLoginPage();
         }
@@ -45,7 +46,10 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(ae ->{
            StageCoordinator.getInstance().unregisterCurrentUser(true);
         });
-  }
+//        var m = Marshaltor.getInstance();
+//        m.marshalChat();
+//        Platform.exit();
+    }
 
     private void botsDemo() {
         BotsManager botsManager = BotsManager.getInstance();

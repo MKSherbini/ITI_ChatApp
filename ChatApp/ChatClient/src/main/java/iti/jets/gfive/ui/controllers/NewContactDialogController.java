@@ -2,12 +2,15 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.NotifDBRecord;
 import iti.jets.gfive.common.models.NotificationDto;
+import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.services.UserDBCrudService;
+import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
@@ -64,20 +67,17 @@ public class NewContactDialogController implements Initializable {
     public void performAddContact(ActionEvent actionEvent) {
         for (Object phoneNumber : listView.getItems()) {
             addingContacts(phoneNumber.toString());
-            System.out.println(phoneNumber.toString() + " Added to db");
         }
+        listView.getItems().clear();
     }
 
     public void addingContacts(String contactNum){
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        //System.out.println("item 0 in list view: " + listView.getItems().get(0).toString());
-        //todo dialog or validation: user is stupid and trying to add him/herself!!
         if(contactNum.equals(currentUserModel.getPhoneNumber())){
             System.out.println("Are you trying to add yourself!!");
             return;
         }
-        //1-check if this phone number is registered in the db?
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
         boolean registered = true;
         try {
@@ -86,20 +86,29 @@ public class NewContactDialogController implements Initializable {
             e.printStackTrace();
         }
         if(!registered){
-            // todo dialog or validation: user is not registered??
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
-        //todo add the same user twice - CHECK
-        //2-if registered go and send notification LATER, go and insert the notification in db
-        //2-go insert the notification in db
+        //todo dialog or validation: user already exists in the contacts list
+        ContactsListView c = ContactsListView.getInstance();
+        boolean contactExist = c.contactExist(contactNum);
+        if(contactExist){
+            System.out.println("Contact already exists in your contacts list");
+            return;
+        }
         NotificationCrudInter notificationServices = NotificationDBCrudService.getNotificationService();
-        String notificationContent = (currentUserModel.getUsername() +" with the phone number "
-                 +currentUserModel.getPhoneNumber() +" is trying to add you");
-        long millis=System.currentTimeMillis();
-        Date currentDate = new Date(millis);
-        //System.out.println("current date: " + currentDate.toString());
         try {
+            boolean notificationExists = notificationServices.pendingNotification(currentUserModel.getPhoneNumber(),
+                    contactNum);
+            //todo dialog or validation: pending notification (a notification already exist)
+            if(notificationExists){
+                System.out.println("pending notification");
+                return;
+            }
+            String notificationContent = (currentUserModel.getUsername() +" with the phone number "
+                    +currentUserModel.getPhoneNumber() +" is trying to add you");
+            long millis=System.currentTimeMillis();
+            Date currentDate = new Date(millis);
             NotifDBRecord notifRecord = notificationServices.insertNotification(notificationContent,
                     currentUserModel.getPhoneNumber(), currentDate, false, contactNum);
             System.out.println("rows affected after notification: " + notifRecord.getRowsAffected());
@@ -111,36 +120,15 @@ public class NewContactDialogController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        //3-assume notification is sent and accepted
-        //4-take the phone number and the current user's phone_number
-        //and send as strings to server to add in the contacts table
-//        ContactDBCrudInter contactDBCrudService = ContactDBCrudService.getContactService();
-//        try {
-//            int rowsAffected = contactDBCrudService.insertContactRecord(contactNum,
-//                    currentUserModel.getPhoneNumber());
-//            System.out.println("number of affected rows after contact insert: " + rowsAffected);
-//            ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
-//            ArrayList<UserDto> contacts = null;
-//            try {
-//                //5-update the contacts listView dunno yet
-//                contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
-//                ContactsListView c = ContactsListView.getInstance();
-//                c.fillContacts(contacts);
-//            } catch (RemoteException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            if(rowsAffected == 0) return;
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void performNewContact(ActionEvent actionEvent) {
-
+        boolean validField= validateFields();
+        if (!validField) return;
        listView.getItems().add(txtPhoneNumber.getText());
        txtPhoneNumber.setText("");
     }
-
+    public boolean validateFields() {
+        return txtPhoneNumber.validate();
+    }
 }

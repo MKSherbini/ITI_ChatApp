@@ -58,8 +58,7 @@ public class UserDto implements Serializable {
         this.country = country;
         this.email = email;
         this.bio = bio;
-        //this.image = new Image(UserDto.class.getResource("/images/personal.jpg").getPath());
-
+        this.image= new Image(UserDto.class.getResource("/images/personal.jpg").toString());
     }
 
     public UserDto(String phoneNumber, Image image) {
@@ -84,8 +83,7 @@ public class UserDto implements Serializable {
 
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
-        if (image == null)
-            return ;
+        //image = new Image(UserDto.class.getResource("/iti/jets/gfive/images/sponge.png").toString());
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
         if (image == null) System.out.println("fimageeeeeeee");
         if (image != null) System.out.println("gimageeeeeeee");
