@@ -30,8 +30,8 @@ public class FileMessageController {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter musicFileExtensions =new FileChooser.ExtensionFilter("Music fFiles","*.mp3", "*.mp4", "*.wav");
         FileChooser.ExtensionFilter imageFileExtensions =new FileChooser.ExtensionFilter("Image Files","*.jpg", "*.jpeg", "*.png");
-        //fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files","*.wav"));
-        fileChooser.getExtensionFilters().addAll(musicFileExtensions, imageFileExtensions);
+        FileChooser.ExtensionFilter textFileExtensions =new FileChooser.ExtensionFilter("Text Files","*.txt");
+        fileChooser.getExtensionFilters().addAll(musicFileExtensions, imageFileExtensions, textFileExtensions);
         File selectedFile = fileChooser.showSaveDialog(null);
         if(fileChooser != null){
             if(selectedFile != null){
