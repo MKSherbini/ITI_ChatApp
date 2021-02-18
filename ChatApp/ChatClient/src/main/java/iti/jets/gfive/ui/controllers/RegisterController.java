@@ -111,6 +111,8 @@ public class RegisterController implements Initializable {
             if (rowsAffected == 0) return;
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
 
         // validate data and submit

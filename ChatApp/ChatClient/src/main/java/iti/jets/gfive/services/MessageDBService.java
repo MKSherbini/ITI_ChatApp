@@ -11,19 +11,21 @@ import java.rmi.registry.Registry;
 public class MessageDBService {
     private static MessageDBInter messageDBInter = null;
 
-    private MessageDBService(){}
+    private MessageDBService() {
+    }
 
-    public static MessageDBInter getMessageService(){
-        if(messageDBInter == null){
-            try {
-                Registry registry = RegisteryObj.getInstance();
-                messageDBInter = (MessageDBInter) registry.lookup("MessageDb");
-                return messageDBInter;
-            } catch (RemoteException | NotBoundException e) {
-                e.printStackTrace();
-                StageCoordinator.getInstance().reset();
-            }
+    public static MessageDBInter getMessageService() {
+//        if(messageDBInter == null){
+        try {
+            Registry registry = RegisteryObj.getInstance();
+            messageDBInter = (MessageDBInter) registry.lookup("MessageDb");
+            return messageDBInter;
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+            StageCoordinator.getInstance().reset();
         }
-        return messageDBInter;
+//        }
+//        return messageDBInter;
+        return null;
     }
 }

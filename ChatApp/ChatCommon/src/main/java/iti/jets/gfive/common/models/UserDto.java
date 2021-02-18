@@ -29,6 +29,15 @@ public class UserDto implements Serializable {
     public UserDto() {
     }
 
+    public UserDto(String phoneNumber, String username, String password, String gender, String status, Image image) {
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.status = status;
+        this.image = image;
+    }
+
     public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate, Image image) {
         this.phoneNumber = phoneNumber;
         this.username = username;
@@ -55,6 +64,12 @@ public class UserDto implements Serializable {
     public UserDto(String phoneNumber, Image image) {
         this.phoneNumber = phoneNumber;
         this.image = image;
+    }
+
+    public UserDto(String phoneNumber, String username, String status) {
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.status = status;
     }
 
     public UserDto(String phoneNumber, String status) {

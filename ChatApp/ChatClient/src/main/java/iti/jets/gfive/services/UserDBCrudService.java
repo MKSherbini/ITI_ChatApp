@@ -15,17 +15,17 @@ public class UserDBCrudService {
     }
 
     public static UserDBCrudInter getUserService() {
-//        if (userDBCrudInter == null) {
-        try {
-            Registry registry = RegisteryObj.getInstance();
-            userDBCrudInter = (UserDBCrudInter) registry.lookup("UserDB-CRUD");
-            return userDBCrudInter;
-        } catch (Exception e) {
-            e.printStackTrace();
-            StageCoordinator.getInstance().reset();
+        if (userDBCrudInter == null) {
+            try {
+                Registry registry = RegisteryObj.getInstance();
+                userDBCrudInter = (UserDBCrudInter) registry.lookup("UserDB-CRUD");
+                return userDBCrudInter;
+            } catch (Exception e) {
+                e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+            }
         }
-//        }
-//        return userDBCrudInter;
-        return null;
+        return userDBCrudInter;
+//        return null;
     }
 }

@@ -9,20 +9,18 @@ import java.rmi.registry.Registry;
 public class RegisteryObj {
     private static Registry registryObj = null;
 
-    private RegisteryObj() {
-    }
+    private RegisteryObj(){}
 
-    public static Registry getInstance() {
-//        if(registryObj == null){
-        try {
-            registryObj = LocateRegistry.getRegistry(8000);
-            return registryObj;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            StageCoordinator.getInstance().reset();
+    public static Registry getInstance(){
+        if(registryObj == null){
+            try {
+                registryObj = LocateRegistry.getRegistry(8000);
+                return registryObj;
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+            }
         }
-//        }
-//        return registryObj;
-        return null;
+        return registryObj;
     }
 }

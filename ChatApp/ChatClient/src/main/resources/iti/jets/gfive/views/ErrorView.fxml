@@ -25,7 +25,6 @@
       </AnchorPane>
    </children>
    <stylesheets>
-      <URL value="@../styles/login.css" />
       <URL value="@../styles/error.css" />
    </stylesheets>
 </AnchorPane>
