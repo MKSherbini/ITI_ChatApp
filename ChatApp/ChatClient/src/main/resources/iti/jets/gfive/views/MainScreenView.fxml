@@ -171,7 +171,7 @@
                      <children>
                         <Region prefHeight="42.0" prefWidth="0.0" />
                         <TextField fx:id="msgTxtFieldId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="451.0" styleClass="msgTxtFieldId" stylesheets="@../styles/ChatAreaStyle.css" HBox.hgrow="ALWAYS" />
-                        <JFXButton fx:id="attachBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="42.0" styleClass="attachBtnId" stylesheets="@../styles/ChatAreaStyle.css" text=" " textFill="#e1e6fa">
+                        <JFXButton fx:id="attachBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onClickAttachFile" prefHeight="38.0" prefWidth="42.0" styleClass="attachBtnId" stylesheets="@../styles/ChatAreaStyle.css" text=" " textFill="#e1e6fa">
                            <font>
                               <Font name="System Bold" size="11.0" />
                            </font>

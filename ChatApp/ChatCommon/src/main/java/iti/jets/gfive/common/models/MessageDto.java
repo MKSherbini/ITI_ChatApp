@@ -10,6 +10,7 @@ public class MessageDto implements Serializable {
     private String state;
     private String content;
     private Date messageDate;
+    private byte[] fileContent;
 
     public MessageDto() {
     }
@@ -20,6 +21,14 @@ public class MessageDto implements Serializable {
         this.receiverNumber = receiverNumber;
         this.state = state;
         this.content = content;
+        this.messageDate = messageDate;
+    }
+    public MessageDto(String messageName, String senderNumber, String receiverNumber, String state, byte[] fileContent, Date messageDate){
+        this.messageName = messageName;
+        this.senderNumber = senderNumber;
+        this.receiverNumber = receiverNumber;
+        this.state = state;
+        this.fileContent = fileContent;
         this.messageDate = messageDate;
     }
 
@@ -69,5 +78,13 @@ public class MessageDto implements Serializable {
 
     public void setMessageDate(Date messageDate) {
         this.messageDate = messageDate;
+    }
+
+    public byte[] getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
     }
 }

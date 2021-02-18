@@ -80,7 +80,11 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             preparedStatement.setString(1, messageDto.getSenderNumber());
             preparedStatement.setString(2, messageDto.getReceiverNumber());
             preparedStatement.setString(3, messageDto.getState());
-            preparedStatement.setString(4, messageDto.getContent());
+            if(messageDto.getContent() == null){
+                preparedStatement.setBytes(4, messageDto.getFileContent());
+            } else{
+                preparedStatement.setString(4, messageDto.getContent());
+            }
             preparedStatement.setDate(5, messageDto.getMessageDate());
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {

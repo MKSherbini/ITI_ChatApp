@@ -41,10 +41,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -92,6 +96,7 @@ public class MainScreenController implements Initializable {
     private Label receiverNumber;
 
     private Label newLabel;
+    private boolean fileFlag = false;
 
     @FXML
     void showContxtMenu(MouseEvent event) {
@@ -372,53 +377,100 @@ public class MainScreenController implements Initializable {
 
         //todo must retreive the image of the sender to db and send it as paramter in sendMsg
 
-        String messsage = msgTxtFieldId.getText();
-        Date date = Date.valueOf(LocalDate.now());
-        // System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
-        MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
-        try {
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            clientConnectionInter.sendMsg(messageDto);
+        if(fileFlag == false){
+            String messsage = msgTxtFieldId.getText();
+            Date date = Date.valueOf(LocalDate.now());
+            MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+            try {
+                ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                clientConnectionInter.sendMsg(messageDto);
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
 
-        int rowaffected = messageServices.insertMessage(messageDto);
-        // System.out.println("row inserted equal "+rowaffected);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                UserDBCrudInter userServices = UserDBCrudService.getUserService();
-                Image senderImag = null;
+            int rowaffected = messageServices.insertMessage(messageDto);
+            // System.out.println("row inserted equal "+rowaffected);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    UserDBCrudInter userServices = UserDBCrudService.getUserService();
+                    Image senderImag = null;
 
-                  //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                    //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
                     senderImag = currentUserModel.getImage();
 
 
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                    try {
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        ChatMessageController controller = fxmlLoader.getController();
+                        //todo still won't work with the method only by making the attribute public!
+                        //controller.setLabelValue(contact.getUsername());
+                        controller.msgLabelId.setText(messsage);
+                        controller.msgImgId.setImage(senderImag);
+
+
+                        controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                        //todo senderimg must update in it's chatarea
+                        controller.msgImgId.setImage(senderImag);
+
+                        msgTxtFieldId.setText("");
+
+                        chatListView.getItems().add(anchorPane);
+                        chatListView.scrollTo(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        else{
+            String filePath = msgTxtFieldId.getText();
+            File fileToSend = new File(filePath);
+            try {
+                FileInputStream fis = new FileInputStream(fileToSend);
+                int fileLength = (int) fileToSend.length();
+                System.out.println(fileLength + "file length");
+                byte [] fileData = new byte[fileLength];
+                int c = fis.read(fileData);
+                System.out.println(c + "int c");
+                System.out.println(fileData.toString() + "fileData byte array");
+                Date date = Date.valueOf(LocalDate.now());
+                MessageDto fileMessageDto = new MessageDto("file", currentUserModel.getPhoneNumber(),
+                        receiverNumber.getText(), "unseen", fileData,date);
                 try {
-                    AnchorPane anchorPane = fxmlLoader.load();
-                    ChatMessageController controller = fxmlLoader.getController();
-                    //todo still won't work with the method only by making the attribute public!
-                    //controller.setLabelValue(contact.getUsername());
-                    controller.msgLabelId.setText(messsage);
-                     controller.msgImgId.setImage(senderImag);
-
-
-                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                    //todo senderimg must update in it's chatarea
-                    controller.msgImgId.setImage(senderImag);
-
-                    msgTxtFieldId.setText("");
-
-                    chatListView.getItems().add(anchorPane);
-                    chatListView.scrollTo(anchorPane);
-                } catch (IOException e) {
+                    ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                    //clientConnectionInter.sendMsg(fileMessageDto);
+                    int rowsffected = messageServices.insertMessage(fileMessageDto);
+                } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                        try {
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            FileMessageController controller = fxmlLoader.getController();
+                            //todo still won't work with the method only by making the attribute public!
+                            controller.fileNameLabelId.setText(fileToSend.getName());
+                            controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                            msgTxtFieldId.setText("");
+                            chatListView.getItems().add(anchorPane);
+                            chatListView.scrollTo(anchorPane);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+        }
+
 
     }
 
@@ -447,5 +499,15 @@ public class MainScreenController implements Initializable {
 
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
+    }
+
+    public void onClickAttachFile(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if(selectedFile != null){
+            fileFlag = true;
+            msgTxtFieldId.setText(selectedFile.getPath());
+            System.out.println(selectedFile.getPath() + "inside the attach btn method");
+        }
     }
 }
