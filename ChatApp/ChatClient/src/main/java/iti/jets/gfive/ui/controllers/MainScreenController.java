@@ -220,8 +220,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    public void onClickProfile(ActionEvent event)
-    {
+    public void onClickProfile(ActionEvent event) {
         System.out.println("Inside the onclick of the photo");
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToProfilePage();
@@ -273,7 +272,7 @@ public class MainScreenController implements Initializable {
     //click on the contact to start chat with him/her
     //todo update main page with textaare instead of textfield in order to wrap long messages
     @FXML
-    public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
+    public void onClickonContact(MouseEvent mouseEvent) {
 
 //            //todo still won't work with the method only by making the attribute public!
 //            //controller.setLabelValue(contact.getUsername());
@@ -293,7 +292,7 @@ public class MainScreenController implements Initializable {
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
             ImageView receiverimage = (ImageView) borderPane.getLeft();
-            System.out.println("-------------->"+receiverimage);
+            System.out.println("-------------->" + receiverimage);
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
                 newLabel.setVisible(false);
@@ -312,6 +311,7 @@ public class MainScreenController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
+        if (messageServices == null) return;
 
 //        System.out.println("pressed");
 //        ObservableList<BorderPane> selectedContact;
@@ -329,10 +329,17 @@ public class MainScreenController implements Initializable {
         if (receiverNumber == null) {
             return;
         }
-        final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        List<MessageDto> messageList = null;
+        try {
+            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+//            StageCoordinator.getInstance().reset();
+        }
 
         //   System.out.println("number of list" +messageList.size());
         // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+        List<MessageDto> finalMessageList = messageList;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -342,7 +349,7 @@ public class MainScreenController implements Initializable {
 
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
-                    for (MessageDto messageDto : messageList) {
+                    for (MessageDto messageDto : finalMessageList) {
 
                         //select picture from user_data where user_id = sender_id
                         //select picture from user_data where user_id= recevierid
@@ -368,7 +375,7 @@ public class MainScreenController implements Initializable {
                         }
 
                     }
-                }catch(IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -379,7 +386,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
+    public void onClickSendButton(ActionEvent actionEvent) {
         if (msgTxtAreaID.getText().equals("")) {
             return;
         }
@@ -393,7 +400,7 @@ public class MainScreenController implements Initializable {
 
         String messsage = msgTxtAreaID.getText();
         Date date = Date.valueOf(LocalDate.now());
-        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
+        System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
         MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -403,7 +410,11 @@ public class MainScreenController implements Initializable {
             e.printStackTrace();
         }
 
-        int rowaffected = messageServices.insertMessage(messageDto);
+        try {
+            int rowaffected = messageServices.insertMessage(messageDto);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         // System.out.println("row inserted equal "+rowaffected);
         Platform.runLater(new Runnable() {
             @Override
@@ -411,8 +422,8 @@ public class MainScreenController implements Initializable {
                 UserDBCrudInter userServices = UserDBCrudService.getUserService();
                 Image senderImag = null;
 
-                  //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
-                    senderImag = currentUserModel.getImage();
+                //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                senderImag = currentUserModel.getImage();
 
 
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
@@ -422,8 +433,7 @@ public class MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     controller.msgLabelId.setText(messsage);
-                   //  controller.msgImgId.setImage(senderImag);
-
+                    //  controller.msgImgId.setImage(senderImag);
 
                     controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
                     controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");

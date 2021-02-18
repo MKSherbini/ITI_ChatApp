@@ -5,6 +5,7 @@ import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.controllers.LoginController;
 import iti.jets.gfive.ui.controllers.RegisterController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +22,8 @@ public class StageCoordinator {
     private static Stage primaryStage;
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
+    private boolean hasServerErrors;
+    private boolean switchingToError;
 
     private StageCoordinator() {
     }
@@ -69,6 +72,11 @@ public class StageCoordinator {
     }
 
     private void loadView(String viewName) {
+        if (hasServerErrors)
+            if (!viewName.equals("ErrorView"))
+                return;
+
+
         if (primaryStage == null) {
             throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
         }
@@ -91,12 +99,28 @@ public class StageCoordinator {
             Scene loginScene = loginSceneData.getScene();
             primaryStage.setScene(loginScene);
         }
+        System.out.println("loaded " + viewName);
     }
 
 
     public void switchToMainPage() {
         var viewName = "MainScreenView";
         loadView(viewName);
+    }
+
+    public void switchToErrorPage() {
+        var viewName = "ErrorView";
+        loadView(viewName);
+    }
+
+    public void reset() {
+        System.out.println("Resetting");
+        hasServerErrors = true;
+        unregisterCurrentUser();
+        switchToErrorPage();
+//        Platform.exit();
+//        scenes.clear();
+//        switchToLoginPage();
     }
 
     // todo fix this shit
@@ -108,10 +132,13 @@ public class StageCoordinator {
         registered = false;
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
-            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
             UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
         } catch (RemoteException e) {
             e.printStackTrace();
+            // calmly squashing the no server error
+            // todo until another method emerges I'm doing it this way...
+            reset();
         }
     }
 
