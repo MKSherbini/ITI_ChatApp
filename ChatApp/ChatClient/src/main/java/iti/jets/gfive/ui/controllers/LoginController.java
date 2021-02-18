@@ -70,7 +70,7 @@ public class LoginController implements Initializable {
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
             System.out.println("befor");
-            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+//            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
             if (userDto == null) {
                 return;
@@ -104,6 +104,7 @@ public class LoginController implements Initializable {
             currentUserModel.setPhoneNumber(txt_loginPhone.getText());
             currentUserModel.setUsername(userDto.getUsername());
             currentUserModel.setStatus(userDto.getStatus());
+
             //in case the user did not enter the date in registeration
             Date date = userDto.getBirthDate();
             if (date != null) {
@@ -115,6 +116,7 @@ public class LoginController implements Initializable {
             currentUserModel.setPassword(txt_loginPass.getText());
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
 
         } catch (RemoteException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package iti.jets.gfive.ui.models;
 
+import iti.jets.gfive.common.models.UserDto;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,6 +8,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 
 import java.sql.Blob;
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class CurrentUserModel {

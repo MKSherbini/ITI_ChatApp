@@ -40,6 +40,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     private BorderPane borderPane;
     private Label name;
     private Label number;
+    ArrayList<UserDto> contacts;
     //private  Label newLabel;
     Label label = new Label("new");
 
@@ -247,7 +248,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
-        ArrayList<UserDto> contacts;
+
         try {
             contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
             ContactsListView c = ContactsListView.getInstance();
@@ -256,6 +257,20 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void updateStatus(UserDto user) throws RemoteException {
+//        ContactsListView con = ContactsListView.getInstance();
+//        con.setContactsListViewId();
+        System.out.println(user.getPhoneNumber() + "-----------> "+ user.getStatus());
+
+        ContactsListView c = ContactsListView.getInstance();
+            c.changeContactStatus(user);
+        StageCoordinator.getInstance().changeStatus(user);
+//        c.fillContacts(contacts);
+
+    }
+
     public JFXListView<BorderPane> getNotificationsToFill(){
         return this.notificationsListId;
     }

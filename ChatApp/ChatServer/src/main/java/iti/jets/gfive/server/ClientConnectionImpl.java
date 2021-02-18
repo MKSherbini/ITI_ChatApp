@@ -42,5 +42,21 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 }
             }
         });
+
+    }
+
+    @Override
+    public void puplishStatus(UserDto user) throws RemoteException {
+        if(clientsPool==null||clientsPool.size()<1)
+            return ;
+        clientsPool.forEach(connectedClient -> {
+            if(!connectedClient.getClient().getPhoneNumber().equals(user.getPhoneNumber())){
+                try {
+                    connectedClient.getReceiveNotif().updateStatus(user);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

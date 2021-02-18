@@ -3,7 +3,9 @@ package iti.jets.gfive.ui.helpers;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.controllers.LoginController;
+import iti.jets.gfive.ui.controllers.MainScreenController;
 import iti.jets.gfive.ui.controllers.RegisterController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,11 +15,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class StageCoordinator {
     //    private boolean closed = false;
+    boolean registered = false;
     private static Stage primaryStage;
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
@@ -101,21 +105,28 @@ public class StageCoordinator {
 
     // todo fix this shit
     // This method unregister the user from the server
-    public void unregisterCurrentUser() {
+    public void unregisterCurrentUser(boolean force) {
         if (!registered) {
             return;
         }
         registered = false;
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
+            UserDto user=new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(),ModelsFactory.getInstance().getCurrentUserModel().getUsername(),ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+            user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
+            clientConnectionInter.puplishStatus(user);
             clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
-            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            // force will be true only on exit and close
+            if (force){
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    boolean registered = false;
+
 
     public void registerUser(UserDto userDto) {
         if (registered) return;
@@ -124,10 +135,23 @@ public class StageCoordinator {
         try {
             NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
 //            UnicastRemoteObject.exportObject(notify, 8000);
-
             clientConnectionInter.register(userDto, notify);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+    public void changeStatus(UserDto user){
+        System.out.println(user.getPhoneNumber() + "-----------> "+ user.getStatus());
+//        ( (MainScreenController)scenes.get("MainScreenView").getLoader().getController()).changeContactStatus(user);
+        ArrayList<UserDto> contacts = null;
+        try {
+            contacts = ContactDBCrudService.getContactService().getContactsList(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
+        } catch (RemoteException remoteException) {
+            remoteException.printStackTrace();
+        }
+
+        ContactsListView c = ContactsListView.getInstance();
+        c.fillContacts(contacts);
     }
 }

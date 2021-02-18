@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae ->{
-           StageCoordinator.getInstance().unregisterCurrentUser();
+           StageCoordinator.getInstance().unregisterCurrentUser(true);
         });
   }
 

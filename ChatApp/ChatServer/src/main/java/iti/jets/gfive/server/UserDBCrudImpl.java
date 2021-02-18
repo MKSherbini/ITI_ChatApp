@@ -83,15 +83,15 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         try {
             con = ds.getConnection();
             String insertQuery = "insert into user_data\n" +
-                    "(phone_number, user_name, user_password, gender, date_birth, picture,user_status)\n" +
-                    "values (?, ?, ?, ?, ?, ?, ? )";
+                    "(phone_number, user_name, user_password, gender, date_birth, picture)\n" +
+                    "values (?, ?, ?, ?, ?, ? )";
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, user.getPhoneNumber());
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getGender());
             preparedStatement.setDate(5, user.getBirthDate());
-            preparedStatement.setString(7, "available");
+
 //            FileInputStream fileInputStream = new FileInputStream("C:\\Users\\A\\Desktop\\JavaProject_Team5ChatAPP\\ITI_ChatApp\\ChatApp\\ChatClient\\src\\main\\resources\\iti\\jets\\gfive\\images\\personal.jpg");
 //            Image image = new Image(fileInputStream);
             if (user.getImage() == null) System.out.println("F*Image is still F*Null");

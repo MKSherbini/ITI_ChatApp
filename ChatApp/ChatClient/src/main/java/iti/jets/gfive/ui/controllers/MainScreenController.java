@@ -87,14 +87,19 @@ public class  MainScreenController implements Initializable {
     private MenuItem miExit;
     private MenuItem miLogout,miAvailable,miBusy, miAway, miOffline;
     private Menu status;
-    private Property<String> stausProperty = new SimpleObjectProperty<>("available");
-   @FXML
+    private Property<String> statusProperty = new SimpleObjectProperty<>("available");
+
+
+
+    @FXML
     void showContxtMenu(MouseEvent event) {
         contextMenu.show(btnContextMenu.getParent(),event.getX(),event.getY());
 
     }
     // this method binds the status image property on the imageview status image property
     private void changeStatusUi(){
+        statusProperty.bindBidirectional(ModelsFactory.getInstance().getCurrentUserModel().statusProperty());
+        statusProperty.addListener((opserver,old,newval)->ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,newval)).toString())));
         ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,ModelsFactory.getInstance().getCurrentUserModel().getStatus())).toString()));
     }
 
@@ -149,8 +154,10 @@ public class  MainScreenController implements Initializable {
             if (rows > 0 ){
                 ModelsFactory.getInstance().getCurrentUserModel().statusProperty().setValue(statusName);
                 changeStatusUi();
-//                ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
+                ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE,statusName)).toString()));
             }
+            ClientConnectionService.getClientConnService().puplishStatus(user);
+
             System.out.println("status updated  : "+ rows);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -385,4 +392,8 @@ public class  MainScreenController implements Initializable {
 
     }
 
+    public void changeContactStatus(UserDto user) {
+//        ContactsListView.getInstance().changeContactStatus(user);
+        System.out.println(user.getUsername()+" ------->"+ user.getStatus());
+    }
 }
