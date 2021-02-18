@@ -233,7 +233,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         Connection con = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
-        if(user.getBio().length()>200)
+        if(user.getBio() != null && user.getBio().length()>200)
         {
             System.out.println("Bio entered is too long");
 
