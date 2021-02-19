@@ -524,7 +524,10 @@ public class MainScreenController implements Initializable {
         chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
         chatModel.setChatOwner(currentUserModel.getUsername());
         messageList.forEach(messageDto -> {
-            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+            if(messageDto.getMessageName().equals("text")){
+                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+            }
+            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
         });
 
         var m = Marshaltor.getInstance();
