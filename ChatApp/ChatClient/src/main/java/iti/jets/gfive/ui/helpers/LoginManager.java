@@ -45,10 +45,10 @@ public class LoginManager {
     // true  : user exited
     // false : user loged out
     public boolean canLogin() {
-        if (!(phone.equals(null) || phone.equals(""))) {
+        if (!(phone == null || phone.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPhoneNumber(phone);
         }
-        if (!(password.equals(null) || password.equals(""))) {
+        if (!(password == null || password.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPassword(password);
             return true;
         }
@@ -63,6 +63,8 @@ public class LoginManager {
             notificationMsgHandler.addNotifications(notificationsList);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 
@@ -71,6 +73,7 @@ public class LoginManager {
 
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
+            if (userServices == null) return;
             System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(phone, password);
@@ -82,6 +85,8 @@ public class LoginManager {
                 contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
             } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+                return;
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
@@ -105,6 +110,7 @@ public class LoginManager {
 
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
         }
 
     }

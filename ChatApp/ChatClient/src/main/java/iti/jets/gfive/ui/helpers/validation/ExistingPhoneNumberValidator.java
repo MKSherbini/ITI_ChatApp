@@ -3,6 +3,7 @@ package iti.jets.gfive.ui.helpers.validation;
 import com.jfoenix.validation.base.ValidatorBase;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.UserDBCrudService;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.beans.DefaultProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextInputControl;
@@ -44,6 +45,8 @@ public class ExistingPhoneNumberValidator extends ValidatorBase {
                 registered = userServices.checkUserId(text);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
 
         hasErrors.set(shouldExist != registered);

@@ -83,6 +83,8 @@ public class ProfileController implements Initializable {
             if (rowsAffected == 0) return;
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
         //update userobject
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
