@@ -150,7 +150,7 @@ public class MainScreenController implements Initializable {
         status.getItems().add(miAvailable);
         status.getItems().add(miBusy);
         status.getItems().add(miAway);
-        status.getItems().add(miOffline);
+//        status.getItems().add(miOffline);
         contextMenu.getItems().addAll(status);
         contextMenu.getItems().addAll(miExit, miLogout);
     }

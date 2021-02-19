@@ -107,7 +107,7 @@ public class LoginManager {
             currentUserModel.setPassword(password);
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
-
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
         } catch (RemoteException e) {
             e.printStackTrace();
             StageCoordinator.getInstance().reset();
