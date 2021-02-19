@@ -389,8 +389,6 @@ public class MainScreenController implements Initializable {
         MessageDBInter messageServices = MessageDBService.getMessageService();
 
         //todo must retreive the image of the sender to db and send it as paramter in sendMsg
-
-        if(fileFlag == false){
         String messsage = msgTxtAreaID.getText();
         Date date = Date.valueOf(LocalDate.now());
         System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
@@ -446,18 +444,63 @@ public class MainScreenController implements Initializable {
                     }
                 }
             });
+    }
+
+    public void onClickSaveChat(ActionEvent actionEvent) {
+        if (receiverNumber.getText().length() == 0) return;
+        CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+        List<MessageDto> messageList = null;
+        try {
+            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
-        else{
-            String filePath = msgTxtAreaID.getText();
+        if (messageList == null) return;
+
+//        Map<String, String> map = new HashMap<>();
+//        map.put(receiverNumber.getText(), receivernameID.getText());
+//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
+
+        ChatModel chatModel = new ChatModel();
+        chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+        chatModel.setChatOwner(currentUserModel.getUsername());
+        messageList.forEach(messageDto -> {
+            if(messageDto.getMessageName().equals("text")){
+                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+            }
+            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
+        });
+
+        var m = Marshaltor.getInstance();
+        m.marshalChat(chatModel);
+    }
+
+    public void onClickAttachFile(ActionEvent actionEvent) {
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if(selectedFile != null){
+            if((selectedFile.length()/1048576) > 10){
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setTitle("File Size Error");
+                a.setContentText("Cannot send more than a 10MB file");
+                a.setHeaderText("Error: File is too big");
+                a.show();
+                return;
+            }
+            String filePath = selectedFile.getPath();
             File fileToSend = new File(filePath);
             try {
                 FileInputStream fis = new FileInputStream(fileToSend);
                 int fileLength = (int) fileToSend.length();
-                System.out.println(fileLength + "file length");
+                //System.out.println(fileLength + "file length");
                 byte [] fileData = new byte[fileLength];
                 int c = fis.read(fileData);
-                System.out.println(c + "int c");
-                System.out.println(fileData.toString() + "fileData byte array");
+                //System.out.println(c + "int c");
+                //System.out.println(fileData.toString() + "fileData byte array");
                 Date date = Date.valueOf(LocalDate.now());
                 MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
                         receiverNumber.getText(), "unseen", fileData,date);
@@ -499,55 +542,6 @@ public class MainScreenController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-
-    }
-
-    public void onClickSaveChat(ActionEvent actionEvent) {
-        if (receiverNumber.getText().length() == 0) return;
-        CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
-        MessageDBInter messageServices = MessageDBService.getMessageService();
-        List<MessageDto> messageList = null;
-        try {
-            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if (messageList == null) return;
-
-//        Map<String, String> map = new HashMap<>();
-//        map.put(receiverNumber.getText(), receivernameID.getText());
-//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
-
-        ChatModel chatModel = new ChatModel();
-        chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
-        chatModel.setChatOwner(currentUserModel.getUsername());
-        messageList.forEach(messageDto -> {
-            if(messageDto.getMessageName().equals("text")){
-                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
-            }
-            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
-        });
-
-        var m = Marshaltor.getInstance();
-        m.marshalChat(chatModel);
-    }
-
-    public void onClickAttachFile(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if(selectedFile != null){
-            if((selectedFile.length()/1048576) > 10){
-                Alert a = new Alert(Alert.AlertType.ERROR);
-                a.setTitle("File Size Error");
-                a.setContentText("Cannot send more than a 10MB file");
-                a.setHeaderText("Error: File is too big");
-                a.show();
-                return;
-            }
-            fileFlag = true;
-            msgTxtAreaID.setText(selectedFile.getPath());
         }
     }
 
