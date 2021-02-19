@@ -1,6 +1,7 @@
 package iti.jets.gfive.services;
 
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -19,6 +20,7 @@ public class NotificationDBCrudService {
                 return notificationCrudInter;
             } catch (RemoteException | NotBoundException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
             }
         }
         return notificationCrudInter;

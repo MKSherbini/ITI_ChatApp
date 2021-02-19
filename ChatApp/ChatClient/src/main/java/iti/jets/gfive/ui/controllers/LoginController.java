@@ -94,6 +94,8 @@ public class LoginController implements Initializable {
 //                }
             } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+                return;
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
@@ -119,11 +121,13 @@ public class LoginController implements Initializable {
 
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
 
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-       stageCoordinator.switchToMainPage();
+        stageCoordinator.switchToMainPage();
 
     }
 
@@ -136,6 +140,8 @@ public class LoginController implements Initializable {
             notificationMsgHandler.addNotifications(notificationsList);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 

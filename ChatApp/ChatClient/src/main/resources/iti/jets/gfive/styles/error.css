@@ -34,12 +34,9 @@
 }
 
 .right-pane > .label {
-    -fx-text-fill: #E1E6FA;
-}
-
-.error-label-color {
     -fx-text-fill: #FF4500;
 }
+
 
 .jfx-radio-button {
     -fx-text-fill: #375D81;
@@ -72,8 +69,10 @@
     -fx-text-fill: #FF4500;
     -fx-padding: -2 0 0 0;
 }
-.header{
+
+.header {
     -fx-text-fill: #E1E6FA;
-    -fx-background-color:  #375D81;
+    -fx-background-color: #375D81;
 }
+
 .

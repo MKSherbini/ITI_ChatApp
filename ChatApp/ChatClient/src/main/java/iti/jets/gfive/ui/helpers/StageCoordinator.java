@@ -7,12 +7,14 @@ import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.controllers.LoginController;
 import iti.jets.gfive.ui.controllers.MainScreenController;
 import iti.jets.gfive.ui.controllers.RegisterController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class StageCoordinator {
     private static Stage primaryStage;
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
+    private boolean hasServerErrors;
+    private boolean switchingToError;
 
     private StageCoordinator() {
     }
@@ -73,6 +77,11 @@ public class StageCoordinator {
     }
 
     private void loadView(String viewName) {
+        if (hasServerErrors)
+            if (!viewName.equals("ErrorView"))
+                return;
+
+
         if (primaryStage == null) {
             throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
         }
@@ -95,12 +104,28 @@ public class StageCoordinator {
             Scene loginScene = loginSceneData.getScene();
             primaryStage.setScene(loginScene);
         }
+        System.out.println("loaded " + viewName);
     }
 
 
     public void switchToMainPage() {
         var viewName = "MainScreenView";
         loadView(viewName);
+    }
+
+    public void switchToErrorPage() {
+        var viewName = "ErrorView";
+        loadView(viewName);
+    }
+
+    public void reset() {
+        System.out.println("Resetting");
+        hasServerErrors = true;
+        unregisterCurrentUser(true);
+        switchToErrorPage();
+//        Platform.exit();
+//        scenes.clear();
+//        switchToLoginPage();
     }
 
     // todo fix this shit
@@ -112,20 +137,29 @@ public class StageCoordinator {
         registered = false;
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
-            UserDto user=new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(),ModelsFactory.getInstance().getCurrentUserModel().getUsername(),ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+            UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), ModelsFactory.getInstance().getCurrentUserModel().getUsername(), ModelsFactory.getInstance().getCurrentUserModel().getStatus());
             user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
             clientConnectionInter.puplishStatus(user);
             clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
             // force will be true only on exit and close
-            if (force){
+            if (force) {
                 UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
             }
 
         } catch (RemoteException e) {
             e.printStackTrace();
+            // calmly squashing the no server error
+            // todo until another method emerges I'm doing it this way...
+            try {
+                // make sure this dies
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (NoSuchObjectException noSuchObjectException) {
+                noSuchObjectException.printStackTrace();
+            }
+
+            reset();
         }
     }
-
 
 
     public void registerUser(UserDto userDto) {
@@ -139,16 +173,21 @@ public class StageCoordinator {
 
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
-    public void changeStatus(UserDto user){
-        System.out.println(user.getPhoneNumber() + "-----------> "+ user.getStatus());
+
+    public void changeStatus(UserDto user) {
+        System.out.println(user.getPhoneNumber() + "-----------> " + user.getStatus());
 //        ( (MainScreenController)scenes.get("MainScreenView").getLoader().getController()).changeContactStatus(user);
         ArrayList<UserDto> contacts = null;
         try {
             contacts = ContactDBCrudService.getContactService().getContactsList(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
 
         ContactsListView c = ContactsListView.getInstance();

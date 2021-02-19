@@ -61,20 +61,17 @@ public class UpdateProfileController implements Initializable {
 
     @FXML
     void OnCLickUpdateProfile(ActionEvent event) {
-        Date date=null;
+        Date date = null;
         //check for email validation
         boolean emailvalidation = false;
-        if(EmailID!=null)
-        {
-            emailvalidation =  EmailID.validate();
-        }
-        else
-        {
+        if (EmailID != null) {
+            emailvalidation = EmailID.validate();
+        } else {
             emailvalidation = true;
         }
         boolean fieldsValidation = NameID.validate() & PasswordID.validate()
                 & ReEnterPasswordID.validate();
-        if (fieldsValidation && emailvalidation ) {
+        if (fieldsValidation && emailvalidation) {
             try {
                 if (BirthDateID.getValue() != null) {
                     date = Date.valueOf(BirthDateID.getValue());
@@ -92,7 +89,7 @@ public class UpdateProfileController implements Initializable {
 
 
             UserDto user = new UserDto(PhoneID.getText(), NameID.getText(),
-                    PasswordID.getText(), gender,date ,CountryID.getValue() ,EmailID.getText() ,BioID.getText());
+                    PasswordID.getText(), gender, date, CountryID.getValue(), EmailID.getText(), BioID.getText());
 
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
 
@@ -100,12 +97,12 @@ public class UpdateProfileController implements Initializable {
 
                 int rowsAffected = userServices.updateUserRecord(user);
                 System.out.println("rows affected " + rowsAffected);
-                if(rowsAffected == 0) return;
-            }catch (RemoteException e)
-            {
+                if (rowsAffected == 0) return;
+            } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+                return;
             }
-            
 
 
             //update user object
@@ -118,8 +115,6 @@ public class UpdateProfileController implements Initializable {
             currentUserModel.setEmail(EmailID.getText());
             currentUserModel.setPassword(PasswordID.getText());
             currentUserModel.setBio(BioID.getText());
-
-
 
 
             StageCoordinator stageCoordinator = StageCoordinator.getInstance();
