@@ -8,6 +8,7 @@ import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.ui.controllers.ContactController;
 import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
@@ -283,5 +284,26 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void addGroupInMembersList(String groupname) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("inside server");
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+                try {
+                    BorderPane borderPane = fxmlLoader.load();
+                    VBox vBox2 = (VBox) borderPane.getCenter();
+                    HBox hbox1 = (HBox) vBox2.getChildren().get(0);
+                    Label label = (Label) hbox1.getChildren().get(0);
+                    label.setText(groupname);
+                    contactsList.getItems().add(borderPane);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

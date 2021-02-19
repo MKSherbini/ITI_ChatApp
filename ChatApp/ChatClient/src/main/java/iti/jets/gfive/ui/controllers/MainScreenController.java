@@ -48,6 +48,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -66,7 +67,8 @@ public class MainScreenController implements Initializable {
     public static final String BUSY = "busy";
     @FXML
     public ImageView ibtnAddContct;
-
+    @FXML
+    public Button addGroupBtn;
     @FXML
     private Button btnContextMenu;
     private ContextMenu contextMenu;
@@ -78,7 +80,9 @@ public class MainScreenController implements Initializable {
     @FXML
     private Label notificationLabelId;
     @FXML
-    private Label newLabelID;
+    private TextField groupnameID;
+    //    @FXML
+//    private Label newLabelID;
     @FXML
     private Text CurrentUserNameID;
 
@@ -220,8 +224,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    public void onClickProfile(ActionEvent event)
-    {
+    public void onClickProfile(ActionEvent event) {
         System.out.println("Inside the onclick of the photo");
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToProfilePage();
@@ -293,7 +296,7 @@ public class MainScreenController implements Initializable {
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
             ImageView receiverimage = (ImageView) borderPane.getLeft();
-            System.out.println("-------------->"+receiverimage);
+            System.out.println("-------------->" + receiverimage);
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
                 newLabel.setVisible(false);
@@ -368,7 +371,7 @@ public class MainScreenController implements Initializable {
                         }
 
                     }
-                }catch(IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -393,7 +396,7 @@ public class MainScreenController implements Initializable {
 
         String messsage = msgTxtAreaID.getText();
         Date date = Date.valueOf(LocalDate.now());
-        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
+        System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
         MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -411,8 +414,8 @@ public class MainScreenController implements Initializable {
                 UserDBCrudInter userServices = UserDBCrudService.getUserService();
                 Image senderImag = null;
 
-                  //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
-                    senderImag = currentUserModel.getImage();
+                //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                senderImag = currentUserModel.getImage();
 
 
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
@@ -422,7 +425,7 @@ public class MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     controller.msgLabelId.setText(messsage);
-                   //  controller.msgImgId.setImage(senderImag);
+                    //  controller.msgImgId.setImage(senderImag);
 
 
                     controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
@@ -467,5 +470,90 @@ public class MainScreenController implements Initializable {
 
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
+    }
+
+    @FXML
+    void OnclickCreateGroup(ActionEvent event) throws IOException {
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                ObservableList<BorderPane> list = contactsListViewId.getItems();
+                for (BorderPane item : list) {
+                    VBox vBox = (VBox) item.getCenter();
+                    HBox hbox = (HBox) vBox.getChildren().get(0);
+                    VBox vBox1 = (VBox) hbox.getChildren().get(1);
+                    Button addbtn = (Button) vBox1.getChildren().get(0);
+                    Button deletebtn = (Button) vBox1.getChildren().get(1);
+                    addbtn.setVisible(true);
+                    deletebtn.setVisible(true);
+                    deletebtn.setDisable(true);
+                    addbtn.setDisable(false);
+                    groupnameID.setVisible(true);
+                    addGroupBtn.setVisible(true);
+
+
+                }
+
+            }
+
+
+        });
+    }
+
+    @FXML
+    void onClickAddGroup(ActionEvent event) {
+        if (groupnameID.getText().equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("please enter a group name first ");
+            alert.show();
+        } else {
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+                    try {
+                        BorderPane borderPane = fxmlLoader.load();
+                        VBox vBox2 = (VBox) borderPane.getCenter();
+                        HBox hbox1 = (HBox) vBox2.getChildren().get(0);
+                        Label label = (Label) hbox1.getChildren().get(0);
+                        label.setText(groupnameID.getText());
+                        System.out.println("33333333->");
+                        contactsListViewId.getItems().add(borderPane);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        //call server to update the ui of other members
+                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText());
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
+                    ObservableList<BorderPane> list = contactsListViewId.getItems();
+                    for (BorderPane item : list) {
+
+                        System.out.println("222222->");
+                        VBox vBox = (VBox) item.getCenter();
+                        HBox hbox = (HBox) vBox.getChildren().get(0);
+                        VBox vBox1 = (VBox) hbox.getChildren().get(1);
+                        Button addbtn = (Button) vBox1.getChildren().get(0);
+                        Button deletebtn = (Button) vBox1.getChildren().get(1);
+                        addbtn.setVisible(false);
+                        deletebtn.setVisible(false);
+                        groupnameID.setText("");
+                        groupnameID.setVisible(false);
+                        addGroupBtn.setVisible(false);
+                    }
+
+                }
+            });
+        }
+
     }
 }

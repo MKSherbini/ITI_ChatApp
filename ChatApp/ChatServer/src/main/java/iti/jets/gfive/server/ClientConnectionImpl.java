@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
     public static ConcurrentLinkedQueue<ConnectedClient> clientsPool = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<String> GroupChatMember = new ConcurrentLinkedQueue<>();
 
     public ClientConnectionImpl() throws RemoteException {}
 
@@ -42,5 +43,39 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 }
             }
         });
+    }
+
+    @Override
+    public void addMemberToGroupChat(String number) throws RemoteException {
+        GroupChatMember.add(number);
+        System.out.println("size--->"+GroupChatMember.size());
+    }
+
+    @Override
+    public void RemoveMemeberFromChatGroup(String number) throws RemoteException {
+        GroupChatMember.remove(number);
+        System.out.println("size--->"+GroupChatMember.size());
+
+    }
+
+    @Override
+    public void createGroupInAllMemebers(String groupname) throws RemoteException {
+        //loop on the list and then clean it
+        clientsPool.forEach(connectedClient -> {
+            for (String phonenumber : GroupChatMember) {
+                   System.out.println("1---->"+phonenumber);
+                if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)){
+                    try {
+                        System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
+                        connectedClient.getReceiveNotif().addGroupInMembersList(groupname);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        });
+        GroupChatMember.clear();
+
     }
 }

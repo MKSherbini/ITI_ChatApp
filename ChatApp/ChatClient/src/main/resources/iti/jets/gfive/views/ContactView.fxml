@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -16,7 +18,20 @@
             <HBox>
                <children>
                   <Label fx:id="contactNameLabel" prefHeight="58.0" prefWidth="186.0" text="test" />
-                  <Label fx:id="newLabelID" style="-fx-background-color: green;" text="new" visible="false" />
+                  <VBox prefHeight="58.0" prefWidth="87.0">
+                     <children>
+                        <JFXButton fx:id="addBtnID" onAction="#onClickAddContatc" prefHeight="25.0" prefWidth="59.0" text=" " visible="false">
+                           <graphic>
+                              <FontAwesomeIconView fill="GREEN" glyphName="PLUS" />
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="deleteBtnID" onAction="#onClickRemoveContact" prefHeight="25.0" prefWidth="59.0" text=" " visible="false">
+                           <graphic>
+                              <FontAwesomeIconView fill="RED" glyphName="MINUS" size="14" wrappingWidth="14.095197677612305" />
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             <Label fx:id="contactNumberLabel" prefHeight="17.0" prefWidth="146.0" text="Label" />
