@@ -12,7 +12,7 @@
       <HBox prefHeight="52.0" prefWidth="481.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="4.0">
          <children>
             <Label fx:id="fileNameLabelId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="444.0" styleClass="msgLabelId" stylesheets="@../styles/ChatAreaStyle.css" text="Text Message" wrapText="true" HBox.hgrow="ALWAYS" />
-            <Button fx:id="downloadBtnId" mnemonicParsing="false" onAction="#onClickDownloadBtn" prefHeight="58.0" prefWidth="52.0" style="-fx-background-radius: 10px; -fx-background-color: #ABC8E2;" text="⬇" textFill="#183152">
+            <Button fx:id="downloadBtnId" mnemonicParsing="false" onAction="#onClickDownloadBtn" prefHeight="58.0" prefWidth="52.0" style="-fx-background-radius: 10px; -fx-background-color: #375D81;" text="⬇" textFill="#183152">
                <font>
                   <Font size="18.0" />
                </font>

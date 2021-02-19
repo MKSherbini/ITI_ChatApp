@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -33,11 +32,9 @@ public class FileMessageController {
 //        fileChooser.getExtensionFilters().addAll(musicFileExtensions, imageFileExtensions, textFileExtensions);
         File selectedFile;
         String [] fileSplit = fileNameLabelId.getText().split("\\.");
-        System.out.println(fileNameLabelId.getText() + " file name text");
-        System.out.println(fileSplit[0] + " file Split of 0");
-        String extention = fileSplit[1];
-        System.out.println(extention + " .extention");
-        if (extention.equals("txt")) {
+        String extension = fileSplit[1];
+        System.out.println(extension + " .extension");
+        if (extension.equals("txt")) {
             fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
             selectedFile = fileChooser.showSaveDialog(null);
@@ -61,7 +58,7 @@ public class FileMessageController {
                     }
                 }
             }
-        } else if(extention.equals("mp3")) {
+        } else if(extension.equals("mp3") || extension.equals("mp4") || extension.equals("wav")) {
             fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Music Files", "*.mp3", "*.mp4", "*.wav"));
             selectedFile = fileChooser.showSaveDialog(null);
@@ -85,9 +82,33 @@ public class FileMessageController {
                     }
                 }
             }
-        } else if(extention.equals("jpg")){
+        } else if(extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png")){
             fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files","*.jpg", "*.jpeg", "*.png", "*.gif"));
+            selectedFile = fileChooser.showSaveDialog(null);
+            if (fileChooser != null) {
+                if (selectedFile != null) {
+                    String filePath = selectedFile.getAbsolutePath();
+                    MessageDBInter messageServices = MessageDBService.getMessageService();
+                    try {
+                        byte[] retrievedFile = messageServices.getFile(Integer.parseInt(recordID.getText()));
+                        FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                        if (retrievedFile == null) {
+                            System.out.println("Fuckin null bytes");
+                            return;
+                        }
+                        fileOutputStream.write(retrievedFile);
+                        fileOutputStream.close();
+                    } catch (RemoteException | FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else if(extension.equals("gif")){
+            fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF Files","*.gif"));
             selectedFile = fileChooser.showSaveDialog(null);
             if (fileChooser != null) {
                 if (selectedFile != null) {

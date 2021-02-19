@@ -157,7 +157,6 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         return rowsAffected;
     }
 
-    //todo tell salma about the stmt that is always null and should be replaced with preparedStatement
     @Override
     public int updateUserPhoto(UserDto user) throws RemoteException {
         System.out.println("inside update photo");
@@ -196,16 +195,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     @Override
     public int updateUserStatus(UserDto user) throws RemoteException {
         System.out.println("inside the updateUserStatus ");
-
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String insertQuery = "update user_data set user_status = ? WHERE phone_number = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement = con.prepareStatement(insertQuery);
             //null
             System.out.println("update the status of  " + user.getStatus());
             preparedStatement.setString(1, user.getStatus());
@@ -215,9 +212,9 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if (con != null && stmt != null) {
+        if (con != null && preparedStatement != null) {
             try {
-                stmt.close();
+                preparedStatement.close();
                 con.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
