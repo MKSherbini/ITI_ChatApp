@@ -150,8 +150,9 @@ public class LoginController implements Initializable {
     }
 
     public void resetFieldsValidation() {
-        txt_loginPass.resetValidation();
-        txt_loginPhone.resetValidation();
+        FieldIconBinder fieldIconBinder = FieldIconBinder.getInstance();
+        fieldIconBinder.resetValidation(txt_loginPhone);
+        fieldIconBinder.resetValidation(txt_loginPass);
 
         // clear left for the binding
     }
