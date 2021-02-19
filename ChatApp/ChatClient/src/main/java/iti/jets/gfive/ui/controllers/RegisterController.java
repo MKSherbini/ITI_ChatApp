@@ -130,11 +130,6 @@ public class RegisterController implements Initializable {
     }
 
     public void resetFields() {
-        txt_registerPhone.resetValidation();
-        txt_registerPass.resetValidation();
-        txt_displayName.resetValidation();
-        txt_registerPassRepeat.resetValidation();
-
 //        txt_registerPhone.clear(); // left for the binding
 //        txt_registerPass.clear();
 
@@ -145,6 +140,12 @@ public class RegisterController implements Initializable {
             JFXRadioButton t = (JFXRadioButton) toggle;
             if (t.getText().equals("Male")) t.setSelected(true);
         });
+
+        FieldIconBinder fieldIconBinder = FieldIconBinder.getInstance();
+        fieldIconBinder.resetValidation(txt_registerPhone);
+        fieldIconBinder.resetValidation(txt_registerPass);
+        fieldIconBinder.resetValidation(txt_displayName);
+        fieldIconBinder.resetValidation(txt_registerPassRepeat);
     }
 
     @Override
