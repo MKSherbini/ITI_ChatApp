@@ -92,7 +92,6 @@ public class NewContactDialogController implements Initializable {
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
-        //todo dialog or validation: user already exists in the contacts list
         ContactsListView c = ContactsListView.getInstance();
         boolean contactExist = c.contactExist(contactNum);
         if(contactExist){
