@@ -2,6 +2,7 @@ package iti.jets.gfive;
 
 import iti.jets.gfive.common.interfaces.*;
 import iti.jets.gfive.server.*;
+import javafx.event.ActionEvent;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
@@ -17,7 +18,8 @@ import java.util.List;
 public class Server {
     private static Server instance;
     private final int defaultPort = 8000;
-    List<Remote> servicesList;
+    private final List<Remote> servicesList;
+    private boolean isServerRunning;
 
     public static synchronized Server getInstance() {
         if (instance == null) instance = new Server();
@@ -28,15 +30,28 @@ public class Server {
         servicesList = new ArrayList<>();
     }
 
+    public boolean toggleServerRunning() {
+        if (isServerRunning) {
+            stopServer();
+        } else {
+            startServer();
+        }
+        return isServerRunning;
+    }
+
     public void startServer() {
+        if (isServerRunning) return;
         startServer(defaultPort);
+        isServerRunning = true;
     }
 
     public void stopServer() {
+        if (!isServerRunning) return;
         stopServer(defaultPort);
+        isServerRunning = false;
     }
 
-    public void startServer(int port) {
+    private void startServer(int port) {
         try {
             UserDBCrudInter obj = new UserDBCrudImpl();
             servicesList.add(obj);
@@ -70,16 +85,8 @@ public class Server {
         }
     }
 
-    public void stopServer(int port) {
+    private void stopServer(int port) {
         try {
-            Registry registry = LocateRegistry.getRegistry(port);
-            Arrays.stream(registry.list()).forEach(s -> {
-                try {
-                    registry.unbind(s);
-                } catch (RemoteException | NotBoundException e) {
-                    e.printStackTrace();
-                }
-            });
             servicesList.forEach(o ->
                     {
                         try {
@@ -90,9 +97,20 @@ public class Server {
                     }
             );
             servicesList.clear();
+
+            Registry registry = LocateRegistry.getRegistry(port);
+            registry.unbind("UserDB-CRUD");
+            Arrays.stream(registry.list()).forEach(s -> {
+                try {
+                    registry.unbind(s);
+                } catch (RemoteException | NotBoundException e) {
+                    e.printStackTrace();
+                }
+            });
+
             System.out.println("registry.list() = " + Arrays.toString(registry.list()));
             System.out.println("Server is not up and running on port " + port);
-        } catch (RemoteException e) {
+        } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
     }

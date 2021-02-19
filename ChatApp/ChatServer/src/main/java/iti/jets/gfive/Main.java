@@ -21,10 +21,6 @@ public class Main extends Application {
         stageCoordinator.initStage(primaryStage);
         stageCoordinator.switchToServerMain();
         primaryStage.show();
-
-        primaryStage.setOnCloseRequest(event -> {
-            Platform.exit();
-        });
     }
 
     @Override

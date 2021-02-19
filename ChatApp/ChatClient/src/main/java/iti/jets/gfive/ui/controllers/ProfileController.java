@@ -135,6 +135,8 @@ public class ProfileController implements Initializable {
         GenderID.textProperty().bind(currentUserModel.genderProperty());
         CountryID.textProperty().bind(currentUserModel.countryProperty());
         BioID.textProperty().bind(currentUserModel.bioProperty());
+
+        // todo fix image and date binding in profile
         //birthdate can't be bind bidirectional
         DateOfBirthID.textProperty().bindBidirectional(currentUserModel.dateProperty(), converter);
         //must set the image by default image if it return null in the login

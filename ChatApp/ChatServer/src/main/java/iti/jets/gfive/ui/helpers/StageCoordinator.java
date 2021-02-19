@@ -1,5 +1,7 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.Server;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +25,10 @@ public class StageCoordinator {
             throw new IllegalArgumentException("The Stage Already been initialized");
         }
         primaryStage = stage;
+        primaryStage.setOnCloseRequest(event -> {
+            Server.getInstance().stopServer();
+            Platform.exit();
+        });
     }
 
     public static StageCoordinator getInstance() {
