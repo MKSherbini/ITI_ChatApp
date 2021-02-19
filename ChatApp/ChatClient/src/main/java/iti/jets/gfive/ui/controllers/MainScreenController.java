@@ -464,6 +464,7 @@ public class MainScreenController implements Initializable {
                         }
                     });
                     fis.close();
+                    fileFlag = false;
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -508,7 +509,7 @@ public class MainScreenController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if(selectedFile != null){
-            if((selectedFile.length()/1048576) > 5){
+            if((selectedFile.length()/1048576) > 10){
                 Alert a = new Alert(Alert.AlertType.ERROR);
                 a.setTitle("File Size Error");
                 a.setContentText("Cannot send more than a 10MB file");
