@@ -279,15 +279,6 @@ public class MainScreenController implements Initializable {
     //todo update main page with textaare instead of textfield in order to wrap long messages
     @FXML
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
-
-//            //todo still won't work with the method only by making the attribute public!
-//            //controller.setLabelValue(contact.getUsername());
-//            controller.newLabelID.setVisible(false);
-//            //System.out.println(item.getChildren().get(1).toString() + " chh");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         chatListView.getItems().clear();
         ObservableList<BorderPane> selectedContact;
         selectedContact = contactsListViewId.getSelectionModel().getSelectedItems();
@@ -304,72 +295,57 @@ public class MainScreenController implements Initializable {
                 newLabel.setVisible(false);
                 System.out.println("right of borderpane equals null");
             }
-
-            // ImageView imageView =(ImageView) borderPane.getLeft();
-            //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
             receivernumberID.setText(receiverNumber.getText());
             ReceiverImgID.setImage(receiverimage.getImage());
-
             chatAreaBorderPaneID.setVisible(true);
         }
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
-
-//        System.out.println("pressed");
-//        ObservableList<BorderPane> selectedContact;
-//        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
-//        for(BorderPane borderPane:selectedContact) {
-//            //get the name and image of the selected contact
-//            VBox vBox = (VBox) borderPane.getCenter();
-//            Label name =(Label) vBox.getChildren().get(0);
-//             receiverNumber = (Label) vBox.getChildren().get(1);
-//           // ImageView imageView =(ImageView) borderPane.getLeft();
-//            System.out.println("label text is " +name.getText());
-//            receivernameID.setText(name.getText());
-//            chatAreaBorderPaneID.setVisible(true);
-//        }
         if (receiverNumber == null) {
             return;
         }
         final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
-
-        //   System.out.println("number of list" +messageList.size());
-        // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 chatListView.getItems().clear();
-
                 try {
-
-                    //todo still won't work with the method only by making the attribute public!
-                    //controller.setLabelValue(contact.getUsername());
                     for (MessageDto messageDto : messageList) {
+                        if(messageDto.getMessageName().equals("text")){
+                            //select picture from user_data where user_id = sender_id
+                            //select picture from user_data where user_id= recevierid
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            ChatMessageController controller = fxmlLoader.getController();
 
-                        //select picture from user_data where user_id = sender_id
-                        //select picture from user_data where user_id= recevierid
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                        AnchorPane anchorPane = fxmlLoader.load();
-                        ChatMessageController controller = fxmlLoader.getController();
+                            //   System.out.println("content of the message "+messageDto.getContent());
+                            controller.msgLabelId.setText(messageDto.getContent());
+                            if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                // controller.msgImgId.setImage(senderimg);
 
-                        //   System.out.println("content of the message "+messageDto.getContent());
-                        controller.msgLabelId.setText(messageDto.getContent());
-                        if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
-                            controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                            controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
-
-                            // controller.msgImgId.setImage(senderimg);
-
-                        } else {
-                            //  controller.msgImgId.setImage(recevierpicyure);
-                        }
-                        msgTxtAreaID.setText("");
-                        chatListView.getItems().add(anchorPane);
-                        if (receiverNumber.equals(messageDto.getReceiverNumber())) {
-
+                            } else {
+                                //  controller.msgImgId.setImage(recevierpicyure);
+                            }
+                            msgTxtAreaID.setText("");
+                            chatListView.getItems().add(anchorPane);
+                        } else{
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            FileMessageController controller = fxmlLoader.getController();
+                            controller.fileNameLabelId.setText(messageDto.getMessageName());
+                            //controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                            controller.recordID.setText(String.valueOf(messageDto.getId()));
+                            if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                                controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.fileNameLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            }
+                            msgTxtAreaID.setText("");
+                            chatListView.getItems().add(anchorPane);
                         }
 
                     }
@@ -378,9 +354,7 @@ public class MainScreenController implements Initializable {
                 }
             }
         });
-
         chatListView.scrollTo(chatListView.getItems().size() - 1);
-
     }
 
     @FXML
@@ -400,7 +374,7 @@ public class MainScreenController implements Initializable {
         String messsage = msgTxtAreaID.getText();
         Date date = Date.valueOf(LocalDate.now());
         System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
-        MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+        MessageDto messageDto = new MessageDto(-1, "text", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
             clientConnectionInter.sendMsg(messageDto);
@@ -459,7 +433,7 @@ public class MainScreenController implements Initializable {
                 System.out.println(c + "int c");
                 System.out.println(fileData.toString() + "fileData byte array");
                 Date date = Date.valueOf(LocalDate.now());
-                MessageDto fileMessageDto = new MessageDto(fileToSend.getName(), currentUserModel.getPhoneNumber(),
+                MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
                         receiverNumber.getText(), "unseen", fileData,date);
                 try {
                     ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -468,7 +442,8 @@ public class MainScreenController implements Initializable {
                         System.out.println("id of the record, if -1 then failed to insert "+ msgRecordID);
                         return;
                     }
-                    clientConnectionInter.sendFile(fileMessageDto, msgRecordID);
+                    fileMessageDto.setId(msgRecordID);
+                    clientConnectionInter.sendFile(fileMessageDto);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -488,7 +463,7 @@ public class MainScreenController implements Initializable {
                             }
                         }
                     });
-                    //clientConnectionInter.sendMsg();
+                    fis.close();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -533,9 +508,16 @@ public class MainScreenController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if(selectedFile != null){
+            if((selectedFile.length()/1048576) > 5){
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setTitle("File Size Error");
+                a.setContentText("Cannot send more than a 10MB file");
+                a.setHeaderText("Error: File is too big");
+                a.show();
+                return;
+            }
             fileFlag = true;
             msgTxtAreaID.setText(selectedFile.getPath());
-            System.out.println(selectedFile.getPath() + "inside the attach btn method");
         }
     }
 }

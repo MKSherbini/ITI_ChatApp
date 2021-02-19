@@ -26,10 +26,9 @@ public class FileMessageController {
     public Button downloadBtnId;
 
     public void onClickDownloadBtn(ActionEvent actionEvent) {
-        System.out.println("inside the download button");
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter musicFileExtensions =new FileChooser.ExtensionFilter("Music fFiles","*.mp3", "*.mp4", "*.wav");
-        FileChooser.ExtensionFilter imageFileExtensions =new FileChooser.ExtensionFilter("Image Files","*.jpg", "*.jpeg", "*.png");
+        FileChooser.ExtensionFilter musicFileExtensions =new FileChooser.ExtensionFilter("Music Files","*.mp3", "*.mp4", "*.wav");
+        FileChooser.ExtensionFilter imageFileExtensions =new FileChooser.ExtensionFilter("Image Files","*.jpg", "*.jpeg", "*.png", "*.gif");
         FileChooser.ExtensionFilter textFileExtensions =new FileChooser.ExtensionFilter("Text Files","*.txt");
         fileChooser.getExtensionFilters().addAll(musicFileExtensions, imageFileExtensions, textFileExtensions);
         File selectedFile = fileChooser.showSaveDialog(null);
@@ -45,6 +44,7 @@ public class FileMessageController {
                         return;
                     }
                     fileOutputStream.write(retrievedFile);
+                    fileOutputStream.close();
                 } catch (RemoteException | FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {

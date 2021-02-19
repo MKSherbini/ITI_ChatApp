@@ -45,11 +45,11 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void sendFile(MessageDto msg, int msgRecordId) throws RemoteException {
+    public void sendFile(MessageDto msg) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
             if(connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())){
                 try {
-                    connectedClient.getReceiveNotif().receiveFile(msg, msgRecordId);
+                    connectedClient.getReceiveNotif().receiveFile(msg);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

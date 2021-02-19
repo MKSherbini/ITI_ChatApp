@@ -65,10 +65,6 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     public void setNotificationLabel(Label notificationLabelId) {
         this.notificationLabelId = notificationLabelId;
     }
-
-//    public void setNotificationsListId(JFXListView notificationsListId){
-//        this.notificationsListId = notificationsListId;
-//        System.out.println("notificationsListId is set to: " + notificationsListId);
     public void setListView(ListView<AnchorPane> list) {
         listView = list;
     }
@@ -92,27 +88,10 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     {
         this.number =number;
     }
-//    public void setnewLabel(Label newLabel)
-//    {
-//        this.newLabel = newLabel;
-//    }
     public  Label getnewLabel()
     {
         return this.label;
     }
-//    public void increaseNotificationsNumber(){
-////        int notificationsNumber = Integer.parseInt(this.notificationLabelId.getText());
-////        notificationsNumber+=1;
-////        System.out.println(notificationsNumber);
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                int notificationsNumber = Integer.parseInt(notificationLabelId.getText());
-//                notificationsNumber+=1;
-//                notificationLabelId.setText(notificationsNumber+"");
-//            }
-//        });
-//    }
 
     public void increaseNotificationsNumber(){
         Platform.runLater(new Runnable() {
@@ -224,7 +203,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void receiveFile(MessageDto messageDto, int msgRecordId) throws RemoteException{
+    public void receiveFile(MessageDto messageDto) throws RemoteException{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -236,7 +215,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                         AnchorPane anchorPane = fxmlLoader.load();
                         FileMessageController controller = fxmlLoader.getController();
                         controller.fileNameLabelId.setText(messageDto.getMessageName());
-                        controller.recordID.setText(String.valueOf(msgRecordId));
+                        controller.recordID.setText(String.valueOf(messageDto.getId()));
                         listView.getItems().add(anchorPane);
                         listView.scrollTo(anchorPane);
                     } catch (IOException e) {

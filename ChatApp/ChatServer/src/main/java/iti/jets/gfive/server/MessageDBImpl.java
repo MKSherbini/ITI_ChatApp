@@ -41,6 +41,7 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 messageDto = new MessageDto();
+                messageDto.setId(resultSet.getInt("message_id"));
                 messageDto.setContent(resultSet.getString("content"));
                 messageDto.setReceiverNumber(resultSet.getString("receiver_id"));
                 messageDto.setSenderNumber(resultSet.getString("sender_id"));
@@ -77,18 +78,19 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         try {
             con = ds.getConnection();
             String insertQuery = "insert into message\n" +
-                    "(sender_id, receiver_id, state , content, message_date)\n" +
-                    "values (?, ?, ?, ?, ?)";
+                    "(message_name, sender_id, receiver_id, state , content, message_date)\n" +
+                    "values (?, ?, ?, ?, ?, ?)";
             preparedStatement = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, messageDto.getSenderNumber());
-            preparedStatement.setString(2, messageDto.getReceiverNumber());
-            preparedStatement.setString(3, messageDto.getState());
+            preparedStatement.setString(1, messageDto.getMessageName());
+            preparedStatement.setString(2, messageDto.getSenderNumber());
+            preparedStatement.setString(3, messageDto.getReceiverNumber());
+            preparedStatement.setString(4, messageDto.getState());
             if(messageDto.getContent() == null){
-                preparedStatement.setBytes(4, messageDto.getFileContent());
+                preparedStatement.setBytes(5, messageDto.getFileContent());
             } else{
-                preparedStatement.setString(4, messageDto.getContent());
+                preparedStatement.setString(5, messageDto.getContent());
             }
-            preparedStatement.setDate(5, messageDto.getMessageDate());
+            preparedStatement.setDate(6, messageDto.getMessageDate());
             rowsAffected = preparedStatement.executeUpdate();
             if(rowsAffected == 0)
                 return messageId;

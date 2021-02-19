@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 public class MessageDto implements Serializable {
+    private int id;
     private String messageName;
     private String senderNumber;
     private String receiverNumber;
@@ -15,7 +16,8 @@ public class MessageDto implements Serializable {
     public MessageDto() {
     }
 
-    public MessageDto(String messageName, String senderNumber, String receiverNumber, String state, String content, Date messageDate) {
+    public MessageDto(int id, String messageName, String senderNumber, String receiverNumber, String state, String content, Date messageDate) {
+        this.id = id;
         this.messageName = messageName;
         this.senderNumber = senderNumber;
         this.receiverNumber = receiverNumber;
@@ -23,13 +25,22 @@ public class MessageDto implements Serializable {
         this.content = content;
         this.messageDate = messageDate;
     }
-    public MessageDto(String messageName, String senderNumber, String receiverNumber, String state, byte[] fileContent, Date messageDate){
+    public MessageDto(int id, String messageName, String senderNumber, String receiverNumber, String state, byte[] fileContent, Date messageDate){
+        this.id = id;
         this.messageName = messageName;
         this.senderNumber = senderNumber;
         this.receiverNumber = receiverNumber;
         this.state = state;
         this.fileContent = fileContent;
         this.messageDate = messageDate;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getMessageName() {
