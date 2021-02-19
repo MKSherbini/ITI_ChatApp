@@ -8,6 +8,7 @@ import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -57,6 +58,8 @@ public class NotificationViewController {
             declineBtnId.setDisable(true);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 
@@ -68,6 +71,8 @@ public class NotificationViewController {
             declineBtnId.setDisable(true);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 }

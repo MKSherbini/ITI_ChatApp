@@ -73,10 +73,7 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private Button btnContextMenu;
-    private ContextMenu contextMenu;
-    private MenuItem miExit;
-    private MenuItem miLogout, miAvailable, miBusy, miAway, miOffline;
-    private Menu status;
+
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
     @FXML
@@ -102,10 +99,17 @@ public class MainScreenController implements Initializable {
     private ImageView ReceiverImgID;
     @FXML
     private ImageView profilepictureID;
+    @FXML
+    private ImageView ivStatus;
     private Label receiverNumber;
-
     private Label newLabel;
     private boolean fileFlag = false;
+    private ContextMenu contextMenu;
+    private MenuItem miExit;
+    private MenuItem miLogout, miAvailable, miBusy, miAway, miOffline;
+    private Menu status;
+    private Property<String> statusProperty = new SimpleObjectProperty<>("available");
+
 
     @FXML
     void showContxtMenu(MouseEvent event) {
@@ -114,15 +118,12 @@ public class MainScreenController implements Initializable {
     }
 
     // this method binds the status image property on the imageview status image property
-    private void bindIvStatusImage(String imageName) {
-        statusImage = new SimpleObjectProperty<>();
-        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE, imageName)).toString()));
-        statusImage.bindBidirectional(ivStatus.imageProperty());
+    private void changeStatusUi() {
+        statusProperty.bindBidirectional(ModelsFactory.getInstance().getCurrentUserModel().statusProperty());
+        statusProperty.addListener((opserver, old, newval) -> ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, newval)).toString())));
+        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, ModelsFactory.getInstance().getCurrentUserModel().getStatus())).toString()));
     }
 
-    @FXML
-    private ImageView ivStatus;
-    Property<Image> statusImage;
 
     // this method intialize the context menu and its items actions
     private void initializeContextMenu() {
@@ -162,14 +163,21 @@ public class MainScreenController implements Initializable {
 
     // this method define the action of the status menu items to change the status on gui and on the db.
     private void applyMenUItemAction(String statusName) {
-        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, statusName)).toString()));
         try {
             UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName);
             user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
             int rows = UserDBCrudService.getUserService().updateUserStatus(user);
+            if (rows > 0) {
+                ModelsFactory.getInstance().getCurrentUserModel().statusProperty().setValue(statusName);
+                changeStatusUi();
+                ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, statusName)).toString()));
+            }
+            ClientConnectionService.getClientConnService().puplishStatus(user);
+
             System.out.println("status updated  : " + rows);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
         }
     }
 
@@ -181,7 +189,8 @@ public class MainScreenController implements Initializable {
         CurrentUserNameID.setText(currentUserModel.getUsername());
         profilepictureID.setImage(currentUserModel.getImage());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
-//        bindIvStatusImage(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        System.out.println(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        changeStatusUi();
         initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
@@ -225,8 +234,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    public void onClickProfile(ActionEvent event)
-    {
+    public void onClickProfile(ActionEvent event) {
         System.out.println("Inside the onclick of the photo");
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToProfilePage();
@@ -289,7 +297,7 @@ public class MainScreenController implements Initializable {
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
             ImageView receiverimage = (ImageView) borderPane.getLeft();
-            System.out.println("-------------->"+receiverimage);
+            System.out.println("-------------->" + receiverimage);
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
                 newLabel.setVisible(false);
@@ -304,16 +312,28 @@ public class MainScreenController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
+        if (messageServices == null) return;
         if (receiverNumber == null) {
             return;
         }
-        final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        List<MessageDto> messageList = null;
+        try {
+            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
+        }
+
+        //   System.out.println("number of list" +messageList.size());
+        // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
+        List<MessageDto> finalMessageList = messageList;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 chatListView.getItems().clear();
                 try {
-                    for (MessageDto messageDto : messageList) {
+                    for (MessageDto messageDto : finalMessageList) {
                         if(messageDto.getMessageName().equals("text")){
                             //select picture from user_data where user_id = sender_id
                             //select picture from user_data where user_id= recevierid
@@ -349,7 +369,7 @@ public class MainScreenController implements Initializable {
                         }
 
                     }
-                }catch(IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -358,7 +378,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    public void onClickSendButton(ActionEvent actionEvent) throws RemoteException {
+    public void onClickSendButton(ActionEvent actionEvent) {
         if (msgTxtAreaID.getText().equals("")) {
             return;
         }
@@ -379,21 +399,28 @@ public class MainScreenController implements Initializable {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
             clientConnectionInter.sendMsg(messageDto);
 
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
+        }
 
+        try {
             int rowaffected = messageServices.insertMessage(messageDto);
-            // System.out.println("id of the record, if -1 then failed "+rowaffected);
-            // System.out.println("row inserted equal "+rowaffected);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    UserDBCrudInter userServices = UserDBCrudService.getUserService();
-                    Image senderImag = null;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
+        }
+        // System.out.println("row inserted equal "+rowaffected);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                UserDBCrudInter userServices = UserDBCrudService.getUserService();
+                Image senderImag = null;
 
-                    //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
-                    senderImag = currentUserModel.getImage();
+                //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                senderImag = currentUserModel.getImage();
 
 
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
@@ -403,8 +430,7 @@ public class MainScreenController implements Initializable {
                     //todo still won't work with the method only by making the attribute public!
                     //controller.setLabelValue(contact.getUsername());
                     controller.msgLabelId.setText(messsage);
-                   //  controller.msgImgId.setImage(senderImag);
-
+                    //  controller.msgImgId.setImage(senderImag);
 
                     controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
                     controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
@@ -520,5 +546,10 @@ public class MainScreenController implements Initializable {
             fileFlag = true;
             msgTxtAreaID.setText(selectedFile.getPath());
         }
+    }
+
+    public void changeContactStatus(UserDto user) {
+//        ContactsListView.getInstance().changeContactStatus(user);
+        System.out.println(user.getUsername() + " ------->" + user.getStatus());
     }
 }

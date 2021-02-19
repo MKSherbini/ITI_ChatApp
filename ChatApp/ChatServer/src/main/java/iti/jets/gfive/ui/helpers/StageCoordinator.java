@@ -15,7 +15,8 @@ public class StageCoordinator {
     private static final StageCoordinator stageCoordinator = new StageCoordinator();
     private final Map<String, SceneData> scenes = new HashMap<>();
 
-    private StageCoordinator() { }
+    private StageCoordinator() {
+    }
 
     public void initStage(Stage stage) {
         if (primaryStage != null) {
@@ -28,80 +29,37 @@ public class StageCoordinator {
         return stageCoordinator;
     }
 
-    public void switchToLoginScene() {
+
+    public void switchToServerMain() {
+        var viewName = "ServerMain";
+
+        loadView(viewName);
+    }
+
+    private void loadView(String viewName) {
         if (primaryStage == null) {
             throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
         }
-
-        if (!scenes.containsKey("login")) {
+        if (!scenes.containsKey(viewName)) {
             try {
                 System.out.println("Created New Scene");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/LoginView.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
                 Parent loginView = fxmlLoader.load();
                 Scene loginScene = new Scene(loginView);
                 SceneData loginSceneData = new SceneData(fxmlLoader, loginView, loginScene);
-                scenes.put("login", loginSceneData);
+                scenes.put(viewName, loginSceneData);
                 primaryStage.setScene(loginScene);
             } catch (IOException e) {
-                System.out.println("IO Exception: Couldn't load 'Login View' FXML file");
+//                System.out.println(String.format("IO Exception: Couldn't load %s FXML file", viewName));
+                e.printStackTrace();
             }
         } else {
             System.out.println("Loaded Existing Scene");
-            SceneData loginSceneData = scenes.get("login");
+            SceneData loginSceneData = scenes.get(viewName);
             Scene loginScene = loginSceneData.getScene();
             primaryStage.setScene(loginScene);
         }
-
     }
 
-    public void switchToSignupScene() {
-        if (primaryStage == null) {
-            throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
-        }
-
-        if (!scenes.containsKey("signup")) {
-            try {
-                System.out.println("Created New Scene");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/SignupView.fxml"));
-                Parent signupView = fxmlLoader.load();
-                Scene signupScene = new Scene(signupView);
-                SceneData signupSceneData = new SceneData(fxmlLoader, signupView, signupScene);
-                scenes.put("signup", signupSceneData);
-                primaryStage.setScene(signupScene);
-            } catch (IOException e) {
-                System.out.println("IO Exception: Couldn't load 'Signup View' FXML file");
-            }
-        } else {
-            System.out.println("Loaded Existing Scene");
-            SceneData signupSceneData = scenes.get("signup");
-            Scene signupScene = signupSceneData.getScene();
-            primaryStage.setScene(signupScene);
-        }
-    }
-
-    public void switchToChatScene() {
-        if (primaryStage == null) {
-            throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
-        }
-
-        if (!scenes.containsKey("chat")) {
-            try {
-                System.out.println("Created New Scene");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatView.fxml"));
-                Parent chatView = fxmlLoader.load();
-                Scene chatScene = new Scene(chatView);
-                SceneData chatSceneData = new SceneData(fxmlLoader, chatView, chatScene);
-                scenes.put("chat", chatSceneData);
-                primaryStage.setScene(chatScene);
-            } catch (IOException e) {
-                System.out.println("IO Exception: Couldn't load 'Chat View' FXML file");
-            }
-        } else {
-            System.out.println("Loaded Existing Scene");
-            SceneData chatSceneData = scenes.get("chat");
-            Scene chatScene = chatSceneData.getScene();
-            primaryStage.setScene(chatScene);
-        }
-    }
 
 }

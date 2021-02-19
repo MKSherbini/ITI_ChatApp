@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ErrorPageController">
+   <children>
+      <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="400.0" prefWidth="198.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutX="85.0" layoutY="-1.0" prefHeight="400.0" prefWidth="420.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="lb_appName" layoutX="218.0" layoutY="27.0" text="ChillChat" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="27.0" />
+            <Label layoutX="90.0" layoutY="123.0" styleClass="error-label-color" text="Our smart systems have detected an issue with the server" textFill="ORANGERED" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="123.0" />
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="142.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/skullError.jpg" />
+               </image>
+            </ImageView>
+            <Label layoutX="60.0" layoutY="326.0" styleClass="error-label-color" text="Come back later when you have a reliable connection to the server" textFill="ORANGERED" />
+            <JFXButton buttonType="RAISED" layoutX="216.0" layoutY="392.0" onAction="#onClickQuit" text="Quit" />
+         </children>
+      </AnchorPane>
+   </children>
+   <stylesheets>
+      <URL value="@../styles/error.css" />
+   </stylesheets>
+</AnchorPane>

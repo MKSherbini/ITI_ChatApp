@@ -12,6 +12,7 @@ import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
@@ -84,12 +85,13 @@ public class NewContactDialogController implements Initializable {
             registered = userServices.checkUserId(contactNum);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
         if(!registered){
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
-        //todo dialog or validation: user already exists in the contacts list
         ContactsListView c = ContactsListView.getInstance();
         boolean contactExist = c.contactExist(contactNum);
         if(contactExist){
@@ -119,6 +121,8 @@ public class NewContactDialogController implements Initializable {
             notificationServices.sendNotification(notif);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 

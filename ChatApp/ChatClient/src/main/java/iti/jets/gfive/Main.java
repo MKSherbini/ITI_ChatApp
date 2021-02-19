@@ -28,6 +28,8 @@ public class Main extends Application {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
         LoginManager loginManager = LoginManager.getInstance();
+        if (loginManager == null) return;
+
         // check if the can login returned true this meaning that user just exit
         // and his password and phone number saved and can enter
         if (loginManager.canLogin()) {
@@ -43,8 +45,8 @@ public class Main extends Application {
 
         primaryStage.show();
         //todo unregister and unexport but which obj??
-        primaryStage.setOnCloseRequest(ae -> {
-            StageCoordinator.getInstance().unregisterCurrentUser();
+        primaryStage.setOnCloseRequest(ae ->{
+           StageCoordinator.getInstance().unregisterCurrentUser(true);
         });
 //        var m = Marshaltor.getInstance();
 //        m.marshalChat();

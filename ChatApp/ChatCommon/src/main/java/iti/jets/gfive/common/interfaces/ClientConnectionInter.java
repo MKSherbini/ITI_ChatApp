@@ -11,4 +11,5 @@ public interface ClientConnectionInter extends Remote {
     void unregister(NotificationReceiveInter notif) throws RemoteException;
     void sendMsg(MessageDto msg) throws RemoteException;
     void sendFile(MessageDto msg) throws RemoteException;
+    void puplishStatus(UserDto user) throws RemoteException;
 }
