@@ -16,6 +16,7 @@ public class Server {
             ClientConnectionInter clientConnectionObj = new ClientConnectionImpl();
             NotificationCrudInter notificationCrudObj = new NotificationCrudImpl();
             MessageDBInter messageDBInter = new MessageDBImpl();
+            GroupChatInter groupChatInter = new GroupChatImpl();
             int port = 8000;
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind("UserDB-CRUD", obj);
@@ -23,6 +24,7 @@ public class Server {
             registry.rebind("ClientConnectionService", clientConnectionObj);
             registry.rebind("Notification-CRUD", notificationCrudObj);
             registry.rebind("MessageDb" ,messageDBInter);
+            registry.rebind("GroupchatDb" ,groupChatInter);
             System.out.println("Server is up and running on port " + port);
         } catch (RemoteException e) {
             e.printStackTrace();

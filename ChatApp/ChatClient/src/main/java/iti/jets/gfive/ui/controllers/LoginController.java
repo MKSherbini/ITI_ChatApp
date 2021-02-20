@@ -3,17 +3,12 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import iti.jets.gfive.common.interfaces.ClientConnectionInter;
-import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
-import iti.jets.gfive.common.interfaces.NotificationCrudInter;
+import iti.jets.gfive.common.interfaces.*;
+import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
-import iti.jets.gfive.services.ClientConnectionService;
-import iti.jets.gfive.services.ContactDBCrudService;
-import iti.jets.gfive.services.NotificationDBCrudService;
+import iti.jets.gfive.services.*;
 import iti.jets.gfive.ui.helpers.ContactsListView;
-import iti.jets.gfive.common.interfaces.UserDBCrudInter;
-import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -31,6 +26,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -86,6 +82,7 @@ public class LoginController implements Initializable {
             // todo call the thread that gets the contacts list and display in the listView
             // same thread or method to be called after adding a new contact aka --> a friend request accept
             ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
+            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
             ArrayList<UserDto> contacts = null;
             try {
                 contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
@@ -96,7 +93,7 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
             ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
+            c.fillContacts(contacts);// Sherbini: todo this was null for me, should be handled
             getNotifications(userDto);
             ModelsFactory modelsFactory = ModelsFactory.getInstance();
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
@@ -113,10 +110,15 @@ public class LoginController implements Initializable {
             currentUserModel.setPassword(txt_loginPass.getText());
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
+           List<GroupDto> groups = groupChatInter.selectAllGroups(currentUserModel.getPhoneNumber());
+            c.fillGroups(groups);
+
 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
 
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();

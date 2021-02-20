@@ -40,42 +40,44 @@ public class ContactController implements Initializable {
     public JFXButton deleteBtnID;
     @FXML
     public JFXButton addBtnID;
-    public List<UserDto> groupChatMembers = new ArrayList<>();
+    static public List<String> groupChatMembers = new ArrayList<>();
     ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+
     @FXML
     void onClickRemoveContact() {
         addBtnID.setDisable(false);
         deleteBtnID.setDisable(true);
         System.out.println("remove contact from a group");
+        System.out.println("size of list "+groupChatMembers.size());
+        groupChatMembers.remove(contactNumberLabel.getText());
 
-        UserDto userDto = new UserDto();
-        userDto.setUsername(contactNameLabel.getText());
-        userDto.setPhoneNumber(contactNumberLabel.getText());
-        try {
-            clientConnectionInter.RemoveMemeberFromChatGroup(contactNumberLabel.getText());
-        }catch (RemoteException e)
-        {
-            e.printStackTrace();
-        }
+//        UserDto userDto = new UserDto();
+//        userDto.setUsername(contactNameLabel.getText());
+//        userDto.setPhoneNumber(contactNumberLabel.getText());
+//        try {
+//            clientConnectionInter.RemoveMemeberFromChatGroup(contactNumberLabel.getText());
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML
     void onClickAddContatc() {
         addBtnID.setDisable(true);
         deleteBtnID.setDisable(false);
-
+        groupChatMembers.add(contactNumberLabel.getText());
+        System.out.println("size of list "+groupChatMembers.size());
         System.out.println("inside add contact button ");
         System.out.println("name-->" + contactNameLabel.getText());
         System.out.println("number--->" + contactNumberLabel.getText());
-        UserDto userDto = new UserDto();
-        userDto.setUsername(contactNameLabel.getText());
-        userDto.setPhoneNumber(contactNumberLabel.getText());
-        try {
-            clientConnectionInter.addMemberToGroupChat(contactNumberLabel.getText());
-        }catch (RemoteException e)
-        {
-            e.printStackTrace();
-        }
+//        UserDto userDto = new UserDto();
+//        userDto.setUsername(contactNameLabel.getText());
+//        userDto.setPhoneNumber(contactNumberLabel.getText());
+//        try {
+//            clientConnectionInter.addMemberToGroupChat(contactNumberLabel.getText());
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
 
 //        groupChatMembers.add(userDto);
 //        System.out.println(groupChatMembers.size());
@@ -106,8 +108,8 @@ public class ContactController implements Initializable {
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
 
     }
-    public void setButtonsVisibilty()
-    {
+
+    public void setButtonsVisibilty() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

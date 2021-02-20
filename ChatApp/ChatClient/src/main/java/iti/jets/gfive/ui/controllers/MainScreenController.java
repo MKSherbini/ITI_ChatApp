@@ -4,9 +4,11 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
@@ -54,10 +56,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainScreenController implements Initializable {
     public static final String URL_RESOURCE = "/iti/jets/gfive/icons/%s.png";
@@ -104,7 +103,10 @@ public class MainScreenController implements Initializable {
     private ImageView profilepictureID;
     private Label receiverNumber;
 
+    private int groupid;
+
     private Label newLabel;
+    private List<String> members = new ArrayList<>();
 
     @FXML
     void showContxtMenu(MouseEvent event) {
@@ -516,24 +518,45 @@ public class MainScreenController implements Initializable {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
                     try {
                         BorderPane borderPane = fxmlLoader.load();
+                        ContactController contactController = fxmlLoader.getController();
                         VBox vBox2 = (VBox) borderPane.getCenter();
                         HBox hbox1 = (HBox) vBox2.getChildren().get(0);
                         Label label = (Label) hbox1.getChildren().get(0);
+                        Label label1 = (Label)vBox2.getChildren().get(1);
                         label.setText(groupnameID.getText());
+
                         System.out.println("33333333->");
+
+                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText() ,contactController.groupChatMembers);
+                        GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+                        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+                        contactController.groupChatMembers.add(currentUserModel.getPhoneNumber());
+
+                         groupid = groupChatInter.insert(groupnameID.getText() ,contactController.groupChatMembers);
+                         System.out.println("------>groupis "+groupid);
+
+                        label1.setText(String.valueOf(groupid));
+                        System.out.println(label1.getText());
                         contactsListViewId.getItems().add(borderPane);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        //call server to update the ui of other members
-                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText());
+                        contactController.groupChatMembers.clear();
 
-                    } catch (RemoteException e) {
+
+                    } catch (IOException e){
                         e.printStackTrace();
                     }
+//                    try {
+//                        //call server to update the ui of other members
+//                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+//                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText());
+//                        GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+//                        groupChatInter.insert();
+//
+//                    } catch (RemoteException e) {
+//                        e.printStackTrace();
+//                    }
 
                     ObservableList<BorderPane> list = contactsListViewId.getItems();
                     for (BorderPane item : list) {

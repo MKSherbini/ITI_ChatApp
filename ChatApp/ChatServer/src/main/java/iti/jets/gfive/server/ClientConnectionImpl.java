@@ -7,6 +7,7 @@ import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.UserDto;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
@@ -59,13 +60,14 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void createGroupInAllMemebers(String groupname) throws RemoteException {
+    public void createGroupInAllMemebers(String groupname ,List<String> members) throws RemoteException {
         //loop on the list and then clean it
         clientsPool.forEach(connectedClient -> {
-            for (String phonenumber : GroupChatMember) {
+            for (String phonenumber : members) {
                    System.out.println("1---->"+phonenumber);
                 if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)){
                     try {
+
                         System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
                         connectedClient.getReceiveNotif().addGroupInMembersList(groupname);
                     } catch (RemoteException e) {
