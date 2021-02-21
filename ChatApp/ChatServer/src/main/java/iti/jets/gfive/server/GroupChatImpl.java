@@ -2,6 +2,7 @@ package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.models.GroupDto;
+import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.NotifDBRecord;
 import iti.jets.gfive.db.DataSourceFactory;
 
@@ -112,5 +113,116 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
             }
         }
         return groupid;
+    }
+
+    @Override
+    public List<String> selectAllMemebers(String id) throws RemoteException {
+        List<String> members  = new ArrayList<>();
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        try {
+            con = ds.getConnection();
+            String selectQuery = "select member_id\n" +
+                    "from chatapp.groupchatmember\n" +
+                    "where group_id = ?;";
+            preparedStatement = con.prepareStatement(selectQuery);
+            preparedStatement.setInt(1, Integer.parseInt(id));
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+
+                members.add(rs.getString("member_id"));
+
+            }
+            System.out.println("number of members "+members.size());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return members;
+
+    }
+
+    @Override
+    public List<GroupMessagesDto> selectAllMessages(String groupid) throws RemoteException {
+        List<GroupMessagesDto> messages  = new ArrayList<>();
+        GroupMessagesDto groupMessagesDto = new GroupMessagesDto();
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        try {
+            con = ds.getConnection();
+            String selectQuery = "select group_id ,message , sender_id\n" +
+                    "from chatapp.groupmessages\n" +
+                    "where group_id = ?;";
+            preparedStatement = con.prepareStatement(selectQuery);
+            preparedStatement.setInt(1, Integer.parseInt(groupid));
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                groupMessagesDto=new GroupMessagesDto();
+                groupMessagesDto.setId(String.valueOf(rs.getInt("group_id")));
+                groupMessagesDto.setMessage(rs.getString("message"));
+                groupMessagesDto.setSendernumber(rs.getString("sender_id"));
+                messages.add(groupMessagesDto);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return messages;
+    }
+
+    @Override
+    public void saveAllMessages(GroupMessagesDto groupMessagesDto) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        int rowsAffected = 0;
+        int groupid = -1;
+        try {
+            con = ds.getConnection();
+            String insertQuery = "insert into chatapp.groupmessages\n" +
+                    "(group_id ,message ,sender_id)\n" +
+                    "values (?,?,?)";
+            preparedStatement = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, groupMessagesDto.getId());
+            preparedStatement.setString(2, groupMessagesDto.getMessage());
+            preparedStatement.setString(3, groupMessagesDto.getSendernumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            rs = preparedStatement.getGeneratedKeys();
+
+
+            System.out.println("row affeected==" + rowsAffected);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        if (con != null && preparedStatement != null && rs != null) {
+            try {
+                rs.close();
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
     }
 }

@@ -35,7 +35,7 @@ public class ContactController implements Initializable {
     @FXML
     public Button newButton;
     @FXML
-    public Label newLabelID;
+    public Label newlabelID;
     @FXML
     public JFXButton deleteBtnID;
     @FXML

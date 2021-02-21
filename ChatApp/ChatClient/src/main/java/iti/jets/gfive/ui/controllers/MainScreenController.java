@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXPopup;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
+import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.GroupChatService;
@@ -317,38 +318,75 @@ public class MainScreenController implements Initializable {
         if (receiverNumber == null) {
             return;
         }
-        final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+        if(receivernumberID.getText().charAt(0)!=0)
+        {
+            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                chatListView.getItems().clear();
+            List<GroupMessagesDto> groupMessagesDto = groupChatInter.selectAllMessages(receivernumberID.getText());
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    chatListView.getItems().clear();
 
-                try {
+                    try {
 
-                    //todo still won't work with the method only by making the attribute public!
-                    for (MessageDto messageDto : messageList) {
+                        //todo still won't work with the method only by making the attribute public!
+                        for (GroupMessagesDto groupMessagesDto1 : groupMessagesDto) {
 
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                        AnchorPane anchorPane = fxmlLoader.load();
-                        ChatMessageController controller = fxmlLoader.getController();
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            ChatMessageController controller = fxmlLoader.getController();
 
-                        //   System.out.println("content of the message "+messageDto.getContent());
-                        controller.msgLabelId.setText(messageDto.getContent());
-                        if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
-                            controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                            controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            //   System.out.println("content of the message "+messageDto.getContent());
+                            controller.msgLabelId.setText(groupMessagesDto1.getMessage());
+                            if (currentUserModel.getPhoneNumber().equals(groupMessagesDto1.getSendernumber())) {
+                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            }
+
+                            msgTxtAreaID.setText("");
+                            chatListView.getItems().add(anchorPane);
                         }
-
-                        msgTxtAreaID.setText("");
-                        chatListView.getItems().add(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
 
+        }
+        else {
+            final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    chatListView.getItems().clear();
+
+                    try {
+
+                        //todo still won't work with the method only by making the attribute public!
+                        for (MessageDto messageDto : messageList) {
+
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            ChatMessageController controller = fxmlLoader.getController();
+
+                            //   System.out.println("content of the message "+messageDto.getContent());
+                            controller.msgLabelId.setText(messageDto.getContent());
+                            if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            }
+
+                            msgTxtAreaID.setText("");
+                            chatListView.getItems().add(anchorPane);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
         chatListView.scrollTo(chatListView.getItems().size() - 1);
 
     }
@@ -358,73 +396,133 @@ public class MainScreenController implements Initializable {
         if (msgTxtAreaID.getText().equals("")) {
             return;
         }
-//        Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
-//        System.out.println("------groupchat" + groupchat);
-//        System.out.println("------imageofgroup" + ReceiverImgID.getImage());
-//        if (ReceiverImgID.getImage() == groupchat) {
-//            System.out.println("inside group chat");
-//        }
-
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
 
-
-        MessageDBInter messageServices = MessageDBService.getMessageService();
-
-        //todo must retreive the image of the sender to db and send it as paramter in sendMsg
-
-        String messsage = msgTxtAreaID.getText();
-        Date date = Date.valueOf(LocalDate.now());
-        System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
-        MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
-        try {
-            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-            clientConnectionInter.sendMsg(messageDto);
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        int rowaffected = messageServices.insertMessage(messageDto);
-        // System.out.println("row inserted equal "+rowaffected);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                UserDBCrudInter userServices = UserDBCrudService.getUserService();
-                Image senderImag = null;
-
-                //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
-                senderImag = currentUserModel.getImage();
-
-
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+            if (receivernumberID.getText().charAt(0) != 0) {
+                String message;
                 try {
-                    AnchorPane anchorPane = fxmlLoader.load();
-                    ChatMessageController controller = fxmlLoader.getController();
-                    //todo still won't work with the method only by making the attribute public!
-                    //controller.setLabelValue(contact.getUsername());
-                    controller.msgLabelId.setText(messsage);
-                    //  controller.msgImgId.setImage(senderImag);
+                    BorderPane borderPane = fxmlLoader.load();
+                    ContactController contactController = fxmlLoader.getController();
+                   GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                    String groupid = receivernumberID.getText();
+                    List<String>memeber=groupChatInter.selectAllMemebers(groupid);
+                    //remove me from the list
+                    for(int i = 0 ; i <memeber.size();i++)
+                    {
+                        if(memeber.get(i).equals(currentUserModel.getPhoneNumber()))
+                        {
+                            memeber.remove(i);
+                        }
+                    }
 
 
-                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                    controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
-                    //todo senderimg must update in it's chatarea
+                     message = msgTxtAreaID.getText();
+                    GroupMessagesDto groupMessagesDto = new GroupMessagesDto(groupid , message , currentUserModel.getPhoneNumber());
+                    groupChatInter.saveAllMessages(groupMessagesDto);
+;
+
+
+                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                        clientConnectionInter.sendGroupMsg(memeber ,groupid ,message);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                            try {
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                ChatMessageController controller = fxmlLoader.getController();
+                                //todo still won't work with the method only by making the attribute public!
+                                //controller.setLabelValue(contact.getUsername());
+                                controller.msgLabelId.setText(message);
+
+
+                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                //todo senderimg must update in it's chatarea
 //                    controller.msgImgId.setImage(senderImag);
 
-                    msgTxtAreaID.setText("");
+                                msgTxtAreaID.setText("");
 
-                    chatListView.getItems().add(anchorPane);
-                    chatListView.scrollTo(anchorPane);
+                                chatListView.getItems().add(anchorPane);
+                                chatListView.scrollTo(anchorPane);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                System.out.println("inside group chat");
+            } else {
+
+
+
+
+                MessageDBInter messageServices = MessageDBService.getMessageService();
+
+                //todo must retreive the image of the sender to db and send it as paramter in sendMsg
+
+                String messsage = msgTxtAreaID.getText();
+                Date date = Date.valueOf(LocalDate.now());
+                System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
+                MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+                try {
+                    ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                    clientConnectionInter.sendMsg(messageDto);
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                int rowaffected = messageServices.insertMessage(messageDto);
+                // System.out.println("row inserted equal "+rowaffected);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserDBCrudInter userServices = UserDBCrudService.getUserService();
+                        Image senderImag = null;
+
+                        //  senderImag = userServices.selectUserImage(currentUserModel.getImage());
+                        senderImag = currentUserModel.getImage();
+
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                        try {
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            ChatMessageController controller = fxmlLoader.getController();
+                            //todo still won't work with the method only by making the attribute public!
+                            //controller.setLabelValue(contact.getUsername());
+                            controller.msgLabelId.setText(messsage);
+                            //  controller.msgImgId.setImage(senderImag);
+
+
+                            controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                            controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            //todo senderimg must update in it's chatarea
+//                    controller.msgImgId.setImage(senderImag);
+
+                            msgTxtAreaID.setText("");
+
+                            chatListView.getItems().add(anchorPane);
+                            chatListView.scrollTo(anchorPane);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
-        });
 
-    }
+        }
 
-    public void onClickSaveChat(ActionEvent actionEvent) {
+        public void onClickSaveChat(ActionEvent actionEvent) {
         if (receiverNumber.getText().length() == 0) return;
         CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
         MessageDBInter messageServices = MessageDBService.getMessageService();

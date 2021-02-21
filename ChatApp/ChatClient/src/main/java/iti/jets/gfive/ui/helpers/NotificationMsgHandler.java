@@ -172,10 +172,26 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 
                             // newLabel.setVisible(true);
                             label.setStyle("-fx-background-color: green;");
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
 
+                           // ContactController controller = fxmlLoader.getController();
+                            System.out.println("------------------");
+                            //System.out.println(controller.newlabelID.isVisible());
+                          //  controller.newlabelID.setVisible(true);
+                            System.out.println("------------------1");
+                            try {
+                                BorderPane borderPane = fxmlLoader.load();
+                                Label neww = (Label)borderPane.getRight();
+                                System.out.println(neww.isVisible());
+                                System.out.println(neww);
+                                neww.setVisible(true);
+                                System.out.println(neww.isVisible());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
-                            item.setRight(label);
-                            label.setVisible(true);
+//                            item.setRight(label);
+//                            label.setVisible(true);
 
 //                                              b.setOnAction(actionEvent -> {
 //                                                  try {
@@ -305,5 +321,80 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 }
             }
         });
+    }
+
+    @Override
+    public void receiveGroupMessage(String id, String message) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                ObservableList<BorderPane> list = contactsList.getItems();
+
+
+                System.out.println("inside the condition  ");
+                if (borderPane.isVisible() && number.getText().equals(id)) {
+
+                    try {
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        ChatMessageController controller = fxmlLoader.getController();
+                        System.out.println("content of the message " +message);
+                        //el mafrod akhod el senderid w aro7 ageb sorto
+                        controller.msgLabelId.setText(message);
+                        listView.getItems().add(anchorPane);
+                        listView.scrollTo(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    System.out.println("inside else");
+                    for (BorderPane item : list) {
+                        VBox vBox = (VBox) item.getCenter();
+                        HBox hbox = (HBox) vBox.getChildren().get(0);
+                        Label senderName = (Label) hbox.getChildren().get(0);
+
+                        Label receiverNumber = (Label) vBox.getChildren().get(1);
+                        if (receiverNumber.getText().equals(id) ){
+                            System.out.println("inside the match buttton");
+
+                            // newLabel.setVisible(true);
+                            label.setStyle("-fx-background-color: green;");
+//                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+//
+//                            // ContactController controller = fxmlLoader.getController();
+//                            System.out.println("------------------");
+//                            //System.out.println(controller.newlabelID.isVisible());
+//                            //  controller.newlabelID.setVisible(true);
+//                            System.out.println("------------------1");
+//                            try {
+//                                BorderPane borderPane = fxmlLoader.load();
+//                                Label neww = (Label)borderPane.getRight();
+//                                System.out.println(neww.isVisible());
+//                                System.out.println(neww);
+//                                neww.setVisible(true);
+//                                System.out.println(neww.isVisible());
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+
+                            item.setRight(label);
+                            label.setVisible(true);
+
+                            break;
+                        }
+
+
+
+                    }
+                }
+            }
+        });
+
+
+        //todo still won't work with the method only by making the attribute public!
+
     }
 }
