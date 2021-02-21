@@ -153,6 +153,38 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
     }
 
     @Override
+    public boolean reverseNotification(String senderId, String receiverId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        boolean notificationReverseExists = false;
+        try {
+            con = ds.getConnection();
+            String query = "select * from\n" +
+                    "notifications n, notification_receivers nr\n" +
+                    "where nr.receiver = ? and n.sender = ? and n.completed = 0;";
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, senderId);
+            preparedStatement.setString(2, receiverId);
+            rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                notificationReverseExists = true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if(con != null && preparedStatement != null){
+            try {
+                preparedStatement.close(); con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return notificationReverseExists;
+    }
+
+    @Override
     public int updateNotificationStatus(int notifId) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         ArrayList<NotificationDto> notificationList = new ArrayList<>();

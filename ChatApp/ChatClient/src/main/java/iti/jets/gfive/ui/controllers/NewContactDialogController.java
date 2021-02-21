@@ -2,12 +2,10 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.NotifDBRecord;
 import iti.jets.gfive.common.models.NotificationDto;
-import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
@@ -105,6 +103,12 @@ public class NewContactDialogController implements Initializable {
             //todo dialog or validation: pending notification (a notification already exist)
             if(notificationExists){
                 System.out.println("pending notification");
+                return;
+            }
+            boolean notificationReverseExists = notificationServices.reverseNotification(currentUserModel.getPhoneNumber(),
+                    contactNum);
+            if(notificationReverseExists){
+                System.out.println("check ur notifications list");
                 return;
             }
             String notificationContent = (currentUserModel.getUsername() +" with the phone number "

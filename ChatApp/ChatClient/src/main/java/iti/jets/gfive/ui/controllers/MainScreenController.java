@@ -209,8 +209,8 @@ public class MainScreenController implements Initializable {
 
         // System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
-        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
-        NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
+        //System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+        //NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         //System.out.println("calling the get instance again in the client");
     }
 

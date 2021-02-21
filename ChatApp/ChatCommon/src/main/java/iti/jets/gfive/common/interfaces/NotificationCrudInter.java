@@ -16,4 +16,5 @@ public interface NotificationCrudInter extends Remote {
     void sendNotification(NotificationDto notif) throws RemoteException;
     boolean pendingNotification(String senderId, String receiverId) throws RemoteException;
     int updateNotificationStatus(int notifId) throws RemoteException;
+    boolean reverseNotification(String senderId, String receiverId) throws RemoteException;
 }
