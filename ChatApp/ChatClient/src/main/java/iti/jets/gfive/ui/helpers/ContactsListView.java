@@ -4,9 +4,11 @@ import com.jfoenix.controls.JFXListView;
 import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.controllers.ContactController;
+import iti.jets.gfive.ui.controllers.RegisterController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
@@ -76,6 +78,8 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(group.getGroupname());
                         controller.contactNumberLabel.setText(String.valueOf(group.getId()));
+                       Image groupchat = new Image(ContactsListView.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
+                        controller.contactImg.setImage(groupchat);
                         //  controller.addBtnID.setVisible(true);
                         //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);

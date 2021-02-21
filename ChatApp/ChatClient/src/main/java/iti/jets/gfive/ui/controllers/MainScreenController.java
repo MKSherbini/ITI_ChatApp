@@ -281,13 +281,7 @@ public class MainScreenController implements Initializable {
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
 
 //            //todo still won't work with the method only by making the attribute public!
-//            //controller.setLabelValue(contact.getUsername());
-//            controller.newLabelID.setVisible(false);
-//            //System.out.println(item.getChildren().get(1).toString() + " chh");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
         chatListView.getItems().clear();
         ObservableList<BorderPane> selectedContact;
         selectedContact = contactsListViewId.getSelectionModel().getSelectedItems();
@@ -298,18 +292,20 @@ public class MainScreenController implements Initializable {
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
             ImageView receiverimage = (ImageView) borderPane.getLeft();
-            System.out.println("-------------->" + receiverimage);
+            System.out.println("------>recevier " + receiverNumber);
+
+
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
                 newLabel.setVisible(false);
                 System.out.println("right of borderpane equals null");
             }
 
-            // ImageView imageView =(ImageView) borderPane.getLeft();
-            //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
             receivernumberID.setText(receiverNumber.getText());
+
             ReceiverImgID.setImage(receiverimage.getImage());
+            System.out.println("---------imagehere " + ReceiverImgID.getImage());
 
             chatAreaBorderPaneID.setVisible(true);
         }
@@ -318,26 +314,11 @@ public class MainScreenController implements Initializable {
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
 
-//        System.out.println("pressed");
-//        ObservableList<BorderPane> selectedContact;
-//        selectedContact= contactsListViewId.getSelectionModel().getSelectedItems();
-//        for(BorderPane borderPane:selectedContact) {
-//            //get the name and image of the selected contact
-//            VBox vBox = (VBox) borderPane.getCenter();
-//            Label name =(Label) vBox.getChildren().get(0);
-//             receiverNumber = (Label) vBox.getChildren().get(1);
-//           // ImageView imageView =(ImageView) borderPane.getLeft();
-//            System.out.println("label text is " +name.getText());
-//            receivernameID.setText(name.getText());
-//            chatAreaBorderPaneID.setVisible(true);
-//        }
         if (receiverNumber == null) {
             return;
         }
         final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
 
-        //   System.out.println("number of list" +messageList.size());
-        // messageList = messageServices.selectAllMessages(receiverNumber.getText() ,currentUserModel.getPhoneNumber());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -346,11 +327,8 @@ public class MainScreenController implements Initializable {
                 try {
 
                     //todo still won't work with the method only by making the attribute public!
-                    //controller.setLabelValue(contact.getUsername());
                     for (MessageDto messageDto : messageList) {
 
-                        //select picture from user_data where user_id = sender_id
-                        //select picture from user_data where user_id= recevierid
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
                         AnchorPane anchorPane = fxmlLoader.load();
                         ChatMessageController controller = fxmlLoader.getController();
@@ -360,18 +338,10 @@ public class MainScreenController implements Initializable {
                         if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
                             controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
                             controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
-
-                            // controller.msgImgId.setImage(senderimg);
-
-                        } else {
-                            //  controller.msgImgId.setImage(recevierpicyure);
                         }
+
                         msgTxtAreaID.setText("");
                         chatListView.getItems().add(anchorPane);
-                        if (receiverNumber.equals(messageDto.getReceiverNumber())) {
-
-                        }
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -388,6 +358,13 @@ public class MainScreenController implements Initializable {
         if (msgTxtAreaID.getText().equals("")) {
             return;
         }
+//        Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
+//        System.out.println("------groupchat" + groupchat);
+//        System.out.println("------imageofgroup" + ReceiverImgID.getImage());
+//        if (ReceiverImgID.getImage() == groupchat) {
+//            System.out.println("inside group chat");
+//        }
+
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
@@ -520,22 +497,24 @@ public class MainScreenController implements Initializable {
                         BorderPane borderPane = fxmlLoader.load();
                         ContactController contactController = fxmlLoader.getController();
                         VBox vBox2 = (VBox) borderPane.getCenter();
+                        ImageView imageView = (ImageView) borderPane.getLeft();
                         HBox hbox1 = (HBox) vBox2.getChildren().get(0);
                         Label label = (Label) hbox1.getChildren().get(0);
-                        Label label1 = (Label)vBox2.getChildren().get(1);
+                        Label label1 = (Label) vBox2.getChildren().get(1);
                         label.setText(groupnameID.getText());
 
                         System.out.println("33333333->");
 
                         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText() ,contactController.groupChatMembers);
+                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers);
                         GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
                         ModelsFactory modelsFactory = ModelsFactory.getInstance();
                         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                         contactController.groupChatMembers.add(currentUserModel.getPhoneNumber());
-
-                         groupid = groupChatInter.insert(groupnameID.getText() ,contactController.groupChatMembers);
-                         System.out.println("------>groupis "+groupid);
+                        Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
+                        groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
+                        imageView.setImage(groupchat);
+                        System.out.println("------>groupis " + groupid);
 
                         label1.setText(String.valueOf(groupid));
                         System.out.println(label1.getText());
@@ -544,7 +523,7 @@ public class MainScreenController implements Initializable {
                         contactController.groupChatMembers.clear();
 
 
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 //                    try {
