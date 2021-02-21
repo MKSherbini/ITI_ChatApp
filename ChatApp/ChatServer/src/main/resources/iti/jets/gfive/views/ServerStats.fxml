@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/stats.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ServerStatsController">
    <children>
-      <VBox prefHeight="350.0" prefWidth="350.0">
+      <VBox prefHeight="700.0" prefWidth="350.0">
          <children>
             <HBox VBox.vgrow="ALWAYS">
                <children>
@@ -23,6 +23,15 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <PieChart fx:id="chart_countryStats" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </PieChart>
+               </children>
             </HBox>
          </children>
       </VBox>

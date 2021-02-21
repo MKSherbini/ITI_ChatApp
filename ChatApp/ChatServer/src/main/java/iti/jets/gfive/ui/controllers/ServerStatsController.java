@@ -4,11 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StatsManager;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.binding.IntegerBinding;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,62 +20,107 @@ import java.util.stream.Collectors;
 
 public class ServerStatsController implements Initializable {
     public PieChart chart_genderStats;
+    public PieChart chart_countryStats;
     public Label lbl_caption;
     public JFXButton btn_test;
     public JFXButton btn_test2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        lbl_caption.setStyle("-fx-font: 16 arial;");
+
+        StatsManager.getInstance().initStats();
         InitGenderStats();
+        InitCountryStats();
+
         btn_test.setOnAction(event -> {
             var statsModel = ModelsFactory.getInstance().getStatsModel();
-            statsModel.setMalesCount(statsModel.getMalesCount() + 1);
+//            statsModel.setMalesCount(statsModel.getMalesCount() + 1);
+            statsModel.getCountryPropertiesMap().get("Unspecified").set(
+                    statsModel.getCountryPropertiesMap().get("Unspecified").get() + 1
+            );
         });
         btn_test2.setOnAction(event -> {
             var statsModel = ModelsFactory.getInstance().getStatsModel();
-            statsModel.setFemalesCount(statsModel.getFemalesCount() + 1);
+//            statsModel.setFemalesCount(statsModel.getFemalesCount() + 1);
+            statsModel.getCountryPropertiesMap().get("Albania").set(
+                    statsModel.getCountryPropertiesMap().get("Albania").get() + 1
+            );
         });
 
-        StatsManager.getInstance().initStats();
+    }
+
+    private void InitCountryStats() {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        var statsModel = ModelsFactory.getInstance().getStatsModel();
+        var dataList = statsModel.getCountryPropertiesMap().entrySet().stream()
+                .map(entry -> {
+                    var data = new PieChart.Data(entry.getKey(), entry.getValue().get());
+                    data.pieValueProperty().bind(entry.getValue());
+                    return data;
+                })
+                .collect(Collectors.toList());
+        pieChartData.addAll(dataList);
+
+        setupPieChart(pieChartData, chart_countryStats, "Country Stats");
+
+        DoubleBinding totalBinding = new DoubleBinding() {
+
+            {
+                pieChartData.forEach(data -> {
+                    super.bind(data.pieValueProperty());
+                });
+            }
+
+            @Override
+            protected double computeValue() {
+                return pieChartData.stream().mapToDouble(PieChart.Data::getPieValue).sum();
+            }
+        };
+
+        addCaption(chart_countryStats, totalBinding);
     }
 
     private void InitGenderStats() {
-//        ObservableList<PieChart.Data> pieChartData =
-//                FXCollections.observableArrayList(value -> new Observable[]{value.pieValueProperty()});
-
-        var maleData = new PieChart.Data("Males", 10);
-        var femaleData = new PieChart.Data("Females", 22);
-//        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-//                new PieChart.Data("Males", 10),
-//                new PieChart.Data("Females", 22));
+        var maleData = new PieChart.Data("Males", 0);
+        var femaleData = new PieChart.Data("Females", 0);
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         pieChartData.addAll(maleData, femaleData);
+
         var statsModel = ModelsFactory.getInstance().getStatsModel();
         maleData.pieValueProperty().bind(statsModel.malesCountProperty());
         femaleData.pieValueProperty().bind(statsModel.femalesCountProperty());
 
-        chart_genderStats.setData(pieChartData);
-        chart_genderStats.setTitle("Gender Stats");
-        chart_genderStats.setClockwise(true);
-        chart_genderStats.setLabelLineLength(20);
-        chart_genderStats.setLabelsVisible(true);
-        chart_genderStats.setStartAngle(180);
-
-        lbl_caption.setStyle("-fx-font: 16 arial;");
+        setupPieChart(pieChartData, chart_genderStats, "Gender Stats");
 
         DoubleBinding total = Bindings.createDoubleBinding(() ->
                         pieChartData.stream().collect(Collectors.summingDouble(PieChart.Data::getPieValue)),
                 maleData.pieValueProperty(), femaleData.pieValueProperty());
 
+        addCaption(chart_genderStats, total);
 
+    }
+
+    private void setupPieChart(ObservableList<PieChart.Data> pieChartData, PieChart chart_countryStats, String s) {
+        chart_countryStats.setData(pieChartData);
+        chart_countryStats.setTitle(s);
+        chart_countryStats.setClockwise(true);
+        chart_countryStats.setLabelLineLength(20);
+        chart_countryStats.setLabelsVisible(true);
+        chart_countryStats.setStartAngle(180);
+    }
+
+    private void addCaption(PieChart chart, DoubleBinding total) {
         SimpleLongProperty waitTime = new SimpleLongProperty(System.currentTimeMillis());
 
-        for (final PieChart.Data data : chart_genderStats.getData()) {
+        for (final PieChart.Data data : chart.getData()) {
             data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED,
                     e -> {
                         lbl_caption.setTranslateX(e.getSceneX());
                         lbl_caption.setTranslateY(e.getSceneY());
                         String text = String.format("Count: %s, Ratio %.1f%%", data.getPieValue(), 100.0 * data.getPieValue() / total.get());
+                        System.out.println("text = " + text);
                         lbl_caption.setText(text);
                         lbl_caption.setVisible(true);
                         waitTime.set(System.currentTimeMillis() + 1000);
@@ -105,6 +146,5 @@ public class ServerStatsController implements Initializable {
                     }
             );
         }
-
     }
 }
