@@ -42,6 +42,12 @@ public class StageCoordinator {
         loadView(viewName);
     }
 
+    public void switchToServerStats() {
+        var viewName = "ServerStats";
+
+        loadView(viewName);
+    }
+
     private void loadView(String viewName) {
         if (primaryStage == null) {
             throw new RuntimeException("Stage Coordinator should be initialized with a Stage before it could be used");
