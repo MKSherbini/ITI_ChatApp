@@ -61,7 +61,8 @@ public class ContactsListView {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                contactsListViewId.getItems().clear();
+//                if(contactsListViewId.getItems() != null)
+                    contactsListViewId.getItems().clear();
                 for (UserDto contact : contacts) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
                     try {

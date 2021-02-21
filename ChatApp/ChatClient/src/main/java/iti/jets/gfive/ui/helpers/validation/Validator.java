@@ -5,11 +5,14 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.rmi.RemoteException;
 import java.util.function.Predicate;
 
 // todo create a builder to add multiple validators then register with event
@@ -56,7 +59,18 @@ public class Validator {
 
         addDBExistingPhoneValidation(phone, true);
 
-        addPredicateValidation(phone, "Contact already exists", s -> !ContactsListView.getInstance().contactExist(s));
+        addPredicateValidation(phone, "Contact already exists",
+                s -> !ContactsListView.getInstance().contactExist(s));
+        addPredicateValidation(phone, "A request was already sent",
+                s -> {
+                    try {
+                        return !NotificationDBCrudService.getNotificationService().pendingNotification(currentUserModel.getPhoneNumber(), s);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
+                    }
+                    return true;
+                });
         setValidateOnEvent(phone);
     }
 
@@ -84,6 +98,11 @@ public class Validator {
 
     public void buildNameValidation(JFXTextField textField) {
         addBoundsValidation(textField, 2, 10);
+        setValidateOnEvent(textField);
+    }
+
+    public void buildBioValidation(JFXTextField textField) {
+        addBoundsValidation(textField, 0, 100);
         setValidateOnEvent(textField);
     }
 

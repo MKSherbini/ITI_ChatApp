@@ -34,6 +34,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             preparedStatement.setDate(3, date);
             preparedStatement.setBoolean(4, completed);
             rowsAffected = preparedStatement.executeUpdate();
+            //todo if i return like this does it means that the connections are not closed? should i put it in finally!
             if(rowsAffected == 0)
                 return notifObj;
             rs = preparedStatement.getGeneratedKeys();
@@ -52,7 +53,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if(con != null && preparedStatement != null && rs != null){
+        if(con != null && preparedStatement != null){
             try {
                 rs.close(); preparedStatement.close(); con.close();
             } catch (SQLException throwable) {

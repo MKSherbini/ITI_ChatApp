@@ -82,7 +82,7 @@
                <children>
                   <Button fx:id="ProfileBtnID" layoutY="8.0" mnemonicParsing="false" onAction="#onClickProfile" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView  fx:id="profilepictureID" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="profilepictureID" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/profile_icon.png" />
                            </image>
@@ -174,7 +174,7 @@
                      <children>
                         <Region prefHeight="42.0" prefWidth="0.0" />
                         <TextArea fx:id="msgTxtAreaID" prefHeight="42.0" prefWidth="468.0" wrapText="true" HBox.hgrow="ALWAYS" />
-                        <JFXButton fx:id="attachBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="24.0" styleClass="attachBtnId" stylesheets="@../styles/ChatAreaStyle.css" text=" " textFill="#e1e6fa">
+                        <JFXButton fx:id="attachBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onClickAttachFile" prefHeight="30.0" prefWidth="24.0" styleClass="attachBtnId" stylesheets="@../styles/ChatAreaStyle.css" text=" " textFill="#e1e6fa">
                            <font>
                               <Font name="System Bold" size="11.0" />
                            </font>
