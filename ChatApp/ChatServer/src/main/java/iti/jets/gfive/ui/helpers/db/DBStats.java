@@ -68,7 +68,7 @@ public class DBStats {
             String selectQuery = "select coalesce(country,'Unspecified'), COUNT(*) from chatapp.user_data group by country;";
             preparedStatement = con.prepareStatement(selectQuery);
             rs = preparedStatement.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 countryStats.put(rs.getString(1), rs.getInt(2));
             }
         } catch (SQLException throwables) {

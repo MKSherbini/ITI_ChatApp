@@ -36,6 +36,7 @@
          </children>
       </VBox>
       <Label fx:id="lbl_caption" />
+      <JFXButton fx:id="btn_back" buttonType="RAISED" layoutX="541.0" layoutY="660.0" text="Back" AnchorPane.bottomAnchor="14.399999999999999" AnchorPane.rightAnchor="18.200000000000003" />
       <JFXButton fx:id="btn_test" buttonType="RAISED" layoutX="477.0" layoutY="50.0" text="Test1" />
       <JFXButton fx:id="btn_test2" buttonType="RAISED" layoutX="477.0" layoutY="114.0" text="Test2" />
    </children>

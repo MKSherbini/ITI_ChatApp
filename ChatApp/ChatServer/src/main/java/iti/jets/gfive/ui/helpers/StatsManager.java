@@ -13,7 +13,7 @@ public class StatsManager {
         return instance;
     }
 
-    public void initStats() {
+    public void updateStats() {
         var db = DBStats.getInstance(); // can free them from being a singleton but meh...
         var model = ModelsFactory.getInstance().getStatsModel();
 

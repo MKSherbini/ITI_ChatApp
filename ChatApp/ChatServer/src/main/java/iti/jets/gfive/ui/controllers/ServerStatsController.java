@@ -2,6 +2,7 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.StatsManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -24,12 +25,13 @@ public class ServerStatsController implements Initializable {
     public Label lbl_caption;
     public JFXButton btn_test;
     public JFXButton btn_test2;
+    public JFXButton btn_back;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         lbl_caption.setStyle("-fx-font: 16 arial;");
 
-        StatsManager.getInstance().initStats();
+        StatsManager.getInstance().updateStats();
         InitGenderStats();
         InitCountryStats();
 
@@ -46,6 +48,9 @@ public class ServerStatsController implements Initializable {
             statsModel.getCountryPropertiesMap().get("Albania").set(
                     statsModel.getCountryPropertiesMap().get("Albania").get() + 1
             );
+        });
+        btn_back.setOnAction(event -> {
+            StageCoordinator.getInstance().switchToServerMain();
         });
 
     }

@@ -3,6 +3,7 @@ package iti.jets.gfive.server;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.db.DataSourceFactory;
+import iti.jets.gfive.ui.helpers.StatsManager;
 import javafx.scene.image.Image;
 
 import javax.sql.DataSource;
@@ -155,6 +156,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 throwable.printStackTrace();
             }
         }
+        if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
     }
 
@@ -234,12 +236,10 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         Connection con = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
-        if(user.getBio() != null && user.getBio().length()>200)
-        {
+        if (user.getBio() != null && user.getBio().length() > 200) {
             System.out.println("Bio entered is too long");
 
-        }
-        else {
+        } else {
             try {
                 con = ds.getConnection();
                 String insertQuery = "update user_data set user_name = ?, email = ?, user_password = ?, gender = ?, country = ?, date_birth = ?, bio = ?  WHERE phone_number = ?";
@@ -271,6 +271,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
             }
         }
+        if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
     }
 
@@ -298,6 +299,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 throwables.printStackTrace();
             }
         }
+        if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
     }
 
