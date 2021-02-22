@@ -387,4 +387,32 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
         return img;
     }
+    public int updateUserConnection(UserDto user,boolean online) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String insertQuery = "update user_data set on_line = ? WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setBoolean(1, online);
+            preparedStatement.setString(2, user.getPhoneNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected>0)
+                System.out.println(user.getPhoneNumber()+ " online = "+online);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && stmt != null) {
+            try {
+                stmt.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return rowsAffected;
+    }
 }
