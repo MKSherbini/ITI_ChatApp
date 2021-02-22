@@ -132,6 +132,10 @@ public class NewContactDialogController implements Initializable {
     public void performNewContact(ActionEvent actionEvent) {
         boolean validField= validateFields();
         if (!validField) return;
+        for (Object phone: listView.getItems()) {
+            if(phone.equals(txtPhoneNumber.getText()))
+                return;
+        }
        listView.getItems().add(txtPhoneNumber.getText());
        txtPhoneNumber.setText("");
     }
