@@ -2,13 +2,16 @@ package iti.jets.gfive.ui.helpers;
 
 import com.jfoenix.controls.JFXListView;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
+import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
+import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.controllers.ContactController;
+import iti.jets.gfive.ui.controllers.GroupMessageController;
 import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
@@ -23,6 +26,7 @@ import javafx.scene.layout.*;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
+
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
@@ -45,6 +49,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     //private  Label newLabel;
     Label label = new Label("new");
 
+
     private NotificationMsgHandler() throws RemoteException {
         super();
     }
@@ -66,38 +71,39 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         this.notificationLabelId = notificationLabelId;
     }
 
-//    public void setNotificationsListId(JFXListView notificationsListId){
+    //    public void setNotificationsListId(JFXListView notificationsListId){
 //        this.notificationsListId = notificationsListId;
 //        System.out.println("notificationsListId is set to: " + notificationsListId);
     public void setListView(ListView<AnchorPane> list) {
         listView = list;
     }
+
     public void setContactList(ListView<BorderPane> list) {
         contactsList = list;
     }
-    public void setChatarea(BorderPane borderPane)
-    {
-        this.borderPane =borderPane;
-    }
-    public void setButton(Button b)
-    {
 
-        newButton=b;
+    public void setChatarea(BorderPane borderPane) {
+        this.borderPane = borderPane;
     }
-    public void setname(Label name)
-    {
-        this.name=name;
+
+    public void setButton(Button b) {
+
+        newButton = b;
     }
-    public void setnumber(Label number)
-    {
-        this.number =number;
+
+    public void setname(Label name) {
+        this.name = name;
     }
-//    public void setnewLabel(Label newLabel)
+
+    public void setnumber(Label number) {
+        this.number = number;
+    }
+
+    //    public void setnewLabel(Label newLabel)
 //    {
 //        this.newLabel = newLabel;
 //    }
-    public  Label getnewLabel()
-    {
+    public Label getnewLabel() {
         return this.label;
     }
 //    public void increaseNotificationsNumber(){
@@ -114,7 +120,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 //        });
 //    }
 
-    public void increaseNotificationsNumber(){
+    public void increaseNotificationsNumber() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -124,10 +130,12 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             }
         });
     }
- //todo must make another fxml to receive a message with photo in the leftside
+
+    //todo must make another fxml to receive a message with photo in the leftside
     @Override
     public void receiveMsg(MessageDto messageDto) throws RemoteException {
         List<MessageDto> messageList = new ArrayList<>();
+        label = new Label("new");
 
         Platform.runLater(new Runnable() {
             @Override
@@ -148,10 +156,6 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                         //el mafrod akhod el senderid w aro7 ageb sorto
                         controller.msgLabelId.setText(messageDto.getContent());
 
-                        // controller.setMsgImgId();
-                        // msgTxtFieldId.setText("");
-
-                        // name.setText(senderName.getText());
                         System.out.println("meesage  " + messageDto.getContent());
                         listView.getItems().add(anchorPane);
                         listView.scrollTo(anchorPane);
@@ -169,87 +173,36 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                         Label receiverNumber = (Label) vBox.getChildren().get(1);
                         if (receiverNumber.getText().equals(messageDto.getSenderNumber())) {
                             System.out.println("inside the match buttton");
-
-                            // newLabel.setVisible(true);
+                            item.setRight(label);
                             label.setStyle("-fx-background-color: green;");
-                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+                            label.setVisible(true);
 
-                           // ContactController controller = fxmlLoader.getController();
-                            System.out.println("------------------");
-                            //System.out.println(controller.newlabelID.isVisible());
-                          //  controller.newlabelID.setVisible(true);
-                            System.out.println("------------------1");
-                            try {
-                                BorderPane borderPane = fxmlLoader.load();
-                                Label neww = (Label)borderPane.getRight();
-                                System.out.println(neww.isVisible());
-                                System.out.println(neww);
-                                neww.setVisible(true);
-                                System.out.println(neww.isVisible());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-//                            item.setRight(label);
-//                            label.setVisible(true);
-
-//                                              b.setOnAction(actionEvent -> {
-//                                                  try {
-//                                                      b.setVisible(false);
-//                                                      name.setText(senderName.getText());
-//                                                      borderPane.setVisible(true);
-//
-//                                                      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-//                                                      AnchorPane anchorPane = fxmlLoader.load();
-//                                                      ChatMessageController controller = fxmlLoader.getController();
-//                                                      System.out.println("content of the message " + messageDto.getContent());
-//                                                      controller.msgLabelId.setText(messageDto.getContent());
-//                                                      // msgTxtFieldId.setText("");
-//                                                      listView.getItems().add(anchorPane);
-//                                                  } catch (IOException e) {
-//                                                      e.printStackTrace();
-//                                                  }
-//
-//
-//                                              });
                             break;
                         }
 
-                        //newButton.setVisible(true);
 
                     }
                 }
             }
         });
-        //load contactview controller.phonenumber ==messgaedto.phonenumber
-        //get the items in the list and check if it's phone = phone
 
         //todo still won't work with the method only by making the attribute public!
-        //controller.setLabelValue(contact.getUsername());
-//                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-//                    AnchorPane anchorPane = fxmlLoader.load();
-//                    ChatMessageController controller = fxmlLoader.getController();
-//                    System.out.println("content of the message " + messageDto.getContent());
-//                    controller.msgLabelId.setText(messageDto.getContent());
-//                    // msgTxtFieldId.setText("");
-//                    listView.getItems().add(anchorPane);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+
 
     }
 
-    public void decreaseNotificationsNumber(){
+    public void decreaseNotificationsNumber() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 int notificationsNumber = Integer.parseInt(notificationLabelId.getText());
-                if(notificationsNumber == 0) return;
-                notificationsNumber-=1;
-                notificationLabelId.setText(notificationsNumber+"");
+                if (notificationsNumber == 0) return;
+                notificationsNumber -= 1;
+                notificationLabelId.setText(notificationsNumber + "");
             }
         });
     }
+
     public void receive(NotificationDto notification) throws RemoteException {
         increaseNotificationsNumber();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
@@ -265,11 +218,12 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             e.printStackTrace();
         }
     }
+
     @Override
     public void updateContactsList() throws RemoteException {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
+        ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
         ArrayList<UserDto> contacts;
         try {
             contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
@@ -279,12 +233,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             e.printStackTrace();
         }
     }
-    public JFXListView<BorderPane> getNotificationsToFill(){
+
+    public JFXListView<BorderPane> getNotificationsToFill() {
         return this.notificationsListId;
     }
-    public void addNotifications(ArrayList<NotificationDto> notifications){
+
+    public void addNotifications(ArrayList<NotificationDto> notifications) {
         //System.out.println(notifications.size() + "<-------------1");
-        for (NotificationDto notification: notifications) {
+        for (NotificationDto notification : notifications) {
             increaseNotificationsNumber();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
             try {
@@ -324,7 +280,8 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void receiveGroupMessage(String id, String message) throws RemoteException {
+    public void receiveGroupMessage(String id, String message, String name) throws RemoteException {
+        Label label = new Label("new");
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -336,12 +293,13 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 if (borderPane.isVisible() && number.getText().equals(id)) {
 
                     try {
+                        GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
 
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/GroupMessageView.fxml"));
                         AnchorPane anchorPane = fxmlLoader.load();
-                        ChatMessageController controller = fxmlLoader.getController();
-                        System.out.println("content of the message " +message);
-                        //el mafrod akhod el senderid w aro7 ageb sorto
+                        GroupMessageController controller = fxmlLoader.getController();
+                        System.out.println("content of the message " + message);
+                        controller.senderName.setText(name);
                         controller.msgLabelId.setText(message);
                         listView.getItems().add(anchorPane);
                         listView.scrollTo(anchorPane);
@@ -357,35 +315,17 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                         Label senderName = (Label) hbox.getChildren().get(0);
 
                         Label receiverNumber = (Label) vBox.getChildren().get(1);
-                        if (receiverNumber.getText().equals(id) ){
+                        if (receiverNumber.getText().equals(id)) {
                             System.out.println("inside the match buttton");
 
-                            // newLabel.setVisible(true);
                             label.setStyle("-fx-background-color: green;");
-//                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
-//
-//                            // ContactController controller = fxmlLoader.getController();
-//                            System.out.println("------------------");
-//                            //System.out.println(controller.newlabelID.isVisible());
-//                            //  controller.newlabelID.setVisible(true);
-//                            System.out.println("------------------1");
-//                            try {
-//                                BorderPane borderPane = fxmlLoader.load();
-//                                Label neww = (Label)borderPane.getRight();
-//                                System.out.println(neww.isVisible());
-//                                System.out.println(neww);
-//                                neww.setVisible(true);
-//                                System.out.println(neww.isVisible());
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
+
 
                             item.setRight(label);
                             label.setVisible(true);
 
                             break;
                         }
-
 
 
                     }

@@ -78,10 +78,9 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(group.getGroupname());
                         controller.contactNumberLabel.setText(String.valueOf(group.getId()));
+                        controller.contactNumberLabel.setVisible(false);
                        Image groupchat = new Image(ContactsListView.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
                         controller.contactImg.setImage(groupchat);
-                        //  controller.addBtnID.setVisible(true);
-                        //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
                     } catch (IOException e) {
                         e.printStackTrace();

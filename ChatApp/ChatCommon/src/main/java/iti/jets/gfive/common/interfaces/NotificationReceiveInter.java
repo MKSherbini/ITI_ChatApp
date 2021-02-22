@@ -11,5 +11,5 @@ public interface NotificationReceiveInter extends Remote {
     void receiveMsg(MessageDto messageDto) throws RemoteException;
     void updateContactsList() throws RemoteException;
     void addGroupInMembersList(String groupname)throws RemoteException;
-    void receiveGroupMessage(String id , String message) throws RemoteException;
+    void receiveGroupMessage(String id , String message , String name) throws RemoteException;
 }

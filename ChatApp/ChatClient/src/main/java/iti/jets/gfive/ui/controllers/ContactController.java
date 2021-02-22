@@ -8,6 +8,7 @@ import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -34,8 +35,7 @@ public class ContactController implements Initializable {
     public Label contactNumberLabel;
     @FXML
     public Button newButton;
-    @FXML
-    public Label newlabelID;
+
     @FXML
     public JFXButton deleteBtnID;
     @FXML
@@ -51,36 +51,19 @@ public class ContactController implements Initializable {
         System.out.println("size of list "+groupChatMembers.size());
         groupChatMembers.remove(contactNumberLabel.getText());
 
-//        UserDto userDto = new UserDto();
-//        userDto.setUsername(contactNameLabel.getText());
-//        userDto.setPhoneNumber(contactNumberLabel.getText());
-//        try {
-//            clientConnectionInter.RemoveMemeberFromChatGroup(contactNumberLabel.getText());
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @FXML
     void onClickAddContatc() {
-        addBtnID.setDisable(true);
-        deleteBtnID.setDisable(false);
-        groupChatMembers.add(contactNumberLabel.getText());
-        System.out.println("size of list "+groupChatMembers.size());
-        System.out.println("inside add contact button ");
-        System.out.println("name-->" + contactNameLabel.getText());
-        System.out.println("number--->" + contactNumberLabel.getText());
-//        UserDto userDto = new UserDto();
-//        userDto.setUsername(contactNameLabel.getText());
-//        userDto.setPhoneNumber(contactNumberLabel.getText());
-//        try {
-//            clientConnectionInter.addMemberToGroupChat(contactNumberLabel.getText());
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
 
-//        groupChatMembers.add(userDto);
-//        System.out.println(groupChatMembers.size());
+            addBtnID.setDisable(true);
+            deleteBtnID.setDisable(false);
+            groupChatMembers.add(contactNumberLabel.getText());
+            System.out.println("size of list " + groupChatMembers.size());
+            System.out.println("inside add contact button ");
+            System.out.println("name-->" + contactNameLabel.getText());
+            System.out.println("number--->" + contactNumberLabel.getText());
+
 
     }
 

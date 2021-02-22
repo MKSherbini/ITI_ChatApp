@@ -38,7 +38,4 @@
          </children>
       </VBox>
    </center>
-   <right>
-      <Label fx:id="newlabelID" style="-fx-background-color: green;" text="new" visible="false" BorderPane.alignment="CENTER" />
-   </right>
 </BorderPane>

@@ -225,4 +225,38 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
             }
         }
     }
+
+    @Override
+    public String getUserName(String number) throws RemoteException {
+         String name =null;
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        try {
+            con = ds.getConnection();
+            String selectQuery = "select user_name\n" +
+                    "from chatapp.user_data\n" +
+                    "where phone_number = ?;";
+            preparedStatement = con.prepareStatement(selectQuery);
+            preparedStatement.setString(1, number);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+               name =  rs.getString("user_name");
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return name;
+    }
 }

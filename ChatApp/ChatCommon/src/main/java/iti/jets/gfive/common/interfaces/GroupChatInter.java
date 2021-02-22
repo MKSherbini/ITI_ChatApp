@@ -17,4 +17,6 @@ public interface GroupChatInter extends Remote {
    List<GroupMessagesDto> selectAllMessages(String groupid) throws RemoteException;
 
    void saveAllMessages(GroupMessagesDto groupMessagesDto) throws RemoteException;
+
+   String getUserName (String number) throws  RemoteException;
 }

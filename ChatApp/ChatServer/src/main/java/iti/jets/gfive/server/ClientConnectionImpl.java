@@ -82,14 +82,14 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void sendGroupMsg(List<String> list, String id, String message) throws RemoteException {
+    public void sendGroupMsg(List<String> list, String id, String message , String name) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
             for (String phonenumber : list) {
                 if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)){
                     try {
 
                         System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
-                        connectedClient.getReceiveNotif().receiveGroupMessage(id,message);
+                        connectedClient.getReceiveNotif().receiveGroupMessage(id,message,name);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
