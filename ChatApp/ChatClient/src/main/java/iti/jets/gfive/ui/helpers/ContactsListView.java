@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -45,10 +46,11 @@ public class ContactsListView {
             @Override
             public void run() {
                 contactsListViewId.getItems().forEach(item->{
-                    VBox v= (VBox) item.getChildren().get(1);
+
+                    VBox v= (VBox) item.getChildren().get(0);
                     Label lblPhone = (Label) v.getChildren().get(1);
                     if(lblPhone.getText().equals(user.getPhoneNumber())){
-                       StackPane stackPane = (StackPane) item.getChildren().get(2);
+                       StackPane stackPane = (StackPane) ((AnchorPane) item.getChildren().get(1)).getChildren().get(1);
                        ((ImageView)(stackPane.getChildren().get(1))).setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,user.getStatus())).toString()));
                     }
                 });
