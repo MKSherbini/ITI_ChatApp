@@ -77,7 +77,11 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
                     contact.setCountry(rs.getString("country"));
                     contact.setBirthDate(rs.getDate("date_birth"));
                     contact.setBio(rs.getString("bio"));
-                    contact.setStatus(rs.getString("user_status"));
+                    if(rs.getBoolean("on_line")){
+                        contact.setStatus(rs.getString("user_status"));
+                    }else{
+                        contact.setStatus("offline");
+                    }
                     contact.setImage(UserDBCrudImpl.deserializeFromString(rs.getBytes("picture")));
                     contactsList.add(contact);
                 }

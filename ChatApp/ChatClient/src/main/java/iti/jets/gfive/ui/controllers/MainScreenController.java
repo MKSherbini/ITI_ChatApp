@@ -42,6 +42,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -195,6 +196,12 @@ public class MainScreenController implements Initializable {
         initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
+        // make profile picture to be circled
+        final Rectangle clip = new Rectangle(35, 35);
+        clip.setArcWidth(180);
+        clip.setArcHeight(180);
+        profilepictureID.setClip(clip);
+
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
@@ -297,7 +304,7 @@ public class MainScreenController implements Initializable {
             HBox hbox = (HBox) vBox.getChildren().get(0);
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
-            ImageView receiverimage = (ImageView) borderPane.getLeft();
+            ImageView receiverimage = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
             System.out.println("-------------->" + receiverimage);
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
