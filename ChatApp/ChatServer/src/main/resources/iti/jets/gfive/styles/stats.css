@@ -37,7 +37,6 @@
 }
 
 
-
 .online-label {
     -fx-text-fill: green;
     -fx-background-color: green;
@@ -93,15 +92,21 @@
     -fx-fill: #E1E6FA;
 }
 
-.chart-pie-label { /*this is what you need for labels*/
+.chart-pie-label {
     -fx-fill: #E1E6FA;
     -fx-font-size: 1em;
 }
+
 .chart-legend {
-    -fx-background-color:  #183152;
+    -fx-background-color: #183152;
     -fx-stroke: darkred;
+    -fx-padding: 0, 55; /* fk this, I give up */
+    /*-fx-padding: 6px 80px 6px 6px;*/
+    /*-fx-background-insets: 0, 0, 0, 55;*/
+    /*-fx-background-radius: 6, 5;*/
+    /*-fx-padding: auto auto auto auto;*/
 }
 
-.chart{
-    -fx-background-color:  #375D81;
+.chart {
+    -fx-background-color: #375D81;
 }

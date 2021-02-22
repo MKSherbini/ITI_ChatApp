@@ -13,6 +13,7 @@ public class StatsManager {
         return instance;
     }
 
+    // wanted to separate each update but meh... bardo
     public void updateStats() {
         var db = DBStats.getInstance(); // can free them from being a singleton but meh...
         var model = ModelsFactory.getInstance().getStatsModel();
@@ -31,5 +32,17 @@ public class StatsManager {
             }
         });
 
+        // connection
+        var connectedMap = db.selectConnectionStats();
+        var connectedPropMap = model.getConnectionPropertiesMap();
+        System.out.println(connectedMap.entrySet());
+        System.out.println(connectedPropMap.entrySet());
+        connectedMap.forEach((integer, integer2) -> {
+            if (integer == 0) {
+                connectedPropMap.get("Offline").set(integer2);
+            } else {
+                connectedPropMap.get("Online").set(integer2);
+            }
+        });
     }
 }

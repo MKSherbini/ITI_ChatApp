@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class ServerStatsController implements Initializable {
     public PieChart chart_genderStats;
     public PieChart chart_countryStats;
+    public PieChart chart_connectedStats;
     public Label lbl_caption;
     public JFXButton btn_test;
     public JFXButton btn_test2;
@@ -34,25 +36,66 @@ public class ServerStatsController implements Initializable {
         StatsManager.getInstance().updateStats();
         InitGenderStats();
         InitCountryStats();
+        InitConnectedStats();
 
-        btn_test.setOnAction(event -> {
-            var statsModel = ModelsFactory.getInstance().getStatsModel();
-//            statsModel.setMalesCount(statsModel.getMalesCount() + 1);
-            statsModel.getCountryPropertiesMap().get("Unspecified").set(
-                    statsModel.getCountryPropertiesMap().get("Unspecified").get() + 1
-            );
-        });
-        btn_test2.setOnAction(event -> {
-            var statsModel = ModelsFactory.getInstance().getStatsModel();
-//            statsModel.setFemalesCount(statsModel.getFemalesCount() + 1);
-            statsModel.getCountryPropertiesMap().get("Albania").set(
-                    statsModel.getCountryPropertiesMap().get("Albania").get() + 1
-            );
-        });
+        btn_test.setVisible(false);
+        btn_test2.setVisible(false);
+//        btn_test.setOnAction(event -> {
+//            var statsModel = ModelsFactory.getInstance().getStatsModel();
+////            statsModel.setMalesCount(statsModel.getMalesCount() + 1);
+////            statsModel.getCountryPropertiesMap().get("Unspecified").set(
+////                    statsModel.getCountryPropertiesMap().get("Unspecified").get() + 1
+////            );
+//            statsModel.getConnectionPropertiesMap().get("Offline").set(
+//                    statsModel.getConnectionPropertiesMap().get("Offline").get() + 1
+//            );
+//        });
+//        btn_test2.setOnAction(event -> {
+//            var statsModel = ModelsFactory.getInstance().getStatsModel();
+////            statsModel.setFemalesCount(statsModel.getFemalesCount() + 1);
+////            statsModel.getCountryPropertiesMap().get("Albania").set(
+////                    statsModel.getCountryPropertiesMap().get("Albania").get() + 1
+////            );
+//            statsModel.getConnectionPropertiesMap().get("Online").set(
+//                    statsModel.getConnectionPropertiesMap().get("Online").get() + 1
+//            );
+//        });
         btn_back.setOnAction(event -> {
             StageCoordinator.getInstance().switchToServerMain();
         });
 
+    }
+
+    private void InitConnectedStats() {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        var statsModel = ModelsFactory.getInstance().getStatsModel();
+        var dataList = statsModel.getConnectionPropertiesMap().entrySet().stream()
+                .map(entry -> {
+                    var data = new PieChart.Data(entry.getKey(), entry.getValue().get());
+                    data.pieValueProperty().bind(entry.getValue());
+                    return data;
+                })
+                .collect(Collectors.toList());
+        pieChartData.addAll(dataList);
+
+        setupPieChart(pieChartData, chart_connectedStats, "Connected Stats");
+
+        DoubleBinding totalBinding = new DoubleBinding() {
+
+            {
+                pieChartData.forEach(data -> {
+                    super.bind(data.pieValueProperty());
+                });
+            }
+
+            @Override
+            protected double computeValue() {
+                return pieChartData.stream().mapToDouble(PieChart.Data::getPieValue).sum();
+            }
+        };
+
+        addCaption(chart_connectedStats, totalBinding);
     }
 
     private void InitCountryStats() {
@@ -69,6 +112,7 @@ public class ServerStatsController implements Initializable {
         pieChartData.addAll(dataList);
 
         setupPieChart(pieChartData, chart_countryStats, "Country Stats");
+        chart_countryStats.setLegendSide(Side.LEFT);
 
         DoubleBinding totalBinding = new DoubleBinding() {
 
@@ -107,13 +151,13 @@ public class ServerStatsController implements Initializable {
 
     }
 
-    private void setupPieChart(ObservableList<PieChart.Data> pieChartData, PieChart chart_countryStats, String s) {
-        chart_countryStats.setData(pieChartData);
-        chart_countryStats.setTitle(s);
-        chart_countryStats.setClockwise(true);
-        chart_countryStats.setLabelLineLength(20);
-        chart_countryStats.setLabelsVisible(true);
-        chart_countryStats.setStartAngle(180);
+    private void setupPieChart(ObservableList<PieChart.Data> pieChartData, PieChart chart, String s) {
+        chart.setData(pieChartData);
+        chart.setTitle(s);
+        chart.setClockwise(true);
+        chart.setLabelLineLength(20);
+        chart.setLabelsVisible(true);
+        chart.setStartAngle(180);
     }
 
     private void addCaption(PieChart chart, DoubleBinding total) {

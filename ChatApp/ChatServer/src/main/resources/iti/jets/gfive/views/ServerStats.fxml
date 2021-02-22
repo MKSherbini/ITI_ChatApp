@@ -8,13 +8,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/stats.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ServerStatsController">
+<AnchorPane prefHeight="709.0" prefWidth="851.0" stylesheets="@../styles/stats.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ServerStatsController">
    <children>
-      <VBox prefHeight="700.0" prefWidth="350.0">
+      <VBox prefHeight="700.0" prefWidth="780.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox VBox.vgrow="ALWAYS">
                <children>
                   <PieChart fx:id="chart_genderStats" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </PieChart>
+                  <PieChart fx:id="chart_connectedStats" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
@@ -37,7 +42,7 @@
       </VBox>
       <Label fx:id="lbl_caption" />
       <JFXButton fx:id="btn_back" buttonType="RAISED" layoutX="541.0" layoutY="660.0" text="Back" AnchorPane.bottomAnchor="14.399999999999999" AnchorPane.rightAnchor="18.200000000000003" />
-      <JFXButton fx:id="btn_test" buttonType="RAISED" layoutX="477.0" layoutY="50.0" text="Test1" />
-      <JFXButton fx:id="btn_test2" buttonType="RAISED" layoutX="477.0" layoutY="114.0" text="Test2" />
+      <JFXButton fx:id="btn_test" buttonType="RAISED" layoutX="477.0" layoutY="50.0" text="Test1" AnchorPane.rightAnchor="18.200000000000003" />
+      <JFXButton fx:id="btn_test2" buttonType="RAISED" layoutX="477.0" layoutY="114.0" text="Test2" AnchorPane.rightAnchor="18.200000000000003" />
    </children>
 </AnchorPane>

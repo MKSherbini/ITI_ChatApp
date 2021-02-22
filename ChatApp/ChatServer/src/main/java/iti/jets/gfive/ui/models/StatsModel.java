@@ -9,11 +9,17 @@ public class StatsModel {
     private final SimpleIntegerProperty malesCount = new SimpleIntegerProperty();
     private final SimpleIntegerProperty femalesCount = new SimpleIntegerProperty();
     private final Map<String, SimpleIntegerProperty> countryPropertiesMap = new HashMap<>();
+    private final Map<String, SimpleIntegerProperty> connectionPropertiesMap = new HashMap<>();
 
     {
         initCountryMap("Unspecified", "Albania", "Algeria", "Andorra", "Argentia", "Austalia", "Bahrain", "Belize", "Bolivia",
                 "Cambodia", "Cameroon", "Canada", "Dominica", "Egypt", "Estonia", "Finland", "Greece", "Grenada", "Haiti", "Iceland", "Japan", "Laos", "Lebanon",
                 "Libya", "Mali", "Panama", "Saudi Arabia", "serbia", "Turkey", "Vietnam", "Yemen", "Zambia", "Zimbabwe");
+    }
+
+    {
+        connectionPropertiesMap.put("Offline", new SimpleIntegerProperty());
+        connectionPropertiesMap.put("Online", new SimpleIntegerProperty());
     }
 
     private void initCountryMap(String... countryNames) {
@@ -48,5 +54,9 @@ public class StatsModel {
 
     public Map<String, SimpleIntegerProperty> getCountryPropertiesMap() {
         return countryPropertiesMap;
+    }
+
+    public Map<String, SimpleIntegerProperty> getConnectionPropertiesMap() {
+        return connectionPropertiesMap;
     }
 }
