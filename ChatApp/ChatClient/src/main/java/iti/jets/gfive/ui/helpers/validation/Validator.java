@@ -72,6 +72,18 @@ public class Validator {
                     }
                     return true;
                 });
+        addPredicateValidation(phone, "Check your notifications list",
+                s -> {
+                    try {
+                        return !NotificationDBCrudService.getNotificationService()
+                                .reverseNotification(currentUserModel.getPhoneNumber(),
+                                        s);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
+                    }
+                    return true;
+                });
         setValidateOnEvent(phone);
     }
 
@@ -116,6 +128,7 @@ public class Validator {
         StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
         textArea.getValidators().add(validator);
     }
+
     private void addBoundsValidation(JFXTextField textField, int minTextLength, int maxTextLength) {
         StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
         textField.getValidators().add(validator);
@@ -233,6 +246,7 @@ public class Validator {
         FontIcon errorIcon = new FontIcon("fas-skull");
         textArea.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
     }
+
     private void setErrorIcon(JFXTextField textField) {
         FontIcon errorIcon = new FontIcon("fas-skull");
         textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));

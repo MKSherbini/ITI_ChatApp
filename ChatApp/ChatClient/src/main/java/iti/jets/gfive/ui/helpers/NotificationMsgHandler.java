@@ -308,6 +308,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         return this.notificationsListId;
     }
     public void addNotifications(ArrayList<NotificationDto> notifications){
+        notificationsListId.getItems().clear(); // for the logout case
         //System.out.println(notifications.size() + "<-------------1");
         for (NotificationDto notification: notifications) {
             increaseNotificationsNumber();
