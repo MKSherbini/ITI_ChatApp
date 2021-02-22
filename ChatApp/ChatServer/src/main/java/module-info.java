@@ -23,6 +23,7 @@ module ChatServer {
     requires ChatCommon;
     requires java.desktop;
     requires javafx.swing;
+    requires javafx.web;
 
 
     exports iti.jets.gfive;

@@ -2,6 +2,7 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import iti.jets.gfive.Server;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +41,7 @@ public class ServerMainController {
 
     @FXML
     void onClickSendAnnouncement(ActionEvent event) {
-
+        StageCoordinator.getInstance().switchToAnnouncement();
     }
 
     @FXML

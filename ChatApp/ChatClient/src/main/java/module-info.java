@@ -24,6 +24,7 @@ module ChatClient {
     requires jakarta.xml.bind;
     requires org.apache.commons.io;
     requires javafx.swing;
+    requires javafx.web;
 
 
     exports iti.jets.gfive;

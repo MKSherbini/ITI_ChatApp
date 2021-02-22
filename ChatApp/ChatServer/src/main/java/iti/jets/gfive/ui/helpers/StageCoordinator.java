@@ -35,6 +35,10 @@ public class StageCoordinator {
 
         loadView(viewName);
     }
+    public void switchToAnnouncement(){
+        var viewName = "AnnouncementView";
+        loadView(viewName);
+    }
 
     private void loadView(String viewName) {
         if (primaryStage == null) {

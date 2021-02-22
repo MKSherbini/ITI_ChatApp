@@ -4,10 +4,13 @@ import iti.jets.gfive.classes.ConnectedClient;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.MessageDto;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+
+import java.sql.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
@@ -62,6 +65,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         });
     }
 
+
     @Override
     public void sendFile(MessageDto msg) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
@@ -72,6 +76,23 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     e.printStackTrace();
                 }
             }
+        });
+    }
+    @Override
+    public void publishAnnouncement(String announce) throws RemoteException {
+        if (clientsPool == null || clientsPool.size() < 1)
+            return;
+        clientsPool.forEach(connectedClient -> {
+
+                try {
+                    connectedClient.getReceiveNotif().receive(
+                            new NotificationDto(1000,announce,"01000000000",
+                                    new Date(new java.util.Date().getTime()),
+                                    false, connectedClient.getClient().getPhoneNumber()));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
         });
     }
 }
