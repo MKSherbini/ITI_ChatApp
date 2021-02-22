@@ -100,13 +100,13 @@ public class NewContactDialogController implements Initializable {
         try {
             boolean notificationExists = notificationServices.pendingNotification(currentUserModel.getPhoneNumber(),
                     contactNum);
-            //todo dialog or validation: pending notification (a notification already exist)
             if(notificationExists){
                 System.out.println("pending notification");
                 return;
             }
             boolean notificationReverseExists = notificationServices.reverseNotification(currentUserModel.getPhoneNumber(),
                     contactNum);
+            //todo dialog or validation: check ur notifications (a request notification exists in ur notifications list)
             if(notificationReverseExists){
                 System.out.println("check ur notifications list");
                 return;
@@ -119,7 +119,6 @@ public class NewContactDialogController implements Initializable {
                     currentUserModel.getPhoneNumber(), currentDate, false, contactNum);
             System.out.println("rows affected after notification: " + notifRecord.getRowsAffected());
             if(notifRecord.getRowsAffected() <= 1) return;
-            //todo tell the server to go and increase the label
             NotificationDto notif = new NotificationDto(notifRecord.getNotifId(), notificationContent, currentUserModel.getPhoneNumber(),
                     currentDate, false, contactNum);
             notificationServices.sendNotification(notif);

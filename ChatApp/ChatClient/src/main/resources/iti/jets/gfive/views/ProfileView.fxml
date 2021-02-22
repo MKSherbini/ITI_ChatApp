@@ -20,20 +20,16 @@
          <center>
             <VBox alignment="CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="395.0" prefWidth="421.0" style="-fx-border-radius: 50;" BorderPane.alignment="CENTER">
                <children>
-                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="68.0" prefWidth="180.0">
+                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="92.0" prefWidth="180.0">
                      <children>
                         <ImageView fx:id="ProfileImageID" fitHeight="50.0" fitWidth="54.0" layoutX="10.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                           <image>
                               <Image url="@../images/personal.jpg" />
                            </image>
                         </ImageView>
-                        <JFXButton layoutX="60.0" layoutY="48.0" onAction="#OnClickChangePhoto" prefHeight="31.0" prefWidth="45.0" text=" ">
+                        <JFXButton buttonType="RAISED" layoutX="60.0" layoutY="48.0" onAction="#OnClickChangePhoto" prefHeight="31.0" prefWidth="45.0" text=" ">
                            <graphic>
-                              <ImageView fitHeight="22.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/edit.png" />
-                                 </image>
-                              </ImageView>
+                              <FontAwesomeIconView fill="#183152" glyphName="EDIT" size="25" wrappingWidth="16.000000953674316" />
                            </graphic>
                         </JFXButton>
                      </children>

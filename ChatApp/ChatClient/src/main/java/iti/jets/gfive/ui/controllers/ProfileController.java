@@ -77,8 +77,8 @@ public class ProfileController implements Initializable {
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
 
         try {
-            System.out.println("imaaage " +user.getImage());
-            System.out.println("imaaage " +user.getPhoneNumber());
+            //System.out.println("imaaage " +user.getImage());
+            //System.out.println("imaaage " +user.getPhoneNumber());
             int rowsAffected = userServices.updateUserPhoto(user);
             if (rowsAffected == 0) return;
         } catch (RemoteException e) {
@@ -110,9 +110,6 @@ public class ProfileController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-        //still wait to bind the photo
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
@@ -135,12 +132,8 @@ public class ProfileController implements Initializable {
         GenderID.textProperty().bind(currentUserModel.genderProperty());
         CountryID.textProperty().bind(currentUserModel.countryProperty());
         BioID.textProperty().bind(currentUserModel.bioProperty());
-        //birthdate can't be bind bidirectional
         DateOfBirthID.textProperty().bindBidirectional(currentUserModel.dateProperty(), converter);
-        //must set the image by default image if it return null in the login
-        ProfileImageID.setImage(currentUserModel.getImage());
-       // ProfileImageID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
-
+        ProfileImageID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
 
     }
 

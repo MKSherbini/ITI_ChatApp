@@ -2,6 +2,7 @@ package iti.jets.gfive.ui.helpers.validation;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
@@ -101,9 +102,9 @@ public class Validator {
         setValidateOnEvent(textField);
     }
 
-    public void buildBioValidation(JFXTextField textField) {
-        addBoundsValidation(textField, 0, 100);
-        setValidateOnEvent(textField);
+    public void buildBioValidation(JFXTextArea textArea) {
+        addBoundsValidationForTextArea(textArea, 0, 200);
+        setValidateOnEventForTextArea(textArea);
     }
 
     public void buildDateValidation(JFXDatePicker date) {
@@ -111,7 +112,10 @@ public class Validator {
         setValidateOnEvent(date);
     }
 
-
+    private void addBoundsValidationForTextArea(JFXTextArea textArea, int minTextLength, int maxTextLength) {
+        StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
+        textArea.getValidators().add(validator);
+    }
     private void addBoundsValidation(JFXTextField textField, int minTextLength, int maxTextLength) {
         StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
         textField.getValidators().add(validator);
@@ -195,6 +199,15 @@ public class Validator {
         });
     }
 
+    private void setValidateOnEventForTextArea(JFXTextArea textArea) {
+        setErrorIcon(textArea);
+        textArea.focusedProperty().addListener((o, oldVal, newVal) -> {
+            if (newVal != null && !newVal) {
+                textArea.validate();
+            }
+        });
+    }
+
     private void setValidateOnEvent(JFXTextField textField) {
         setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
@@ -216,6 +229,10 @@ public class Validator {
     // fas-exclamation, fas-exclamation-circle, fas-exclamation-triangle, fas-info-circle
     // fas-khanda, fas-lightbulb, fas-minus-circle, fas-question-circle,
     // fas-skull, mdi2s-skull-outline, mdi2s-skull-scan-outline, mdi2s-skull, mdi2s-skull-crossbones-outline
+    private void setErrorIcon(JFXTextArea textArea) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textArea.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
     private void setErrorIcon(JFXTextField textField) {
         FontIcon errorIcon = new FontIcon("fas-skull");
         textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));

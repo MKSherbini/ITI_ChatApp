@@ -34,6 +34,8 @@ public class NotificationViewController {
 
     public int notificationId;
 
+
+
     NotificationMsgHandler notificationMsgHandler = NotificationMsgHandler.getInstance();
     NotificationCrudInter notificationDBCrudService = NotificationDBCrudService.getNotificationService();
 
@@ -52,6 +54,7 @@ public class NotificationViewController {
             contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts);
+
             notificationDBCrudService.updateNotificationStatus(this.notificationId);
             contactDBCrudInter.updateUserContacts(senderIdLabel.getText());
             acceptBtnId.setDisable(true);

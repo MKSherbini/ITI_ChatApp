@@ -187,7 +187,7 @@ public class MainScreenController implements Initializable {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         CurrentUserNameID.setText(currentUserModel.getUsername());
-        profilepictureID.setImage(currentUserModel.getImage());
+        profilepictureID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
         System.out.println(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
         changeStatusUi();
