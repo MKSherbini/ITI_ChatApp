@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class NotificationViewController implements Initializable {
                         ContactController controller = fxmlLoader.getController();
                         controller.contactNameLabel.setText(contactInfo.getUsername());
                         controller.contactNumberLabel.setText(contactInfo.getPhoneNumber());
-                        controller.lblStatus.setText(contactInfo.getStatus());
+                        controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,contactInfo.getStatus())).toString()));
                         controller.contactImg.setImage(contactInfo.getImage());
                         contactsList.getItems().add(item);
                     } catch (IOException e) {

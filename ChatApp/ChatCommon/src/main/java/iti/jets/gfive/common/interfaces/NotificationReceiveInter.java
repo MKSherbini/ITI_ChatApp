@@ -13,4 +13,5 @@ public interface NotificationReceiveInter extends Remote {
     void updateContactsList(UserDto contactInfo) throws RemoteException;
     void receiveFile(MessageDto messageDto) throws RemoteException;
     void updateStatus(UserDto user) throws RemoteException;
+    void updatePicture(UserDto user) throws RemoteException;
 }

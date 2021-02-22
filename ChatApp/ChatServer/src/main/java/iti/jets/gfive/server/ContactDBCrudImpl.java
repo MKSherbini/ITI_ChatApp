@@ -39,13 +39,14 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         return rowsAffected;
@@ -90,13 +91,14 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return contactsList;
@@ -147,13 +149,14 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return contact;

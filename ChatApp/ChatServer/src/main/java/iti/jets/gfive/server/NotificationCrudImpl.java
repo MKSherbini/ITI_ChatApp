@@ -52,12 +52,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                rs.close(); preparedStatement.close(); con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    rs.close(); preparedStatement.close(); con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         notifObj.setNotifId(notificationId); notifObj.setRowsAffected(rowsAffected);
@@ -96,12 +97,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return notificationList;
@@ -141,12 +143,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return notificationExists;
@@ -173,12 +176,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return notificationReverseExists;
@@ -199,12 +203,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;

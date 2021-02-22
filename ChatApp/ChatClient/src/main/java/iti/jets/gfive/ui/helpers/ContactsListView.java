@@ -62,6 +62,24 @@ public class ContactsListView {
 
     }
 
+    public void changeContactPicture(UserDto user){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                contactsListViewId.getItems().forEach(item->{
+                    VBox v= (VBox) item.getChildren().get(0);
+                    Label lblPhone = (Label) v.getChildren().get(1);
+                    if(lblPhone.getText().equals(user.getPhoneNumber())){
+                        AnchorPane anchorPane= (AnchorPane) item.getLeft();
+                        ImageView img = (ImageView)  anchorPane.getChildren().get(0);
+                        img.setImage(user.getImage());
+                    }
+                });
+            }
+        });
+
+    }
+
     public void fillContacts(ArrayList<UserDto> contacts){
         Platform.runLater(new Runnable() {
             @Override

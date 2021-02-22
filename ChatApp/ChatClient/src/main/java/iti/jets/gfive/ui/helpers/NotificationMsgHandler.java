@@ -5,12 +5,9 @@ import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
-import iti.jets.gfive.ui.controllers.ChatMessageController;
+import iti.jets.gfive.ui.controllers.*;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
-import iti.jets.gfive.ui.controllers.ContactController;
-import iti.jets.gfive.ui.controllers.FileMessageController;
-import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -281,7 +279,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                     ContactController controller = fxmlLoader.getController();
                     controller.contactNameLabel.setText(contactInfo.getUsername());
                     controller.contactNumberLabel.setText(contactInfo.getPhoneNumber());
-                    controller.lblStatus.setText(contactInfo.getStatus());
+                    controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,contactInfo.getStatus())).toString()));
                     controller.contactImg.setImage(contactInfo.getImage());
                     contactsList.getItems().add(item);
                 } catch (IOException e) {
@@ -302,6 +300,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         StageCoordinator.getInstance().changeStatus(user);
 //        c.fillContacts(contacts);
 
+    }
+
+    @Override
+    public void updatePicture(UserDto user) throws RemoteException {
+        System.out.println(user.getPhoneNumber() + "-----------> "+ user.getStatus());
+        ContactsListView c = ContactsListView.getInstance();
+        c.changeContactPicture(user);
+        StageCoordinator.getInstance().changeStatus(user);
     }
 
     public JFXListView<BorderPane> getNotificationsToFill(){
