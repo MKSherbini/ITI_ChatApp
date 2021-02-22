@@ -99,16 +99,60 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
     }
 
     @Override
-    public void updateUserContacts(String userId) throws RemoteException {
+    public void updateUserContacts(String userId, UserDto contactInfo) throws RemoteException {
         ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
             if(connectedClient.getClient().getPhoneNumber().equals(userId)){
                 try {
-                    connectedClient.getReceiveNotif().updateContactsList();
+                    connectedClient.getReceiveNotif().updateContactsList(contactInfo);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    @Override
+    public UserDto getContactInfo(String contactId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        UserDto contact = null;
+        try {
+            con = ds.getConnection();
+            String query = "select * from user_data\n" +
+                    "where phone_number = ?;";
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, contactId);
+            rs = preparedStatement.executeQuery();
+            try {
+                while (rs.next()) {
+                    contact = new UserDto();
+                    contact.setPhoneNumber(rs.getString("phone_number"));
+                    contact.setUsername(rs.getString("user_name"));
+                    contact.setEmail(rs.getString("email"));
+                    contact.setGender(rs.getString("gender"));
+                    contact.setCountry(rs.getString("country"));
+                    contact.setBirthDate(rs.getDate("date_birth"));
+                    contact.setBio(rs.getString("bio"));
+                    contact.setStatus(rs.getString("user_status"));
+                    contact.setImage(UserDBCrudImpl.deserializeFromString(rs.getBytes("picture")));
+                }
+            } catch (SQLException | IOException throwables) {
+                throwables.printStackTrace();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return contact;
     }
 
 }

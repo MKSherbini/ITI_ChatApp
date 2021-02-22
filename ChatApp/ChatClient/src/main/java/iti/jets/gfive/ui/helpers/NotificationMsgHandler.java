@@ -8,6 +8,7 @@ import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.ui.controllers.ContactController;
 import iti.jets.gfive.ui.controllers.FileMessageController;
 import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
@@ -270,18 +271,24 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         }
     }
     @Override
-    public void updateContactsList() throws RemoteException {
-        ModelsFactory modelsFactory = ModelsFactory.getInstance();
-        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        ContactDBCrudInter contactDBCrudInter =  ContactDBCrudService.getContactService();
-
-        try {
-            contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
-            ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void updateContactsList(UserDto contactInfo) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+                try {
+                    BorderPane item = fxmlLoader.load();
+                    ContactController controller = fxmlLoader.getController();
+                    controller.contactNameLabel.setText(contactInfo.getUsername());
+                    controller.contactNumberLabel.setText(contactInfo.getPhoneNumber());
+                    controller.lblStatus.setText(contactInfo.getStatus());
+                    controller.contactImg.setImage(contactInfo.getImage());
+                    contactsList.getItems().add(item);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

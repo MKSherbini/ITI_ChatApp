@@ -8,16 +8,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ContactsListView {
     private static ContactsListView contactsListView;
     private JFXListView<BorderPane> contactsListViewId;
-    FXMLLoader fxmlLoader;
 
     private ContactsListView(){}
 
@@ -32,6 +29,12 @@ public class ContactsListView {
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
     }
+
+    public JFXListView<BorderPane> getContactsListViewId(){
+        if(this.contactsListViewId == null) return null;
+        else return this.contactsListViewId;
+    }
+
     public void changeContactStatus(UserDto user){
         Platform.runLater(new Runnable() {
             @Override
@@ -53,7 +56,6 @@ public class ContactsListView {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-//                if(contactsListViewId.getItems() != null)
                     contactsListViewId.getItems().clear();
                 for (UserDto contact : contacts) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
@@ -66,7 +68,6 @@ public class ContactsListView {
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
                         controller.lblStatus.setText(contact.getStatus());
                         controller.contactImg.setImage(contact.getImage());
-                        //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
                     } catch (IOException e) {
                         e.printStackTrace();
