@@ -15,7 +15,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button layoutX="14.0" layoutY="29.0" mnemonicParsing="false">
+            <Button layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#onBackBtn">
                <graphic>
                   <FontAwesomeIconView glyphName="ARROW_LEFT" glyphStyle="-fx-fill: #e1e6fa" size="25" translateX="4.0" wrappingWidth="29.428574562072754" />
                </graphic>
