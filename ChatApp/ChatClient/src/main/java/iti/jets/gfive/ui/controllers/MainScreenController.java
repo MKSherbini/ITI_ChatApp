@@ -7,14 +7,11 @@ import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.GroupMessagesDto;
-import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.services.*;
 import iti.jets.gfive.common.models.UserDto;
-import iti.jets.gfive.services.GroupChatService;
-import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.common.models.MessageDto;
-import iti.jets.gfive.services.MessageDBService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.serialization.Marshaltor;
@@ -49,6 +46,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.controlsfx.control.ToggleSwitch;
 
 import javax.swing.*;
 import java.io.File;
@@ -69,6 +67,7 @@ public class MainScreenController implements Initializable {
     public ImageView ibtnAddContct;
     @FXML
     public Button addGroupBtn;
+    public ToggleSwitch botSwitchBtnId;
     @FXML
     private Button btnContextMenu;
     private ContextMenu contextMenu;
@@ -205,6 +204,20 @@ public class MainScreenController implements Initializable {
         System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         //System.out.println("calling the get instance again in the client");
+
+
+        // for the chat bot!!!
+        // works more than it should but idgaf
+        botSwitchBtnId.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                ContactDBCrudService.getContactService().updateActiveChatBot(
+                        receiverNumber.getText(),
+                        ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(),
+                        newValue);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     // this method create new image view object and fit its width and height to 20 px .
@@ -293,7 +306,6 @@ public class MainScreenController implements Initializable {
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
             ImageView receiverimage = (ImageView) borderPane.getLeft();
-        
 
 
             //to check if there is a new message or not
@@ -392,6 +404,11 @@ public class MainScreenController implements Initializable {
         }
         chatListView.scrollTo(chatListView.getItems().size() - 1);
 
+        // handle bot chat
+        botSwitchBtnId.setSelected(
+                ContactDBCrudService.getContactService().checkActiveChatBot(
+                        receiverNumber.getText(),
+                        ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber()));
     }
 
     @FXML
@@ -556,29 +573,25 @@ public class MainScreenController implements Initializable {
 
                 ObservableList<BorderPane> list = contactsListViewId.getItems();
                 for (BorderPane item : list) {
-                VBox vBox = (VBox) item.getCenter();
-                HBox hbox = (HBox) vBox.getChildren().get(0);
-                Label id = (Label) vBox.getChildren().get(1);
-                VBox vBox1 = (VBox) hbox.getChildren().get(1);
-                Button addbtn = (Button) vBox1.getChildren().get(0);
-                Button deletebtn = (Button) vBox1.getChildren().get(1);
-                if(id.getText().charAt(0)!='0')
-                {
-                    addbtn.setVisible(false);
-                    deletebtn.setVisible(false);
+                    VBox vBox = (VBox) item.getCenter();
+                    HBox hbox = (HBox) vBox.getChildren().get(0);
+                    Label id = (Label) vBox.getChildren().get(1);
+                    VBox vBox1 = (VBox) hbox.getChildren().get(1);
+                    Button addbtn = (Button) vBox1.getChildren().get(0);
+                    Button deletebtn = (Button) vBox1.getChildren().get(1);
+                    if (id.getText().charAt(0) != '0') {
+                        addbtn.setVisible(false);
+                        deletebtn.setVisible(false);
+                    } else {
+
+                        addbtn.setVisible(true);
+                        deletebtn.setVisible(true);
+                        deletebtn.setDisable(true);
+                        addbtn.setDisable(false);
+                    }
+
+
                 }
-                else {
-
-                    addbtn.setVisible(true);
-                    deletebtn.setVisible(true);
-                    deletebtn.setDisable(true);
-                    addbtn.setDisable(false);
-                }
-
-
-
-
-                 }
                 groupnameID.setVisible(true);
                 addGroupBtn.setVisible(true);
 

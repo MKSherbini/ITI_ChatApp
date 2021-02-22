@@ -32,7 +32,7 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
             preparedStatement.setString(1, currentUserId);
             preparedStatement.setString(2, contactId);
             rowsAffected = preparedStatement.executeUpdate();
-            if(rowsAffected == 0) return rowsAffected;
+            if (rowsAffected == 0) return rowsAffected;
             preparedStatement = con.prepareStatement(insertQuery);
             preparedStatement.setString(1, contactId);
             preparedStatement.setString(2, currentUserId);
@@ -99,9 +99,67 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
     }
 
     @Override
+    public boolean checkActiveChatBot(String contactId, String currentUserId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        boolean activeChatBot = true;
+        try {
+            con = ds.getConnection();
+            String insertQuery = "select active_chat_bot from chatapp.contacts where user_id=? and contact_id =?;";
+            preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setString(1, currentUserId);
+            preparedStatement.setString(2, contactId);
+            var rs = preparedStatement.executeQuery();
+
+            if (rs.next())
+                activeChatBot = rs.getBoolean(1);
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        return activeChatBot;
+    }
+
+    @Override
+    public void updateActiveChatBot(String contactId, String currentUserId, boolean chatBotState) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            con = ds.getConnection();
+            String insertQuery = "update chatapp.contacts set active_chat_bot = ? where user_id=? and contact_id =?;";
+            preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setBoolean(1, chatBotState);
+            preparedStatement.setString(2, currentUserId);
+            preparedStatement.setString(3, contactId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void updateUserContacts(String userId) throws RemoteException {
         ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
-            if(connectedClient.getClient().getPhoneNumber().equals(userId)){
+            if (connectedClient.getClient().getPhoneNumber().equals(userId)) {
                 try {
                     connectedClient.getReceiveNotif().updateContactsList();
                 } catch (RemoteException e) {

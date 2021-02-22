@@ -56,7 +56,7 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Text fx:id="CurrentUserNameID" fill="#fafafa" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="120.80003356933582" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="18.2734375">
+            <Text fx:id="CurrentUserNameID" fill="#fafafa" layoutX="18.0" layoutY="39.7265625" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="153.60002136230457" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="18.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -127,7 +127,7 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" layoutY="62.0" prefHeight="535.0" prefWidth="517.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
          <children>
-            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
                   <AnchorPane prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                      <children>

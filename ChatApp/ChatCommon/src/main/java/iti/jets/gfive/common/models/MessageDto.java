@@ -70,4 +70,16 @@ public class MessageDto implements Serializable {
     public void setMessageDate(Date messageDate) {
         this.messageDate = messageDate;
     }
+
+    @Override
+    public String toString() {
+        return "MessageDto{" +
+                "messageName='" + messageName + '\'' +
+                ", senderNumber='" + senderNumber + '\'' +
+                ", receiverNumber='" + receiverNumber + '\'' +
+                ", state='" + state + '\'' +
+                ", content='" + content + '\'' +
+                ", messageDate=" + messageDate +
+                '}';
+    }
 }
