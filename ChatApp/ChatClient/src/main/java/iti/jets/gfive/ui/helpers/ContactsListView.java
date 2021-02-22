@@ -91,7 +91,7 @@ public class ContactsListView {
         VBox v;
         Label phoneNumber;
         for(int i = 0; i < contactsListViewId.getItems().size(); i++){
-            v = (VBox) contactsListViewId.getItems().get(i).getChildren().get(1);
+            v = (VBox) contactsListViewId.getItems().get(i).getChildren().get(0);
             phoneNumber = (Label) v.getChildren().get(1);
             if(phoneNumber.getText().equals(contactNumber)){
                 System.out.println(phoneNumber.getText() + "phone number value");
