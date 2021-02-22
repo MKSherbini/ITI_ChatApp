@@ -13,16 +13,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ContactsListView {
     private static ContactsListView contactsListView;
     private JFXListView<BorderPane> contactsListViewId;
-    FXMLLoader fxmlLoader;
 
     private ContactsListView(){}
 
@@ -37,6 +34,12 @@ public class ContactsListView {
     public void setContactsListViewId(JFXListView contactsListViewId){
         this.contactsListViewId = contactsListViewId;
     }
+
+    public JFXListView<BorderPane> getContactsListViewId(){
+        if(this.contactsListViewId == null) return null;
+        else return this.contactsListViewId;
+    }
+
     /*
         this method update the contact status in the contact list view
         when he changes it
@@ -59,11 +62,28 @@ public class ContactsListView {
 
     }
 
+    public void changeContactPicture(UserDto user){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                contactsListViewId.getItems().forEach(item->{
+                    VBox v= (VBox) item.getChildren().get(0);
+                    Label lblPhone = (Label) v.getChildren().get(1);
+                    if(lblPhone.getText().equals(user.getPhoneNumber())){
+                        AnchorPane anchorPane= (AnchorPane) item.getLeft();
+                        ImageView img = (ImageView)  anchorPane.getChildren().get(0);
+                        img.setImage(user.getImage());
+                    }
+                });
+            }
+        });
+
+    }
+
     public void fillContacts(ArrayList<UserDto> contacts){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-//                if(contactsListViewId.getItems() != null)
                     contactsListViewId.getItems().clear();
                 for (UserDto contact : contacts) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
@@ -77,7 +97,6 @@ public class ContactsListView {
                         controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,contact.getStatus())).toString()));
 //                        controller.lblStatus.setText(contact.getStatus());
                         controller.contactImg.setImage(contact.getImage());
-                        //System.out.println(item.getChildren().get(1).toString() + " chh");
                         contactsListViewId.getItems().add(item);
                     } catch (IOException e) {
                         e.printStackTrace();

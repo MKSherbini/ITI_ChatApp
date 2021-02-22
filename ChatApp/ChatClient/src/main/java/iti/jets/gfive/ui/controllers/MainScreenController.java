@@ -187,8 +187,9 @@ public class MainScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        CurrentUserNameID.setText(currentUserModel.getUsername());
-        profilepictureID.setImage(currentUserModel.getImage());
+        CurrentUserNameID.textProperty().bind(currentUserModel.usernameProperty());
+//        CurrentUserNameID.setText(currentUserModel.getUsername());
+        profilepictureID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
         System.out.println(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
         changeStatusUi();
@@ -216,8 +217,8 @@ public class MainScreenController implements Initializable {
 
         // System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
-        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
-        NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
+        //System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+        //NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         //System.out.println("calling the get instance again in the client");
     }
 
@@ -341,7 +342,7 @@ public class MainScreenController implements Initializable {
                 chatListView.getItems().clear();
                 try {
                     for (MessageDto messageDto : finalMessageList) {
-                        if(messageDto.getMessageName().equals("text")){
+                        if (messageDto.getMessageName().equals("text")) {
                             //select picture from user_data where user_id = sender_id
                             //select picture from user_data where user_id= recevierid
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
@@ -360,7 +361,7 @@ public class MainScreenController implements Initializable {
                             }
                             msgTxtAreaID.setText("");
                             chatListView.getItems().add(anchorPane);
-                        } else{
+                        } else {
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
                             AnchorPane anchorPane = fxmlLoader.load();
                             FileMessageController controller = fxmlLoader.getController();
@@ -398,7 +399,7 @@ public class MainScreenController implements Initializable {
         //todo must retreive the image of the sender to db and send it as paramter in sendMsg
         String messsage = msgTxtAreaID.getText();
         Date date = Date.valueOf(LocalDate.now());
-        System.out.println("messagename" + currentUserModel.getPhoneNumber() +receiverNumber.getText() +"unseen"+messsage +date);
+        System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
         MessageDto messageDto = new MessageDto(-1, "text", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
         try {
             ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -444,13 +445,13 @@ public class MainScreenController implements Initializable {
 
                     msgTxtAreaID.setText("");
 
-                        chatListView.getItems().add(anchorPane);
-                        chatListView.scrollTo(anchorPane);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    chatListView.getItems().add(anchorPane);
+                    chatListView.scrollTo(anchorPane);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        });
     }
 
     public void onClickSaveChat(ActionEvent actionEvent) {
@@ -473,7 +474,7 @@ public class MainScreenController implements Initializable {
         chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
         chatModel.setChatOwner(currentUserModel.getUsername());
         messageList.forEach(messageDto -> {
-            if(messageDto.getMessageName().equals("text")){
+            if (messageDto.getMessageName().equals("text")) {
                 chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
             }
             chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
@@ -489,8 +490,8 @@ public class MainScreenController implements Initializable {
         MessageDBInter messageServices = MessageDBService.getMessageService();
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
-        if(selectedFile != null){
-            if((selectedFile.length()/1048576) > 10){
+        if (selectedFile != null) {
+            if ((selectedFile.length() / 1048576) > 10) {
                 Alert a = new Alert(Alert.AlertType.ERROR);
                 a.setTitle("File Size Error");
                 a.setContentText("Cannot send more than a 10MB file");
@@ -504,18 +505,18 @@ public class MainScreenController implements Initializable {
                 FileInputStream fis = new FileInputStream(fileToSend);
                 int fileLength = (int) fileToSend.length();
                 //System.out.println(fileLength + "file length");
-                byte [] fileData = new byte[fileLength];
+                byte[] fileData = new byte[fileLength];
                 int c = fis.read(fileData);
                 //System.out.println(c + "int c");
                 //System.out.println(fileData.toString() + "fileData byte array");
                 Date date = Date.valueOf(LocalDate.now());
                 MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
-                        receiverNumber.getText(), "unseen", fileData,date);
+                        receiverNumber.getText(), "unseen", fileData, date);
                 try {
                     ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
                     int msgRecordID = messageServices.insertMessage(fileMessageDto);
-                    if(msgRecordID == -1){
-                        System.out.println("id of the record, if -1 then failed to insert "+ msgRecordID);
+                    if (msgRecordID == -1) {
+                        System.out.println("id of the record, if -1 then failed to insert " + msgRecordID);
                         return;
                     }
                     fileMessageDto.setId(msgRecordID);

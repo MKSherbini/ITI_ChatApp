@@ -86,6 +86,22 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
+    public void publishPicture(UserDto user) throws RemoteException {
+        System.out.println("INSIDE THE PUBLIC PIC");
+        if (clientsPool == null || clientsPool.size() < 1)
+            return;
+        clientsPool.forEach(connectedClient -> {
+            if (!connectedClient.getClient().getPhoneNumber().equals(user.getPhoneNumber())) {
+                try {
+                    connectedClient.getReceiveNotif().updatePicture(user);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public void sendFile(MessageDto msg) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
             if(connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())){

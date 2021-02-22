@@ -12,4 +12,5 @@ public interface ClientConnectionInter extends Remote {
     void sendMsg(MessageDto msg) throws RemoteException;
     void sendFile(MessageDto msg) throws RemoteException;
     void puplishStatus(UserDto user) throws RemoteException;
+    void publishPicture(UserDto user) throws RemoteException;
 }
