@@ -1,5 +1,6 @@
 package iti.jets.gfive.common.interfaces;
 
+import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
@@ -22,7 +23,9 @@ public interface NotificationReceiveInter extends Remote {
 
     void addGroupInMembersList(String groupname, String id) throws RemoteException;
 
-    void receiveGroupMessage(String id, String message, String name) throws RemoteException;
+    void receiveGroupMessage(String id, String message, String name, boolean file, String fileRecordId) throws RemoteException;
 
     void receivePing() throws RemoteException;
+
+    void receiveFileToGroup(GroupMessagesDto groupMessageDto) throws RemoteException;
 }

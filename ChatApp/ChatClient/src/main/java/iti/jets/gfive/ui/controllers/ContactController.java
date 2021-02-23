@@ -13,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 
@@ -34,6 +36,10 @@ public class ContactController implements Initializable {
 
     @FXML
     public ImageView contactImg;
+    @FXML
+    public Circle circleID;
+    @FXML
+    public StackPane stackID;
 
     @FXML
     public Label contactNameLabel;

@@ -1,5 +1,6 @@
 package iti.jets.gfive.common.interfaces;
 
+import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.UserDto;
 
@@ -18,4 +19,5 @@ public interface ClientConnectionInter extends Remote {
     void addMemberToGroupChat(String number) throws RemoteException;
     void RemoveMemeberFromChatGroup(String number) throws RemoteException;
     void createGroupInAllMemebers(String groupname , List<String> list , String id)throws RemoteException;
+    void sendFileToGroup(GroupMessagesDto msg, List<String> groupMembers) throws RemoteException;
 }

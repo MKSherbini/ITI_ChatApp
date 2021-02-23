@@ -223,6 +223,7 @@ public class MainScreenController implements Initializable {
         n.setname(receivernameID);
         n.setnumber(receivernumberID);
         newLabel = n.getnewLabel();
+        n.setReceivernumberID(receivernumberID);
         //  n.setnewLabel(newLabelID);
         //n.setButton(contactsListViewId);
 
@@ -320,15 +321,6 @@ public class MainScreenController implements Initializable {
     //todo update main page with textaare instead of textfield in order to wrap long messages
     @FXML
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
-
-//            //todo still won't work with the method only by making the attribute public!
-//            //controller.setLabelValue(contact.getUsername());
-//            controller.newLabelID.setVisible(false);
-//            //System.out.println(item.getChildren().get(1).toString() + " chh");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         chatListView.getItems().clear();
         ObservableList<BorderPane> selectedContact;
         selectedContact = contactsListViewId.getSelectionModel().getSelectedItems();
@@ -341,7 +333,6 @@ public class MainScreenController implements Initializable {
             ImageView receiverimage = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
             // System.out.println("-------------->" + receiverimage);
 //            ImageView receiverimage = (ImageView) borderPane.getLeft();
-
 
             //to check if there is a new message or not
             if (borderPane.getRight() != null) {
@@ -372,32 +363,43 @@ public class MainScreenController implements Initializable {
         }
         if (receivernumberID.getText().charAt(0) != '0') {
             GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
-
             List<GroupMessagesDto> groupMessagesDto = groupChatInter.selectAllMessages(receivernumberID.getText());
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     chatListView.getItems().clear();
-
                     try {
 
                         //todo still won't work with the method only by making the attribute public!
                         for (GroupMessagesDto groupMessagesDto1 : groupMessagesDto) {
+                            if(!groupMessagesDto1.getMessage_name().equals("text")){
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                FileMessageController controller = fxmlLoader.getController();
+                                controller.fileNameLabelId.setText(groupMessagesDto1.getMessage_name());
+                                controller.recordID.setText(String.valueOf(groupMessagesDto1.getId()));
+                                if (currentUserModel.getPhoneNumber().equals(groupMessagesDto1.getSendernumber())) {
+                                    controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                    controller.fileNameLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                }
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
+                            } else {
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/GroupMessageView.fxml"));
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                GroupMessageController controller = fxmlLoader.getController();
 
-                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/GroupMessageView.fxml"));
-                            AnchorPane anchorPane = fxmlLoader.load();
-                            GroupMessageController controller = fxmlLoader.getController();
+                                //   System.out.println("content of the message "+messageDto.getContent());
+                                controller.msgLabelId.setText(groupMessagesDto1.getMessage());
+                                controller.senderName.setText(groupChatInter.getUserName(groupMessagesDto1.getSendernumber()));
+                                if (currentUserModel.getPhoneNumber().equals(groupMessagesDto1.getSendernumber())) {
+                                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                    controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                }
 
-                            //   System.out.println("content of the message "+messageDto.getContent());
-                            controller.msgLabelId.setText(groupMessagesDto1.getMessage());
-                            controller.senderName.setText(groupChatInter.getUserName(groupMessagesDto1.getSendernumber()));
-                            if (currentUserModel.getPhoneNumber().equals(groupMessagesDto1.getSendernumber())) {
-                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
                             }
-
-                            msgTxtAreaID.setText("");
-                            chatListView.getItems().add(anchorPane);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -497,7 +499,7 @@ public class MainScreenController implements Initializable {
                 MessageDBInter messageServices = MessageDBService.getMessageService();
 
                 message = msgTxtAreaID.getText();
-                GroupMessagesDto groupMessagesDto = new GroupMessagesDto(groupid, message, currentUserModel.getPhoneNumber());
+                GroupMessagesDto groupMessagesDto = new GroupMessagesDto(groupid, message, currentUserModel.getPhoneNumber(), "text");
                 groupChatInter.saveAllMessages(groupMessagesDto);
 
                 ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -631,6 +633,7 @@ public class MainScreenController implements Initializable {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         MessageDBInter messageServices = MessageDBService.getMessageService();
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
@@ -647,23 +650,22 @@ public class MainScreenController implements Initializable {
             try {
                 FileInputStream fis = new FileInputStream(fileToSend);
                 int fileLength = (int) fileToSend.length();
-                //System.out.println(fileLength + "file length");
                 byte[] fileData = new byte[fileLength];
                 int c = fis.read(fileData);
-                //System.out.println(c + "int c");
-                //System.out.println(fileData.toString() + "fileData byte array");
-                Date date = Date.valueOf(LocalDate.now());
-                MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
-                        receiverNumber.getText(), "unseen", fileData, date);
-                try {
-                    ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                    int msgRecordID = messageServices.insertMessage(fileMessageDto);
-                    if (msgRecordID == -1) {
-                        System.out.println("id of the record, if -1 then failed to insert " + msgRecordID);
-                        return;
+                if(receivernumberID.getText().charAt(0) != '0'){
+                    GroupMessagesDto fileGroupMessageDto = new GroupMessagesDto(receivernumberID.getText(), fileData, currentUserModel.getPhoneNumber(), fileToSend.getName());
+                    GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                    int fileRecordId = groupChatInter.saveAllMessages(fileGroupMessageDto);
+                    fileGroupMessageDto.setId(String.valueOf(fileRecordId));
+                    List<String> groupMembers = groupChatInter.selectAllMemebers(receivernumberID.getText());
+                    for(int i = 0 ; i <groupMembers.size();i++)
+                    {
+                        if(groupMembers.get(i).equals(currentUserModel.getPhoneNumber()))
+                        {
+                            groupMembers.remove(i);
+                        }
                     }
-                    fileMessageDto.setId(msgRecordID);
-                    clientConnectionInter.sendFile(fileMessageDto);
+                    clientConnectionInter.sendFileToGroup(fileGroupMessageDto, groupMembers);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -674,7 +676,7 @@ public class MainScreenController implements Initializable {
                                 //todo still won't work with the method only by making the attribute public!
                                 controller.fileNameLabelId.setText(fileToSend.getName());
                                 controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
-                                controller.recordID.setText(String.valueOf(msgRecordID));
+                                controller.recordID.setText(String.valueOf(fileRecordId));
                                 msgTxtAreaID.setText("");
                                 chatListView.getItems().add(anchorPane);
                                 chatListView.scrollTo(anchorPane);
@@ -683,10 +685,42 @@ public class MainScreenController implements Initializable {
                             }
                         }
                     });
-                    fis.close();
-                    fileFlag = false;
-                } catch (RemoteException e) {
-                    e.printStackTrace();
+                } else{
+                    Date date = Date.valueOf(LocalDate.now());
+                    MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
+                            receiverNumber.getText(), "unseen", fileData, date);
+                    try {
+                        int msgRecordID = messageServices.insertMessage(fileMessageDto);
+                        if (msgRecordID == -1) {
+                            System.out.println("id of the record, if -1 then failed to insert " + msgRecordID);
+                            return;
+                        }
+                        fileMessageDto.setId(msgRecordID);
+                        clientConnectionInter.sendFile(fileMessageDto);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                                try {
+                                    AnchorPane anchorPane = fxmlLoader.load();
+                                    FileMessageController controller = fxmlLoader.getController();
+                                    //todo still won't work with the method only by making the attribute public!
+                                    controller.fileNameLabelId.setText(fileToSend.getName());
+                                    controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                    controller.recordID.setText(String.valueOf(msgRecordID));
+                                    msgTxtAreaID.setText("");
+                                    chatListView.getItems().add(anchorPane);
+                                    chatListView.scrollTo(anchorPane);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        fis.close();
+                        fileFlag = false;
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -755,6 +789,7 @@ public class MainScreenController implements Initializable {
                         Label label = (Label) hbox1.getChildren().get(0);
                         Label label1 = (Label) vBox2.getChildren().get(1);
                         label.setText(groupnameID.getText());
+                        contactController.stackID.setVisible(false);
 
                         System.out.println("33333333->");
 

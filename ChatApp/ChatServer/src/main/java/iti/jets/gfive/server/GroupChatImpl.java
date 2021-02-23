@@ -4,6 +4,7 @@ import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.NotifDBRecord;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
 import javax.sql.DataSource;
@@ -41,13 +42,14 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
             System.out.println("number of groups equals " + groups.size());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return groups;
@@ -102,14 +104,15 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
             System.out.println("row affeected==" + rowsAffected);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null && rs != null) {
-            try {
-                rs.close();
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null && rs != null) {
+                try {
+                    rs.close();
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         return groupid;
@@ -138,13 +141,14 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
             System.out.println("number of members "+members.size());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return members;
@@ -161,7 +165,7 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         ResultSet rs;
         try {
             con = ds.getConnection();
-            String selectQuery = "select group_id ,message , sender_id\n" +
+            String selectQuery = "select id, group_id ,message , sender_id, message_name\n" +
                     "from chatapp.groupmessages\n" +
                     "where group_id = ?;";
             preparedStatement = con.prepareStatement(selectQuery);
@@ -172,26 +176,29 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
                 groupMessagesDto.setId(String.valueOf(rs.getInt("group_id")));
                 groupMessagesDto.setMessage(rs.getString("message"));
                 groupMessagesDto.setSendernumber(rs.getString("sender_id"));
+                groupMessagesDto.setMessage_name(rs.getString("message_name"));
+                groupMessagesDto.setId(rs.getString("id"));
                 messages.add(groupMessagesDto);
 
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return messages;
     }
 
     @Override
-    public void saveAllMessages(GroupMessagesDto groupMessagesDto) throws RemoteException {
+    public int saveAllMessages(GroupMessagesDto groupMessagesDto) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -201,29 +208,37 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         try {
             con = ds.getConnection();
             String insertQuery = "insert into chatapp.groupmessages\n" +
-                    "(group_id ,message ,sender_id)\n" +
-                    "values (?,?,?)";
+                    "(group_id ,message ,sender_id, message_name)\n" +
+                    "values (?,?,?,?)";
             preparedStatement = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, groupMessagesDto.getId());
-            preparedStatement.setString(2, groupMessagesDto.getMessage());
+            preparedStatement.setString(1, groupMessagesDto.getGroupId());
+            if(groupMessagesDto.getMessage_name().equals("text")){
+                preparedStatement.setString(2, groupMessagesDto.getMessage());
+            } else {
+                preparedStatement.setBytes(2, groupMessagesDto.getFileContent());
+            }
             preparedStatement.setString(3, groupMessagesDto.getSendernumber());
+            preparedStatement.setString(4, groupMessagesDto.getMessage_name());
             rowsAffected = preparedStatement.executeUpdate();
             rs = preparedStatement.getGeneratedKeys();
-
-
+            if(rs.next()){
+                groupid = rs.getInt(1);
+            }
             System.out.println("row affeected==" + rowsAffected);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null && rs != null) {
-            try {
-                rs.close();
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null && rs != null) {
+                try {
+                    rs.close();
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
+        return groupid;
     }
 
     @Override
@@ -248,15 +263,51 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return name;
+    }
+
+    @Override
+    public byte[] getFileForGroup(int recordId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        byte [] fileData = null;
+        try {
+            con = ds.getConnection();
+            String query = "select message from groupmessages \n" +
+                    "where id = ?;";
+            preparedStatement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, recordId);
+            rs = preparedStatement.executeQuery();
+            try{
+                while(rs.next()){
+                    fileData = rs.getBytes("message");
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+        return fileData;
     }
 }

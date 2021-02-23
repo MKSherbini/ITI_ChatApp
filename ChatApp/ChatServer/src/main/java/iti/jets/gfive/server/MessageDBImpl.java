@@ -54,7 +54,6 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         } catch (SQLException | NullPointerException throwables) {
             throwables.printStackTrace();
         } finally {
-            System.out.println("INSIDE FINALLY OF GET MESSAGES");
             if (con != null && stmt != null && resultSet != null) {
                 try {
                     stmt.close();
@@ -147,7 +146,6 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
     @Override
     public byte[] getFile(int recordId){
         ds = DataSourceFactory.getMySQLDataSource();
-        ArrayList<NotificationDto> notificationList = new ArrayList<>();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs;

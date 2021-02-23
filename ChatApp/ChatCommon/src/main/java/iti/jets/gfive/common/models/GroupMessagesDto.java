@@ -4,16 +4,26 @@ import java.io.Serializable;
 
 public class GroupMessagesDto implements Serializable {
     String id;
+    String groupId;
     String message;
+    byte [] fileContent;
     String sendernumber;
+    String message_name;
 
     public GroupMessagesDto() {
     }
 
-    public GroupMessagesDto(String id, String message, String sendernumber) {
-        this.id = id;
+    public GroupMessagesDto(String groupId, String message, String sendernumber, String message_name) {
+        this.groupId = groupId;
         this.message = message;
         this.sendernumber = sendernumber;
+        this.message_name = message_name;
+    }
+    public GroupMessagesDto(String groupId, byte [] fileContent, String sendernumber, String message_name) {
+        this.groupId = groupId;
+        this.fileContent = fileContent;
+        this.sendernumber = sendernumber;
+        this.message_name = message_name;
     }
 
     public String getId() {
@@ -38,5 +48,29 @@ public class GroupMessagesDto implements Serializable {
 
     public void setSendernumber(String sendernumber) {
         this.sendernumber = sendernumber;
+    }
+
+    public String getMessage_name() {
+        return message_name;
+    }
+
+    public void setMessage_name(String message_name) {
+        this.message_name = message_name;
+    }
+
+    public byte[] getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }
