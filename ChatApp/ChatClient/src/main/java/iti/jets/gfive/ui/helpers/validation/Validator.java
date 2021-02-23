@@ -6,7 +6,9 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.NotificationDBCrudService;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -104,8 +106,17 @@ public class Validator {
         setValidateOnEvent(repeatPassword);
     }
 
-    public void buildRequiredPasswordValidation(JFXPasswordField passwordField) {
+    public void buildLoginPasswordValidation(JFXPasswordField passwordField, JFXTextField userID) {
         addRequiredFieldValidation(passwordField);
+        addPredicateValidation(passwordField, "Incorrect password", s -> {
+            try {
+                return null != UserDBCrudService.getUserService().selectFromDB(userID.textProperty().get(), s);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+            }
+            return true;
+        });
         setValidateOnEvent(passwordField);
     }
 
@@ -181,6 +192,12 @@ public class Validator {
     }
 
     private void addPredicateValidation(JFXTextField textField, String errorMessage, Predicate<String> predicate) {
+        PredicateValidator validator = new PredicateValidator(errorMessage, predicate);
+
+        textField.getValidators().add(validator);
+    }
+
+    private void addPredicateValidation(JFXPasswordField textField, String errorMessage, Predicate<String> predicate) {
         PredicateValidator validator = new PredicateValidator(errorMessage, predicate);
 
         textField.getValidators().add(validator);

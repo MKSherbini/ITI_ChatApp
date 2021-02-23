@@ -102,7 +102,6 @@ public class Server {
             servicesList.clear();
 
             Registry registry = LocateRegistry.getRegistry(port);
-            registry.unbind("UserDB-CRUD");
             Arrays.stream(registry.list()).forEach(s -> {
                 try {
                     registry.unbind(s);
@@ -113,7 +112,7 @@ public class Server {
 
             System.out.println("registry.list() = " + Arrays.toString(registry.list()));
             System.out.println("Server is not up and running on port " + port);
-        } catch (RemoteException | NotBoundException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
