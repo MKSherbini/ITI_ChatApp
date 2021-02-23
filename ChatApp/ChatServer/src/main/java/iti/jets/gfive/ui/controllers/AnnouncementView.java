@@ -46,12 +46,12 @@ public class AnnouncementView {
     void sendAnnouncement(ActionEvent event) {
         try {
             System.out.println(htmlEditor.getHtmlText().length());
-            if(getText(htmlEditor.getHtmlText()).length()>5){
-
-                lblError.setVisible(true);
-//                htmlEditor.getHtmlText().
-                return ;
-            }
+//            if(getText(htmlEditor.getHtmlText()).length()>5){
+//
+//                lblError.setVisible(true);
+////                htmlEditor.getHtmlText().
+//                return ;
+//            }
             lblError.setVisible(false);
             ClientConnectionImpl clientConnection = new ClientConnectionImpl();
             clientConnection.publishAnnouncement(htmlEditor.getHtmlText());

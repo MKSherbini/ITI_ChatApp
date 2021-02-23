@@ -37,6 +37,14 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     } catch (RemoteException e) {
                         // gotcha u pos
                         e.printStackTrace();
+                        try {
+                            UserDBCrudImpl userDBCrud= new UserDBCrudImpl();
+                            userDBCrud.updateUserConnection(connectedClient.getClient(),false);
+                            connectedClient.getClient().setStatus("offline");
+                            puplishStatus(connectedClient.getClient());
+                        } catch (RemoteException remoteException) {
+                            remoteException.printStackTrace();
+                        }
                         ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
                         StatsManager.getInstance().updateConnectionStats();
                     }
@@ -53,6 +61,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         try {
             UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
             userDBCrud.updateUserConnection(user, true);
+            puplishStatus(user);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -63,8 +72,10 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
 
     @Override
     public void unregister(NotificationReceiveInter notif) throws RemoteException {
+        System.out.println("user in server unregister ");
         clientsPool.forEach(connectedClient -> {
             if (connectedClient.getReceiveNotif().equals(notif)) {
+                System.out.println("cuurendnkdjknlkfndclkfdnc");
                 try {
                     UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
                     userDBCrud.updateUserConnection(connectedClient.getClient(), false);
@@ -197,11 +208,11 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         clientsPool.remove(connectedClient); // drop him, he prolly died
-                        StatsManager.getInstance().updateConnectionStats();
+
+StatsManager.getInstance().updateConnectionStats();
                     }
                 }
             }
-
         });
         GroupChatMember.clear();
 
