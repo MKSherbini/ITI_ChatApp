@@ -74,7 +74,7 @@ public class LoginManager {
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
             if (userServices == null) return;
-            System.out.println("befor");
+            //System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(phone, password);
             userDto.setPhoneNumber(phone);
@@ -107,7 +107,7 @@ public class LoginManager {
             currentUserModel.setPassword(password);
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
-
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
         } catch (RemoteException e) {
             e.printStackTrace();
             StageCoordinator.getInstance().reset();

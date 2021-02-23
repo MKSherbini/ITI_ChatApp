@@ -70,7 +70,7 @@ public class UpdateProfileController implements Initializable {
             emailvalidation = true;
         }
         boolean fieldsValidation = NameID.validate() & PasswordID.validate()
-                & ReEnterPasswordID.validate();
+                & ReEnterPasswordID.validate() & BioID.validate();
         if (fieldsValidation && emailvalidation) {
             try {
                 if (BirthDateID.getValue() != null) {
@@ -136,29 +136,6 @@ public class UpdateProfileController implements Initializable {
 
         fillCountryCombobox();
 
-        //binding to fill the texts in the screen
-      /*  ModelsFactory modelsFactory =ModelsFactory.getInstance();
-        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        PhoneID.textProperty().bindBidirectional(currentUserModel.phoneNumberProperty());
-        //currentUserModel.phoneNumberProperty().bind(PhoneID.textProperty());
-        NameID.textProperty().bindBidirectional(currentUserModel.usernameProperty());
-        //currentUserModel.usernameProperty().bind(NameID.textProperty());
-        EmailID.textProperty().bindBidirectional(currentUserModel.emailProperty());
-        //currentUserModel.emailProperty().bind(EmailID.textProperty());
-        BioID.textProperty().bindBidirectional(currentUserModel.bioProperty());
-        CountryID.valueProperty().bindBidirectional(currentUserModel.countryProperty());
-        //not tested
-         BirthDateID.valueProperty().bindBidirectional(currentUserModel.dateProperty());
-        System.out.println("GENDER "+ currentUserModel.getGender());
-      /*  if(currentUserModel.getGender().equals("Male"))
-        {
-            MaleRadioButton.setSelected(true);
-        }
-        else if(currentUserModel.getGender().equals("Female"))
-        {
-           FemaleRadioButton.setSelected(true);
-        }*/
-
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
@@ -191,6 +168,7 @@ public class UpdateProfileController implements Initializable {
         validator.buildRepeatPasswordValidation(ReEnterPasswordID, PasswordID);
         //if(!EmailID.getText().equals(""))
         validator.buildEmailValidation(EmailID);
+        validator.buildBioValidation(BioID);
 
 
     }

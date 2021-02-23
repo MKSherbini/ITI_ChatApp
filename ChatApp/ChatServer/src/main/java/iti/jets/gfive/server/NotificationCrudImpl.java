@@ -34,6 +34,7 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             preparedStatement.setDate(3, date);
             preparedStatement.setBoolean(4, completed);
             rowsAffected = preparedStatement.executeUpdate();
+            //todo if i return like this does it means that the connections are not closed? should i put it in finally!
             if(rowsAffected == 0)
                 return notifObj;
             rs = preparedStatement.getGeneratedKeys();
@@ -51,12 +52,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if(con != null && preparedStatement != null && rs != null){
-            try {
-                rs.close(); preparedStatement.close(); con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    rs.close(); preparedStatement.close(); con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         notifObj.setNotifId(notificationId); notifObj.setRowsAffected(rowsAffected);
@@ -95,12 +97,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return notificationList;
@@ -140,15 +143,49 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return notificationExists;
+    }
+
+    @Override
+    public boolean reverseNotification(String senderId, String receiverId) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        boolean notificationReverseExists = false;
+        try {
+            con = ds.getConnection();
+            String query = "select * from\n" +
+                    "notifications n, notification_receivers nr\n" +
+                    "where nr.receiver = ? and n.sender = ? and n.completed = 0;";
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, senderId);
+            preparedStatement.setString(2, receiverId);
+            rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                notificationReverseExists = true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+        return notificationReverseExists;
     }
 
     @Override
@@ -166,12 +203,13 @@ public class NotificationCrudImpl extends UnicastRemoteObject implements Notific
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;

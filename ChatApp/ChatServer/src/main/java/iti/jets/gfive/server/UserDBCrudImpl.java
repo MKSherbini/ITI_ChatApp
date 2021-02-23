@@ -59,17 +59,18 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             }
         } catch (SQLException | NullPointerException | IOException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null && resultSet != null) {
-            try {
-                stmt.close();
-                con.close();
-                resultSet.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && stmt != null && resultSet != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                    resultSet.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
-        return null;
+        return user;
     }
 
     @Override
@@ -108,16 +109,18 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             }
         } catch (SQLException | NullPointerException | IOException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null && resultSet != null) {
-            try {
-                stmt.close();
-                con.close();
-                resultSet.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && stmt != null && resultSet != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                    resultSet.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
+        System.out.println("AFTER THE FINALLY");
         return null;
     }
 
@@ -147,20 +150,20 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException | IOException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
     }
 
-    //todo tell salma about the stmt that is always null and should be replaced with preparedStatement
     @Override
     public int updateUserPhoto(UserDto user) throws RemoteException {
         System.out.println("inside update photo");
@@ -184,13 +187,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             System.out.println("rowaffected " + rowsAffected);
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null) {
-            try {
-                stmt.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && stmt != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;
@@ -199,16 +203,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
     @Override
     public int updateUserStatus(UserDto user) throws RemoteException {
         System.out.println("inside the updateUserStatus ");
-
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
         try {
             con = ds.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String insertQuery = "update user_data set user_status = ? WHERE phone_number = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement = con.prepareStatement(insertQuery);
             //null
             System.out.println("update the status of  " + user.getStatus());
             preparedStatement.setString(1, user.getStatus());
@@ -217,13 +219,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             System.out.println("rowaffected " + rowsAffected);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null) {
-            try {
-                stmt.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;
@@ -260,15 +263,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 System.out.println("towsaffected" + rowsAffected);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
-            }
-            if (con != null && preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                    con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } finally {
+                if (con != null && preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                        con.close();
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
 
+                }
             }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
@@ -290,13 +294,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
@@ -322,13 +327,14 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return registered;
@@ -380,16 +386,45 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
-
         return img;
+    }
+    public int updateUserConnection(UserDto user,boolean online) throws RemoteException {
+        ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        int rowsAffected = 0;
+        try {
+            con = ds.getConnection();
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String insertQuery = "update user_data set on_line = ? WHERE phone_number = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+            preparedStatement.setBoolean(1, online);
+            preparedStatement.setString(2, user.getPhoneNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected>0)
+                System.out.println(user.getPhoneNumber()+ " online = "+online);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if (con != null && stmt != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+        return rowsAffected;
     }
 }

@@ -10,7 +10,8 @@ public interface ContactDBCrudInter extends Remote {
 //    ArrayList selectAllContacts(String userId) throws RemoteException;
     int insertContactRecord(String contactId, String currentUserId) throws RemoteException;
     ArrayList<UserDto> getContactsList(String userId) throws RemoteException;
-    void updateUserContacts(String userId) throws RemoteException;
+    void updateUserContacts(String userId, UserDto contactInfo) throws RemoteException;
+    UserDto getContactInfo(String contactId) throws RemoteException;
 //    int updateUserRecord(UserDto user) throws RemoteException;
 //    int deleteUser(UserDto user) throws RemoteException;
 //    boolean checkUserId(String userId) throws RemoteException;

@@ -1,8 +1,10 @@
 package iti.jets.gfive.ui.controllers;
 
 import com.mysql.cj.jdbc.Blob;
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -55,11 +57,11 @@ public class ProfileController implements Initializable {
     @FXML
     private Button choosephotobtn;
 
-   @FXML
+    @FXML
     void OnClickChangePhoto(ActionEvent event) throws FileNotFoundException {
-       //todo check the edit button, doesn't work with the picture!!
+        //todo check the edit button, doesn't work with the picture!!
         //wait to update db
-       FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
@@ -72,13 +74,13 @@ public class ProfileController implements Initializable {
 
         //update user db
 
-       UserDto user = new UserDto(PhoneID.getText(),ProfileImageID.getImage());
+        UserDto user = new UserDto(PhoneID.getText(), ProfileImageID.getImage());
 
         UserDBCrudInter userServices = UserDBCrudService.getUserService();
 
         try {
-            System.out.println("imaaage " +user.getImage());
-            System.out.println("imaaage " +user.getPhoneNumber());
+            //System.out.println("imaaage " +user.getImage());
+            //System.out.println("imaaage " +user.getPhoneNumber());
             int rowsAffected = userServices.updateUserPhoto(user);
             if (rowsAffected == 0) return;
         } catch (RemoteException e) {
@@ -91,6 +93,19 @@ public class ProfileController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
         currentUserModel.setImage(ProfileImageID.getImage());
 
+        UserDto userPic = new UserDto();
+        userPic.setPhoneNumber(currentUserModel.getPhoneNumber());
+        userPic.setUsername(currentUserModel.getUsername());
+        System.out.println(currentUserModel.getImage() + " UPDATE PIC USER");
+        userPic.setImage(currentUserModel.getImage());
+        userPic.setStatus(currentUserModel.getStatus());
+        ClientConnectionInter cci = ClientConnectionService.getClientConnService();
+        try {
+            cci.publishPicture(userPic);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -102,17 +117,13 @@ public class ProfileController implements Initializable {
     }
 
     @FXML
-    void onClickBack(ActionEvent event)
-    {
+    void onClickBack(ActionEvent event) {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.switchToMainPage();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-        //still wait to bind the photo
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
@@ -135,14 +146,8 @@ public class ProfileController implements Initializable {
         GenderID.textProperty().bind(currentUserModel.genderProperty());
         CountryID.textProperty().bind(currentUserModel.countryProperty());
         BioID.textProperty().bind(currentUserModel.bioProperty());
-
-        // todo fix image and date binding in profile
-        //birthdate can't be bind bidirectional
         DateOfBirthID.textProperty().bindBidirectional(currentUserModel.dateProperty(), converter);
-        //must set the image by default image if it return null in the login
-        ProfileImageID.setImage(currentUserModel.getImage());
-       // ProfileImageID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
-
+        ProfileImageID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
 
     }
 
