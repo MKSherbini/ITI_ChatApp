@@ -3,7 +3,6 @@ package iti.jets.gfive.ui.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.models.NotificationDto;
@@ -23,7 +22,6 @@ import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.event.ActionEvent;
 
@@ -183,7 +181,7 @@ public class LoginController implements Initializable {
         Validator validator = Validator.getInstance();
 
         validator.buildPhoneLoginValidation(txt_loginPhone);
-        validator.buildRequiredPasswordValidation(txt_loginPass);
+        validator.buildLoginPasswordValidation(txt_loginPass, txt_loginPhone);
 
     }
 }

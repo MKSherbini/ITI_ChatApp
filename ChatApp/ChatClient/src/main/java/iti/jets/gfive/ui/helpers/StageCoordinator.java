@@ -131,6 +131,16 @@ public class StageCoordinator {
     // todo fix this shit
     // This method unregister the user from the server
     public void unregisterCurrentUser(boolean force) {
+        if (force) {
+            try {
+                // make sure this dies
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (NoSuchObjectException noSuchObjectException) {
+                noSuchObjectException.printStackTrace();
+                // idfc
+            }
+        }
+
         if (!registered) {
             return;
         }
