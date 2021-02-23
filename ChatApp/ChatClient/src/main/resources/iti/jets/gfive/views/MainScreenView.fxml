@@ -127,7 +127,7 @@
       </AnchorPane>
       <AnchorPane layoutX="453.0" layoutY="62.0" prefHeight="535.0" prefWidth="517.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
          <children>
-            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <BorderPane fx:id="chatAreaBorderPaneID" prefHeight="526.0" prefWidth="506.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
                   <AnchorPane prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                      <children>

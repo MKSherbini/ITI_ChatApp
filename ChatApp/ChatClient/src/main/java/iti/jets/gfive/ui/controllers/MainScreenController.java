@@ -405,10 +405,15 @@ public class MainScreenController implements Initializable {
         chatListView.scrollTo(chatListView.getItems().size() - 1);
 
         // handle bot chat
-        botSwitchBtnId.setSelected(
-                ContactDBCrudService.getContactService().checkActiveChatBot(
-                        receiverNumber.getText(),
-                        ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber()));
+        if (receivernumberID.getText().charAt(0) == '0') {
+            botSwitchBtnId.setVisible(true);
+            botSwitchBtnId.setSelected(
+                    ContactDBCrudService.getContactService().checkActiveChatBot(
+                            receiverNumber.getText(),
+                            ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber()));
+        } else {
+            botSwitchBtnId.setVisible(false);
+        }
     }
 
     @FXML

@@ -9,6 +9,7 @@ import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.GroupChatService;
+import iti.jets.gfive.services.MessageDBService;
 import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
@@ -180,21 +181,31 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 
                     }
                 }
+
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        handleBotMessage(messageDto);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+//            StageCoordinator.getInstance().reset();
+                    }
+                }).start();
             }
         });
 
         //todo still won't work with the method only by making the attribute public!
 
-        try {
-            handleBotMessage(messageDto);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-//            StageCoordinator.getInstance().reset();
-        }
 
     }
 
     void handleBotMessage(MessageDto messageDto) throws RemoteException {
+        if (!(messageDto.getMessageName().equals("text") ||
+                messageDto.getMessageName().equals("messagename"))) return;
         var activeBot = ContactDBCrudService.getContactService().checkActiveChatBot(
                 messageDto.getSenderNumber(),
                 messageDto.getReceiverNumber());
@@ -203,14 +214,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         var chatBot = BotsManager.getInstance();
         var reply = chatBot.askBots(messageDto.getContent());
         var replyDTO = new MessageDto();
-        {
-            replyDTO.setContent(reply);
-            replyDTO.setMessageName("text");
-            replyDTO.setSenderNumber(messageDto.getReceiverNumber());
-            replyDTO.setReceiverNumber(messageDto.getSenderNumber());
-        }
+        replyDTO.setContent(reply);
+        replyDTO.setMessageName("text");
+        replyDTO.setSenderNumber(messageDto.getReceiverNumber());
+        replyDTO.setReceiverNumber(messageDto.getSenderNumber());
 
         ClientConnectionService.getClientConnService().sendMsg(replyDTO);
+        MessageDBService.getMessageService().insertMessage(replyDTO);
+
         System.out.println("bot reply to " + messageDto + " is " + replyDTO);
         Platform.runLater(() -> {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
