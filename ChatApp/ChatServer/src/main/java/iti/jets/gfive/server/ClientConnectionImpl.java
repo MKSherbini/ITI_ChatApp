@@ -60,7 +60,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void createGroupInAllMemebers(String groupname ,List<String> members) throws RemoteException {
+    public void createGroupInAllMemebers(String groupname ,List<String> members ,String id) throws RemoteException {
         //loop on the list and then clean it
         clientsPool.forEach(connectedClient -> {
             for (String phonenumber : members) {
@@ -69,7 +69,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     try {
 
                         System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
-                        connectedClient.getReceiveNotif().addGroupInMembersList(groupname);
+                        connectedClient.getReceiveNotif().addGroupInMembersList(groupname ,id);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }

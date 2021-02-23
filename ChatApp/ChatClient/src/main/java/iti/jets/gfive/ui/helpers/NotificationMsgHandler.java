@@ -14,6 +14,7 @@ import iti.jets.gfive.ui.controllers.ChatMessageController;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.ui.controllers.GroupMessageController;
+import iti.jets.gfive.ui.controllers.MainScreenController;
 import iti.jets.gfive.ui.controllers.NotificationViewController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.application.Platform;
@@ -23,6 +24,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -310,7 +313,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void addGroupInMembersList(String groupname) throws RemoteException {
+    public void addGroupInMembersList(String groupname ,String id) throws RemoteException {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -318,10 +321,17 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
                 try {
                     BorderPane borderPane = fxmlLoader.load();
+                    ImageView imageView = (ImageView) borderPane.getLeft();
                     VBox vBox2 = (VBox) borderPane.getCenter();
                     HBox hbox1 = (HBox) vBox2.getChildren().get(0);
                     Label label = (Label) hbox1.getChildren().get(0);
+                    Label groupid = (Label)vBox2.getChildren().get(1);
                     label.setText(groupname);
+                    Image groupchat = new Image(NotificationMsgHandler.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
+                    imageView.setImage(groupchat);
+                    groupid.setText(id);
+                    groupid.setVisible(false);
+
                     contactsList.getItems().add(borderPane);
                 } catch (IOException e) {
                     e.printStackTrace();

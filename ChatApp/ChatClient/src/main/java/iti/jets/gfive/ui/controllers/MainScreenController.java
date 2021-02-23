@@ -413,6 +413,7 @@ public class MainScreenController implements Initializable {
                             ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber()));
         } else {
             botSwitchBtnId.setVisible(false);
+            botSwitchBtnId.setSelected(false);
         }
     }
 
@@ -493,7 +494,7 @@ public class MainScreenController implements Initializable {
             String messsage = msgTxtAreaID.getText();
             Date date = Date.valueOf(LocalDate.now());
             System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
-            MessageDto messageDto = new MessageDto("messagename", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+            MessageDto messageDto = new MessageDto("text", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
             try {
                 ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
                 clientConnectionInter.sendMsg(messageDto);
@@ -631,14 +632,22 @@ public class MainScreenController implements Initializable {
 
                         System.out.println("33333333->");
 
-                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers);
+
                         GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
                         ModelsFactory modelsFactory = ModelsFactory.getInstance();
                         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                         contactController.groupChatMembers.add(currentUserModel.getPhoneNumber());
                         Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
                         groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
+                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                        for(int i = 0 ; i <contactController.groupChatMembers.size() ; i++)
+                        {
+                            if(contactController.groupChatMembers.get(i).equals(currentUserModel.getPhoneNumber()))
+                            {
+                                contactController.groupChatMembers.remove(i);
+                            }
+                        }
+                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers ,String.valueOf(groupid));
                         imageView.setImage(groupchat);
                         System.out.println("------>groupis " + groupid);
 
