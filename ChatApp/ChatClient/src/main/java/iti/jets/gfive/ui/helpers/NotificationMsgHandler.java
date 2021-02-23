@@ -5,6 +5,7 @@ import iti.jets.gfive.AIML.BotsManager;
 import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
+import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.ui.controllers.*;
@@ -53,6 +54,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     ArrayList<UserDto> contacts;
     //private  Label newLabel;
     Label label = new Label("new");
+    private Label receivernumberID;
 
 
     private NotificationMsgHandler() throws RemoteException {
@@ -394,54 +396,58 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void receiveGroupMessage(String id, String message, String name) throws RemoteException {
+    public void receiveGroupMessage(String id, String message, String name, boolean file, String fileRecordId) throws RemoteException {
         Label label = new Label("new");
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
                 ObservableList<BorderPane> list = contactsList.getItems();
-
-
                 System.out.println("inside the condition  ");
                 if (borderPane.isVisible() && number.getText().equals(id)) {
+                    if(file){
+                        try {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            FileMessageController controller = fxmlLoader.getController();
+                            controller.fileNameLabelId.setText(message);
+                            controller.recordID.setText(fileRecordId);
+                            listView.getItems().add(anchorPane);
+                            listView.scrollTo(anchorPane);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
 
-                    try {
-                        GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
-
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/GroupMessageView.fxml"));
-                        AnchorPane anchorPane = fxmlLoader.load();
-                        GroupMessageController controller = fxmlLoader.getController();
-                        System.out.println("content of the message " + message);
-                        controller.senderName.setText(name);
-                        controller.msgLabelId.setText(message);
-                        listView.getItems().add(anchorPane);
-                        listView.scrollTo(anchorPane);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/GroupMessageView.fxml"));
+                            AnchorPane anchorPane = fxmlLoader.load();
+                            GroupMessageController controller = fxmlLoader.getController();
+                            System.out.println("content of the message " + message);
+                            controller.senderName.setText(name);
+                            controller.msgLabelId.setText(message);
+                            listView.getItems().add(anchorPane);
+                            listView.scrollTo(anchorPane);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-
                 } else {
                     System.out.println("inside else");
                     for (BorderPane item : list) {
                         VBox vBox = (VBox) item.getCenter();
                         HBox hbox = (HBox) vBox.getChildren().get(0);
                         Label senderName = (Label) hbox.getChildren().get(0);
-
                         Label receiverNumber = (Label) vBox.getChildren().get(1);
+                        System.out.println("receiverNumber <>" + receiverNumber.getText());
+                        System.out.println("id <>" + id);
                         if (receiverNumber.getText().equals(id)) {
                             System.out.println("inside the match buttton");
-
                             label.setStyle("-fx-background-color: green;");
-
-
                             item.setRight(label);
                             label.setVisible(true);
-
                             break;
                         }
-
-
                     }
                 }
             }
@@ -455,5 +461,53 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     @Override
     public void receivePing() throws RemoteException {
         // doesn't have to do anything here, tameny 3alek bas :)
+    }
+
+    @Override
+    public void receiveFileToGroup(GroupMessagesDto groupMessageDto) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ObservableList<BorderPane> list = contactsList.getItems();
+                //System.out.println("inside the condition  " + number.getText() + "  " + messageDto.getSenderNumber());
+                if (borderPane.isVisible() && number.getText().equals(groupMessageDto.getSendernumber())) {
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        FileMessageController controller = fxmlLoader.getController();
+                        controller.fileNameLabelId.setText(groupMessageDto.getMessage_name());
+                        controller.recordID.setText(String.valueOf(groupMessageDto.getId()));
+                        listView.getItems().add(anchorPane);
+                        listView.scrollTo(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    System.out.println("inside else");
+                    for (BorderPane item : list) {
+                        VBox vBox = (VBox) item.getCenter();
+                        HBox hbox = (HBox) vBox.getChildren().get(0);
+                        Label senderName = (Label) hbox.getChildren().get(0);
+                        Label receiverNumber = (Label) vBox.getChildren().get(1);
+                        if (receiverNumber.getText().equals(groupMessageDto.getSendernumber())) {
+                            System.out.println("inside the match buttton");
+                            // newLabel.setVisible(true);
+                            label.setStyle("-fx-background-color: green;");
+                            item.setRight(label);
+                            label.setVisible(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void setReceivernumberID(Label receivernumberID) {
+        this.receivernumberID = receivernumberID;
+    }
+    public String getReceivernumberID() {
+        return this.receivernumberID.getText();
     }
 }

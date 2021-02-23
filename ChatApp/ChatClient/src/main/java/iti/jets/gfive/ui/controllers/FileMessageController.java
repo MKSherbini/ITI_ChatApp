@@ -1,7 +1,10 @@
 package iti.jets.gfive.ui.controllers;
 
+import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
+import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.services.MessageDBService;
+import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,6 +28,8 @@ public class FileMessageController {
     public Button downloadBtnId;
 
     public void onClickDownloadBtn(ActionEvent actionEvent) {
+        NotificationMsgHandler n = NotificationMsgHandler.getInstance();
+        String recevierNum = n.getReceivernumberID();
         FileChooser fileChooser;
         File selectedFile;
         String[] fileSplit = fileNameLabelId.getText().split("\\.");
@@ -38,8 +43,10 @@ public class FileMessageController {
             if (selectedFile != null) {
                 String filePath = selectedFile.getAbsolutePath();
                 MessageDBInter messageServices = MessageDBService.getMessageService();
+                GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                byte[] retrievedFile = null;
                 try {
-                    byte[] retrievedFile = messageServices.getFile(Integer.parseInt(recordID.getText()));
+                    retrievedFile = recevierNum.charAt(0) == '0' ? messageServices.getFile(Integer.parseInt(recordID.getText())) : groupChatInter.getFileForGroup(Integer.parseInt(recordID.getText()));
                     if (!filePath.endsWith(extension)) {
                         filePath = filePath + "." + extension;
                     }
