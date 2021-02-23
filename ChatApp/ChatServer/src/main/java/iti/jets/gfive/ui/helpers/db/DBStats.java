@@ -113,4 +113,33 @@ public class DBStats {
         return countryStats;
     }
 
+    public int selectUsersCount() {
+        var ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        int userCount = 0;
+        try {
+            con = ds.getConnection();
+            String selectQuery = "select COUNT(*) from chatapp.user_data";
+            preparedStatement = con.prepareStatement(selectQuery);
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                userCount = rs.getInt(1);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if (con != null && preparedStatement != null) {
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return userCount;
+    }
+
+
 }

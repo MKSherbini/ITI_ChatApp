@@ -1,7 +1,11 @@
 package iti.jets.gfive.ui.models;
 
+import iti.jets.gfive.server.ClientConnectionImpl;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.chart.PieChart;
 
 import java.util.*;
 

@@ -5,17 +5,41 @@ import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.ui.helpers.StatsManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
-    public static ConcurrentLinkedQueue<ConnectedClient> clientsPool = new ConcurrentLinkedQueue<>();
-    public static ConcurrentLinkedQueue<String> GroupChatMember = new ConcurrentLinkedQueue<>();
+    public static Set<ConnectedClient> clientsPool = ConcurrentHashMap.newKeySet();
+    public static Set<String> GroupChatMember = ConcurrentHashMap.newKeySet();
 
     public ClientConnectionImpl() throws RemoteException {
+        var pinger = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
+                    try {
+                        connectedClient.getReceiveNotif().receivePing();
+                    } catch (RemoteException e) {
+                        // gotcha u pos
+                        e.printStackTrace();
+                        ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
+                        StatsManager.getInstance().updateConnectionStats();
+                    }
+                });
+            }
+        });
+        pinger.setDaemon(true);
+        pinger.start();
     }
 
     @Override
@@ -23,12 +47,13 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         ConnectedClient client = new ConnectedClient(user, notif);
         try {
             UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
-            userDBCrud.updateUserConnection(user,true);
+            userDBCrud.updateUserConnection(user, true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         clientsPool.add(client);
         System.out.println("client " + user.getPhoneNumber() + " is added to the pool, clients count is " + clientsPool.size());
+        StatsManager.getInstance().updateConnectionStats();
     }
 
     @Override
@@ -37,7 +62,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
             if (connectedClient.getReceiveNotif().equals(notif)) {
                 try {
                     UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
-                    userDBCrud.updateUserConnection(connectedClient.getClient(),false);
+                    userDBCrud.updateUserConnection(connectedClient.getClient(), false);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -53,9 +78,8 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 clientsPool.remove(connectedClient);
                 System.out.println("client " + connectedClient.getClient().getPhoneNumber() + " is removed from the pool");
             }
-
-
         });
+        StatsManager.getInstance().updateConnectionStats();
     }
 
     @Override
@@ -67,6 +91,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     clientsPool.remove(connectedClient); // drop him, he prolly died
+                    StatsManager.getInstance().updateConnectionStats();
                 }
             }
         });
@@ -83,6 +108,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     clientsPool.remove(connectedClient); // drop him, he prolly died
+                    StatsManager.getInstance().updateConnectionStats();
                 }
             }
         });
@@ -100,6 +126,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     clientsPool.remove(connectedClient); // drop him, he prolly died
+                    StatsManager.getInstance().updateConnectionStats();
                 }
             }
         });
@@ -108,12 +135,13 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     @Override
     public void sendFile(MessageDto msg) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
-            if(connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())){
+            if (connectedClient.getClient().getPhoneNumber().equals(msg.getReceiverNumber())) {
                 try {
                     connectedClient.getReceiveNotif().receiveFile(msg);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     clientsPool.remove(connectedClient); // drop him, he prolly died
+                    StatsManager.getInstance().updateConnectionStats();
                 }
             }
         });
@@ -122,30 +150,31 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     @Override
     public void addMemberToGroupChat(String number) throws RemoteException {
         GroupChatMember.add(number);
-        System.out.println("size--->"+GroupChatMember.size());
+        System.out.println("size--->" + GroupChatMember.size());
     }
 
     @Override
     public void RemoveMemeberFromChatGroup(String number) throws RemoteException {
         GroupChatMember.remove(number);
-        System.out.println("size--->"+GroupChatMember.size());
+        System.out.println("size--->" + GroupChatMember.size());
 
     }
 
     @Override
-    public void createGroupInAllMemebers(String groupname ,List<String> members ,String id) throws RemoteException {
+    public void createGroupInAllMemebers(String groupname, List<String> members, String id) throws RemoteException {
         //loop on the list and then clean it
         clientsPool.forEach(connectedClient -> {
             for (String phonenumber : members) {
-                   System.out.println("1---->"+phonenumber);
-                if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)){
+                System.out.println("1---->" + phonenumber);
+                if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)) {
                     try {
 
-                        System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
-                        connectedClient.getReceiveNotif().addGroupInMembersList(groupname ,id);
+                        System.out.println("2---->" + connectedClient.getClient().getPhoneNumber());
+                        connectedClient.getReceiveNotif().addGroupInMembersList(groupname, id);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         clientsPool.remove(connectedClient); // drop him, he prolly died
+                        StatsManager.getInstance().updateConnectionStats();
                     }
                 }
             }
@@ -156,17 +185,18 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
-    public void sendGroupMsg(List<String> list, String id, String message , String name) throws RemoteException {
+    public void sendGroupMsg(List<String> list, String id, String message, String name) throws RemoteException {
         clientsPool.forEach(connectedClient -> {
             for (String phonenumber : list) {
-                if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)){
+                if (connectedClient.getClient().getPhoneNumber().equals(phonenumber)) {
                     try {
 
-                        System.out.println("2---->"+connectedClient.getClient().getPhoneNumber());
-                        connectedClient.getReceiveNotif().receiveGroupMessage(id,message,name);
+                        System.out.println("2---->" + connectedClient.getClient().getPhoneNumber());
+                        connectedClient.getReceiveNotif().receiveGroupMessage(id, message, name);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         clientsPool.remove(connectedClient); // drop him, he prolly died
+                        StatsManager.getInstance().updateConnectionStats();
                     }
                 }
             }

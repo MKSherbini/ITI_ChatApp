@@ -451,4 +451,9 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         //todo still won't work with the method only by making the attribute public!
 
     }
+
+    @Override
+    public void receivePing() throws RemoteException {
+        // doesn't have to do anything here, tameny 3alek bas :)
+    }
 }
