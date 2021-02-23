@@ -17,7 +17,8 @@
             </Label>
          </children>
       </AnchorPane>
-      <WebView layoutX="70.0" layoutY="79.0" prefHeight="242.0" prefWidth="458.0" AnchorPane.bottomAnchor="78.60000610351562" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="71.60000610351562" AnchorPane.topAnchor="79.0" />
+      <WebView fx:id="webView" layoutX="70.0" layoutY="79.0" prefHeight="242.0" prefWidth="458.0" AnchorPane.bottomAnchor="78.60000610351562" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="71.60000610351562" AnchorPane.topAnchor="79.0" />
+<!--      <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0"  />-->
       <Button fx:id="btnCancel" layoutX="274.0" layoutY="342.0" mnemonicParsing="false" onAction="#btnCancelClicked" text="Cancel" AnchorPane.bottomAnchor="32.4" AnchorPane.leftAnchor="274.0" AnchorPane.rightAnchor="274.8" />
    </children>
 </AnchorPane>

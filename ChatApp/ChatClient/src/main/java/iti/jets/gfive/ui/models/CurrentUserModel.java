@@ -21,10 +21,22 @@ public class CurrentUserModel {
     private final StringProperty country = new SimpleStringProperty();
     private final StringProperty bio = new SimpleStringProperty();
     private final StringProperty status = new SimpleStringProperty();
+    private final StringProperty announce = new SimpleStringProperty();
     private ObjectProperty<Image> imageProperty = new SimpleObjectProperty<>();
     private ObjectProperty<LocalDate> birthDate= new SimpleObjectProperty<>();
     private ObjectProperty<Blob> BlobProperty = new SimpleObjectProperty<>();
 
+    public String getAnnounce() {
+        return announce.get();
+    }
+
+    public StringProperty announceProperty() {
+        return announce;
+    }
+
+    public void setAnnounce(String announce) {
+        this.announce.set(announce);
+    }
 
     public String getPhoneNumber() {
         return phoneNumber.get();

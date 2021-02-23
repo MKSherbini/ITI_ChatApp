@@ -16,6 +16,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -24,6 +26,9 @@ import javafx.scene.layout.*;
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -243,6 +248,9 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             }
         });
     }
+
+
+
     public void decreaseNotificationsNumber(){
         Platform.runLater(new Runnable() {
             @Override
@@ -254,7 +262,17 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
             }
         });
     }
+
     public void receive(NotificationDto notification) throws RemoteException {
+        if(notification.getSenderId().equals("01000000000")){
+            Platform.runLater(() ->{
+                    AnnouncementLoader.getInstance().showDialog(notification.getContent());
+
+            });
+
+            System.out.println(notification.getContent());
+            return;
+        }
         increaseNotificationsNumber();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
         try {

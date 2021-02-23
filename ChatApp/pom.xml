@@ -208,6 +208,7 @@
                             <option>--add-exports javafx.base/com.sun.javafx.binding=com.jfoenix</option>
                             <option>--add-exports javafx.graphics/com.sun.javafx.stage=com.jfoenix</option>
                             <option>--add-exports javafx.base/com.sun.javafx.event=com.jfoenix</option>
+<!--                            <option>&#45;&#45;add-exports javafx.web/com.sun.webkit=ChatClient</option>-->
                             <!--                        &lt;!&ndash;                        JFOENIX demoduling &ndash;&gt;-->
                             <!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=${groupId}.${artifactId}</option>-->
                             <!--                        <option>&#45;&#45;add-exports com.jfoenix/com.jfoenix.controls.base=iti.jets.gfive.ui.helpers.validation.Validator</option>-->
