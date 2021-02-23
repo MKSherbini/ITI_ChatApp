@@ -29,6 +29,15 @@ public class UserDto implements Serializable {
     public UserDto() {
     }
 
+    public UserDto(String phoneNumber, String username, String password, String gender, String status, Image image) {
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.status = status;
+        this.image = image;
+    }
+
     public UserDto(String phoneNumber, String username, String password, String gender, Date birthDate, Image image) {
         this.phoneNumber = phoneNumber;
         this.username = username;
@@ -57,6 +66,12 @@ public class UserDto implements Serializable {
         this.image = image;
     }
 
+    public UserDto(String phoneNumber, String username, String status) {
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.status = status;
+    }
+
     public UserDto(String phoneNumber, String status) {
         this .phoneNumber = phoneNumber;
         this .status = status;
@@ -70,8 +85,8 @@ public class UserDto implements Serializable {
         s.defaultWriteObject();
         //image = new Image(UserDto.class.getResource("/iti/jets/gfive/images/sponge.png").toString());
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
-        if (image == null) System.out.println("fimageeeeeeee");
-        if (image != null) System.out.println("gimageeeeeeee");
+        //if (image == null) System.out.println("fimageeeeeeee");
+        //if (image != null) System.out.println("gimageeeeeeee");
 //        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); //72kb
 
     }

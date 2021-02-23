@@ -2,14 +2,18 @@ package iti.jets.gfive.ui.helpers.validation;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.rmi.RemoteException;
 import java.util.function.Predicate;
 
 // todo create a builder to add multiple validators then register with event
@@ -56,7 +60,30 @@ public class Validator {
 
         addDBExistingPhoneValidation(phone, true);
 
-        addPredicateValidation(phone, "Contact already exists", s -> !ContactsListView.getInstance().contactExist(s));
+        addPredicateValidation(phone, "Contact already exists",
+                s -> !ContactsListView.getInstance().contactExist(s));
+        addPredicateValidation(phone, "A request was already sent",
+                s -> {
+                    try {
+                        return !NotificationDBCrudService.getNotificationService().pendingNotification(currentUserModel.getPhoneNumber(), s);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
+                    }
+                    return true;
+                });
+        addPredicateValidation(phone, "Check your notifications list",
+                s -> {
+                    try {
+                        return !NotificationDBCrudService.getNotificationService()
+                                .reverseNotification(currentUserModel.getPhoneNumber(),
+                                        s);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
+                    }
+                    return true;
+                });
         setValidateOnEvent(phone);
     }
 
@@ -87,11 +114,20 @@ public class Validator {
         setValidateOnEvent(textField);
     }
 
+    public void buildBioValidation(JFXTextArea textArea) {
+        addBoundsValidationForTextArea(textArea, 0, 200);
+        setValidateOnEventForTextArea(textArea);
+    }
+
     public void buildDateValidation(JFXDatePicker date) {
         addRequiredFieldValidation(date);
         setValidateOnEvent(date);
     }
 
+    private void addBoundsValidationForTextArea(JFXTextArea textArea, int minTextLength, int maxTextLength) {
+        StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
+        textArea.getValidators().add(validator);
+    }
 
     private void addBoundsValidation(JFXTextField textField, int minTextLength, int maxTextLength) {
         StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
@@ -176,6 +212,15 @@ public class Validator {
         });
     }
 
+    private void setValidateOnEventForTextArea(JFXTextArea textArea) {
+        setErrorIcon(textArea);
+        textArea.focusedProperty().addListener((o, oldVal, newVal) -> {
+            if (newVal != null && !newVal) {
+                textArea.validate();
+            }
+        });
+    }
+
     private void setValidateOnEvent(JFXTextField textField) {
         setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
@@ -197,6 +242,11 @@ public class Validator {
     // fas-exclamation, fas-exclamation-circle, fas-exclamation-triangle, fas-info-circle
     // fas-khanda, fas-lightbulb, fas-minus-circle, fas-question-circle,
     // fas-skull, mdi2s-skull-outline, mdi2s-skull-scan-outline, mdi2s-skull, mdi2s-skull-crossbones-outline
+    private void setErrorIcon(JFXTextArea textArea) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textArea.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
     private void setErrorIcon(JFXTextField textField) {
         FontIcon errorIcon = new FontIcon("fas-skull");
         textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));

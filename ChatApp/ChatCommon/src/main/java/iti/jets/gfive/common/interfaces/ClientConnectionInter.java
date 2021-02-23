@@ -11,6 +11,9 @@ public interface ClientConnectionInter extends Remote {
     void register(UserDto user, NotificationReceiveInter notif) throws RemoteException;
     void unregister(NotificationReceiveInter notif) throws RemoteException;
     void sendMsg(MessageDto msg) throws RemoteException;
+    void sendFile(MessageDto msg) throws RemoteException;
+    void puplishStatus(UserDto user) throws RemoteException;
+    void publishPicture(UserDto user) throws RemoteException;
     void sendGroupMsg(List<String> list , String id , String message ,String name) throws RemoteException;
     void addMemberToGroupChat(String number) throws RemoteException;
     void RemoveMemeberFromChatGroup(String number) throws RemoteException;

@@ -13,6 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
+
 
 
 import java.awt.event.ActionEvent;
@@ -24,6 +27,9 @@ import java.util.ResourceBundle;
 
 public class ContactController implements Initializable {
     @FXML
+    public
+    ImageView ivStatus;
+    @FXML
     private BorderPane contactComponent;
 
     @FXML
@@ -33,6 +39,8 @@ public class ContactController implements Initializable {
     public Label contactNameLabel;
     @FXML
     public Label contactNumberLabel;
+    @FXML
+    public Label lblStatus;
     @FXML
     public Button newButton;
 
@@ -88,6 +96,11 @@ public class ContactController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         //contactNameLabel = new Label();
+        // this to make the image view like circle
+        final Rectangle clip = new Rectangle(60, 60);
+        clip.setArcWidth(180);
+        clip.setArcHeight(180);
+        contactImg.setClip(clip);
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
 
     }

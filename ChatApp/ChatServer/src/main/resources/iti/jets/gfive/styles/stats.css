@@ -19,8 +19,7 @@
 }
 
 .root {
-    -fx-background-image: url("../images/backgroup.png");
-    -fx-background-size: AUTO; /* or DEFAULT? */
+    -fx-background-color: #183152;
 }
 
 .right-pane {
@@ -33,13 +32,23 @@
     -fx-background-radius: 1em;
 }
 
-.right-pane > .label {
+.label {
     -fx-text-fill: #E1E6FA;
 }
 
-.error-label-color {
-    -fx-text-fill: #FF4500;
+
+.online-label {
+    -fx-text-fill: green;
+    -fx-background-color: green;
+    -fx-min-width: 50px;
 }
+
+.offline-label {
+    -fx-text-fill: red;
+    -fx-background-color: red;
+    -fx-min-width: 50px;
+}
+
 
 .jfx-radio-button {
     -fx-text-fill: #375D81;
@@ -72,8 +81,32 @@
     -fx-text-fill: #FF4500;
     -fx-padding: -2 0 0 0;
 }
-.header{
+
+.header {
     -fx-text-fill: #E1E6FA;
-    -fx-background-color:  #375D81;
+    -fx-background-color: #375D81;
 }
-.
+
+.chart-pie-label-line {
+    -fx-stroke: #E1E6FA;
+    -fx-fill: #E1E6FA;
+}
+
+.chart-pie-label {
+    -fx-fill: #E1E6FA;
+    -fx-font-size: 1em;
+}
+
+.chart-legend {
+    -fx-background-color: #183152;
+    -fx-stroke: darkred;
+    -fx-padding: 0, 55; /* fk this, I give up */
+    /*-fx-padding: 6px 80px 6px 6px;*/
+    /*-fx-background-insets: 0, 0, 0, 55;*/
+    /*-fx-background-radius: 6, 5;*/
+    /*-fx-padding: auto auto auto auto;*/
+}
+
+.chart {
+    -fx-background-color: #375D81;
+}

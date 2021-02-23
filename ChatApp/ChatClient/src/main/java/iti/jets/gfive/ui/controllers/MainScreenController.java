@@ -9,9 +9,11 @@ import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.services.*;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.common.models.MessageDto;
+import iti.jets.gfive.services.MessageDBService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.serialization.Marshaltor;
@@ -42,12 +44,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.ToggleSwitch;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +62,10 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
     public static final String URL_RESOURCE = "/iti/jets/gfive/icons/%s.png";
@@ -70,10 +80,6 @@ public class MainScreenController implements Initializable {
     public ToggleSwitch botSwitchBtnId;
     @FXML
     private Button btnContextMenu;
-    private ContextMenu contextMenu;
-    private MenuItem miExit;
-    private MenuItem miLogout, miAvailable, miBusy, miAway, miOffline;
-    private Menu status;
     @FXML
     private JFXListView<BorderPane> contactsListViewId;
     @FXML
@@ -103,10 +109,14 @@ public class MainScreenController implements Initializable {
     private ImageView profilepictureID;
     private Label receiverNumber;
 
-    private int groupid;
-
     private Label newLabel;
-    private List<String> members = new ArrayList<>();
+    private boolean fileFlag = false;
+    private ContextMenu contextMenu;
+    private MenuItem miExit;
+    private MenuItem miLogout, miAvailable, miBusy, miAway, miOffline;
+    private Menu status;
+    private Property<String> statusProperty = new SimpleObjectProperty<>("available");
+
 
     @FXML
     void showContxtMenu(MouseEvent event) {
@@ -115,10 +125,10 @@ public class MainScreenController implements Initializable {
     }
 
     // this method binds the status image property on the imageview status image property
-    private void bindIvStatusImage(String imageName) {
-        statusImage = new SimpleObjectProperty<>();
-        statusImage.setValue(new Image(getClass().getResource(String.format(URL_RESOURCE, imageName)).toString()));
-        statusImage.bindBidirectional(ivStatus.imageProperty());
+    private void changeStatusUi() {
+        statusProperty.bindBidirectional(ModelsFactory.getInstance().getCurrentUserModel().statusProperty());
+        statusProperty.addListener((opserver, old, newval) -> ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, newval)).toString())));
+        ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, ModelsFactory.getInstance().getCurrentUserModel().getStatus())).toString()));
     }
 
     @FXML
@@ -168,9 +178,17 @@ public class MainScreenController implements Initializable {
             UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), statusName);
             user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
             int rows = UserDBCrudService.getUserService().updateUserStatus(user);
+            if (rows > 0) {
+                ModelsFactory.getInstance().getCurrentUserModel().statusProperty().setValue(statusName);
+                changeStatusUi();
+                ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, statusName)).toString()));
+            }
+            ClientConnectionService.getClientConnService().puplishStatus(user);
+
             System.out.println("status updated  : " + rows);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
         }
     }
 
@@ -179,13 +197,22 @@ public class MainScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ModelsFactory modelsFactory = ModelsFactory.getInstance();
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        CurrentUserNameID.setText(currentUserModel.getUsername());
-        profilepictureID.setImage(currentUserModel.getImage());
+        CurrentUserNameID.textProperty().bind(currentUserModel.usernameProperty());
+//        CurrentUserNameID.setText(currentUserModel.getUsername());
+        profilepictureID.imageProperty().bindBidirectional(currentUserModel.imageProperty());
         chatListView.scrollTo(chatListView.getItems().size() - 1);
-//        bindIvStatusImage(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        System.out.println(ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        changeStatusUi();
         initializeContextMenu();
         ContactsListView c = ContactsListView.getInstance();
         c.setContactsListViewId(this.contactsListViewId);
+        System.out.println("contactsListViewId = " + contactsListViewId);
+        // make profile picture to be circled
+        final Rectangle clip = new Rectangle(35, 35);
+        clip.setArcWidth(180);
+        clip.setArcHeight(180);
+        profilepictureID.setClip(clip);
+
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
         n.setNotificationLabel(notificationLabelId);
@@ -201,8 +228,8 @@ public class MainScreenController implements Initializable {
 
         // System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
         //System.out.println("notifaction label is initalizedddddd");
-        System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
-        NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
+        //System.out.println(notificationLabelId + "NotificationsLabel in Mainscreen client");
+        //NotificationMsgHandler n2 = NotificationMsgHandler.getInstance();
         //System.out.println("calling the get instance again in the client");
 
 
@@ -295,7 +322,13 @@ public class MainScreenController implements Initializable {
     public void onClickonContact(MouseEvent mouseEvent) throws RemoteException {
 
 //            //todo still won't work with the method only by making the attribute public!
-
+//            //controller.setLabelValue(contact.getUsername());
+//            controller.newLabelID.setVisible(false);
+//            //System.out.println(item.getChildren().get(1).toString() + " chh");
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         chatListView.getItems().clear();
         ObservableList<BorderPane> selectedContact;
         selectedContact = contactsListViewId.getSelectionModel().getSelectedItems();
@@ -305,7 +338,9 @@ public class MainScreenController implements Initializable {
             HBox hbox = (HBox) vBox.getChildren().get(0);
             Label name = (Label) hbox.getChildren().get(0);
             receiverNumber = (Label) vBox.getChildren().get(1);
-            ImageView receiverimage = (ImageView) borderPane.getLeft();
+            ImageView receiverimage = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
+            // System.out.println("-------------->" + receiverimage);
+//            ImageView receiverimage = (ImageView) borderPane.getLeft();
 
 
             //to check if there is a new message or not
@@ -315,6 +350,8 @@ public class MainScreenController implements Initializable {
                 System.out.println("right of borderpane equals null");
             }
 
+            // ImageView imageView =(ImageView) borderPane.getLeft();
+            //    System.out.println("label text is " +name.getText());
             receivernameID.setText(name.getText());
             receivernumberID.setText(receiverNumber.getText());
             if (receivernumberID.getText().charAt(0) != '0') {
@@ -322,7 +359,6 @@ public class MainScreenController implements Initializable {
             }
 
             ReceiverImgID.setImage(receiverimage.getImage());
-            System.out.println("---------imagehere " + ReceiverImgID.getImage());
 
             chatAreaBorderPaneID.setVisible(true);
         }
@@ -330,7 +366,7 @@ public class MainScreenController implements Initializable {
         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
 
         MessageDBInter messageServices = MessageDBService.getMessageService();
-
+        if (messageServices == null) return;
         if (receiverNumber == null) {
             return;
         }
@@ -370,6 +406,7 @@ public class MainScreenController implements Initializable {
             });
 
         } else {
+
             final List<MessageDto> messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
 
             Platform.runLater(new Runnable() {
@@ -382,19 +419,35 @@ public class MainScreenController implements Initializable {
                         //todo still won't work with the method only by making the attribute public!
                         for (MessageDto messageDto : messageList) {
 
-                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
-                            AnchorPane anchorPane = fxmlLoader.load();
-                            ChatMessageController controller = fxmlLoader.getController();
+                            if (!messageDto.getMessageName().equals("text")) {
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                FileMessageController controller = fxmlLoader.getController();
+                                controller.fileNameLabelId.setText(messageDto.getMessageName());
+                                //controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.recordID.setText(String.valueOf(messageDto.getId()));
+                                if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                                    controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                    controller.fileNameLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                }
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
 
-                            //   System.out.println("content of the message "+messageDto.getContent());
-                            controller.msgLabelId.setText(messageDto.getContent());
-                            if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
-                                controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
-                                controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                            } else {
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ChatMessageView.fxml"));
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                ChatMessageController controller = fxmlLoader.getController();
+
+                                //   System.out.println("content of the message "+messageDto.getContent());
+                                controller.msgLabelId.setText(messageDto.getContent());
+                                if (currentUserModel.getPhoneNumber().equals(messageDto.getSenderNumber())) {
+                                    controller.msgLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                    controller.msgLabelId.setStyle("-fx-background-color: #ABC8E2;");
+                                }
+
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
                             }
-
-                            msgTxtAreaID.setText("");
-                            chatListView.getItems().add(anchorPane);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -441,12 +494,11 @@ public class MainScreenController implements Initializable {
                     }
                 }
 
+                MessageDBInter messageServices = MessageDBService.getMessageService();
 
                 message = msgTxtAreaID.getText();
                 GroupMessagesDto groupMessagesDto = new GroupMessagesDto(groupid, message, currentUserModel.getPhoneNumber());
                 groupChatInter.saveAllMessages(groupMessagesDto);
-                ;
-
 
                 ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
                 clientConnectionInter.sendGroupMsg(memeber, groupid, message, currentUserModel.getUsername());
@@ -484,6 +536,7 @@ public class MainScreenController implements Initializable {
                 e.printStackTrace();
             }
             System.out.println("inside group chat");
+
         } else {
 
 
@@ -494,13 +547,14 @@ public class MainScreenController implements Initializable {
             String messsage = msgTxtAreaID.getText();
             Date date = Date.valueOf(LocalDate.now());
             System.out.println("messagename" + currentUserModel.getPhoneNumber() + receiverNumber.getText() + "unseen" + messsage + date);
-            MessageDto messageDto = new MessageDto("text", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
+            MessageDto messageDto = new MessageDto(-1, "text", currentUserModel.getPhoneNumber(), receiverNumber.getText(), "unseen", messsage, date);
             try {
                 ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
                 clientConnectionInter.sendMsg(messageDto);
 
             } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
             }
 
             int rowaffected = messageServices.insertMessage(messageDto);
@@ -563,11 +617,83 @@ public class MainScreenController implements Initializable {
         chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
         chatModel.setChatOwner(currentUserModel.getUsername());
         messageList.forEach(messageDto -> {
-            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+            if (messageDto.getMessageName().equals("text")) {
+                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
+            }
+            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
         });
 
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
+    }
+
+    public void onClickAttachFile(ActionEvent actionEvent) {
+        ModelsFactory modelsFactory = ModelsFactory.getInstance();
+        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+        MessageDBInter messageServices = MessageDBService.getMessageService();
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            if ((selectedFile.length() / 1048576) > 10) {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setTitle("File Size Error");
+                a.setContentText("Cannot send more than a 10MB file");
+                a.setHeaderText("Error: File is too big");
+                a.show();
+                return;
+            }
+            String filePath = selectedFile.getPath();
+            File fileToSend = new File(filePath);
+            try {
+                FileInputStream fis = new FileInputStream(fileToSend);
+                int fileLength = (int) fileToSend.length();
+                //System.out.println(fileLength + "file length");
+                byte[] fileData = new byte[fileLength];
+                int c = fis.read(fileData);
+                //System.out.println(c + "int c");
+                //System.out.println(fileData.toString() + "fileData byte array");
+                Date date = Date.valueOf(LocalDate.now());
+                MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
+                        receiverNumber.getText(), "unseen", fileData, date);
+                try {
+                    ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                    int msgRecordID = messageServices.insertMessage(fileMessageDto);
+                    if (msgRecordID == -1) {
+                        System.out.println("id of the record, if -1 then failed to insert " + msgRecordID);
+                        return;
+                    }
+                    fileMessageDto.setId(msgRecordID);
+                    clientConnectionInter.sendFile(fileMessageDto);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                            try {
+                                AnchorPane anchorPane = fxmlLoader.load();
+                                FileMessageController controller = fxmlLoader.getController();
+                                //todo still won't work with the method only by making the attribute public!
+                                controller.fileNameLabelId.setText(fileToSend.getName());
+                                controller.fileNameLabelId.setAlignment(Pos.CENTER_RIGHT);
+                                controller.recordID.setText(String.valueOf(msgRecordID));
+                                msgTxtAreaID.setText("");
+                                chatListView.getItems().add(anchorPane);
+                                chatListView.scrollTo(anchorPane);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    fis.close();
+                    fileFlag = false;
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
@@ -615,7 +741,6 @@ public class MainScreenController implements Initializable {
             alert.setContentText("please enter a group name first ");
             alert.show();
         } else {
-
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -624,7 +749,8 @@ public class MainScreenController implements Initializable {
                         BorderPane borderPane = fxmlLoader.load();
                         ContactController contactController = fxmlLoader.getController();
                         VBox vBox2 = (VBox) borderPane.getCenter();
-                        ImageView imageView = (ImageView) borderPane.getLeft();
+//                        ImageView imageView = (ImageView) borderPane.getLeft();
+                        ImageView imageView = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
                         HBox hbox1 = (HBox) vBox2.getChildren().get(0);
                         Label label = (Label) hbox1.getChildren().get(0);
                         Label label1 = (Label) vBox2.getChildren().get(1);
@@ -638,16 +764,14 @@ public class MainScreenController implements Initializable {
                         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                         contactController.groupChatMembers.add(currentUserModel.getPhoneNumber());
                         Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
-                        groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
+                        var groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
                         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                        for(int i = 0 ; i <contactController.groupChatMembers.size() ; i++)
-                        {
-                            if(contactController.groupChatMembers.get(i).equals(currentUserModel.getPhoneNumber()))
-                            {
+                        for (int i = 0; i < contactController.groupChatMembers.size(); i++) {
+                            if (contactController.groupChatMembers.get(i).equals(currentUserModel.getPhoneNumber())) {
                                 contactController.groupChatMembers.remove(i);
                             }
                         }
-                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers ,String.valueOf(groupid));
+                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers, String.valueOf(groupid));
                         imageView.setImage(groupchat);
                         System.out.println("------>groupis " + groupid);
 
@@ -693,5 +817,10 @@ public class MainScreenController implements Initializable {
             });
         }
 
+    }
+
+    public void changeContactStatus(UserDto user) {
+//        ContactsListView.getInstance().changeContactStatus(user);
+        System.out.println(user.getUsername() + " ------->" + user.getStatus());
     }
 }

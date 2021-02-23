@@ -2,16 +2,15 @@ package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import iti.jets.gfive.common.interfaces.ContactDBCrudInter;
 import iti.jets.gfive.common.interfaces.NotificationCrudInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.NotifDBRecord;
 import iti.jets.gfive.common.models.NotificationDto;
-import iti.jets.gfive.services.ContactDBCrudService;
 import iti.jets.gfive.services.NotificationDBCrudService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.validation.FieldIconBinder;
 import iti.jets.gfive.ui.helpers.validation.Validator;
 import iti.jets.gfive.ui.models.CurrentUserModel;
@@ -84,12 +83,13 @@ public class NewContactDialogController implements Initializable {
             registered = userServices.checkUserId(contactNum);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
         if(!registered){
             System.out.println("user doesn't exists, registered: " + registered);
             return;
         }
-        //todo dialog or validation: user already exists in the contacts list
         ContactsListView c = ContactsListView.getInstance();
         boolean contactExist = c.contactExist(contactNum);
         if(contactExist){
@@ -100,9 +100,15 @@ public class NewContactDialogController implements Initializable {
         try {
             boolean notificationExists = notificationServices.pendingNotification(currentUserModel.getPhoneNumber(),
                     contactNum);
-            //todo dialog or validation: pending notification (a notification already exist)
             if(notificationExists){
                 System.out.println("pending notification");
+                return;
+            }
+            boolean notificationReverseExists = notificationServices.reverseNotification(currentUserModel.getPhoneNumber(),
+                    contactNum);
+            //todo dialog or validation: check ur notifications (a request notification exists in ur notifications list)
+            if(notificationReverseExists){
+                System.out.println("check ur notifications list");
                 return;
             }
             String notificationContent = (currentUserModel.getUsername() +" with the phone number "
@@ -113,18 +119,23 @@ public class NewContactDialogController implements Initializable {
                     currentUserModel.getPhoneNumber(), currentDate, false, contactNum);
             System.out.println("rows affected after notification: " + notifRecord.getRowsAffected());
             if(notifRecord.getRowsAffected() <= 1) return;
-            //todo tell the server to go and increase the label
             NotificationDto notif = new NotificationDto(notifRecord.getNotifId(), notificationContent, currentUserModel.getPhoneNumber(),
                     currentDate, false, contactNum);
             notificationServices.sendNotification(notif);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 
     public void performNewContact(ActionEvent actionEvent) {
         boolean validField= validateFields();
         if (!validField) return;
+        for (Object phone: listView.getItems()) {
+            if(phone.equals(txtPhoneNumber.getText()))
+                return;
+        }
        listView.getItems().add(txtPhoneNumber.getText());
        txtPhoneNumber.setText("");
     }

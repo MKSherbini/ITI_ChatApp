@@ -45,10 +45,10 @@ public class LoginManager {
     // true  : user exited
     // false : user loged out
     public boolean canLogin() {
-        if (!(phone.equals(null) || phone.equals(""))) {
+        if (!(phone == null || phone.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPhoneNumber(phone);
         }
-        if (!(password.equals(null) || password.equals(""))) {
+        if (!(password == null || password.equals(""))) {
             ModelsFactory.getInstance().getCurrentUserModel().setPassword(password);
             return true;
         }
@@ -63,6 +63,8 @@ public class LoginManager {
             notificationMsgHandler.addNotifications(notificationsList);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 
@@ -71,36 +73,20 @@ public class LoginManager {
 
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
-            System.out.println("befor");
+            if (userServices == null) return;
+            //System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(phone, password);
-            //System.out.println("name  "+userDto.getUsername());
-            //System.out.println("imag  "+userDto.getImage());
             userDto.setPhoneNumber(phone);
-
-            //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
-//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
-            //after validation register this client to the server
-//            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-//            try {
-//                NotificationMsgHandler notify = NotificationMsgHandler.getInstance();
-//                clientConnectionInter.register(userDto, notify);
-//            } catch (RemoteException e) {
-//                e.printStackTrace();
-//            }
             StageCoordinator.getInstance().registerUser(userDto);
-
-            // todo call the thread that gets the contacts list and display in the listView
-            // same thread or method to be called after adding a new contact aka --> a friend request accept
             ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
             ArrayList<UserDto> contacts = null;
             try {
                 contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
-//                for (UserDto contact : contacts) {
-//                    System.out.println(contact);
-//                }
             } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+                return;
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
@@ -109,6 +95,7 @@ public class LoginManager {
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
             currentUserModel.setPhoneNumber(phone);
             currentUserModel.setUsername(userDto.getUsername());
+            currentUserModel.setStatus(userDto.getStatus());
             //in case the user did not enter the date in registeration
             Date date = userDto.getBirthDate();
             if (date != null) {
@@ -120,9 +107,10 @@ public class LoginManager {
             currentUserModel.setPassword(password);
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
-
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
         }
 
     }
@@ -136,15 +124,7 @@ public class LoginManager {
     // save user data
     // remove the password from the current user model to force the user to login again once he logged out
     public void Logout() {
-        // todo fix the undergister
-//        StageCoordinator.getInstance().unregisterCurrentUser();
-        // todo fix this bs
-        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-        try {
-            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        StageCoordinator.getInstance().unregisterCurrentUser(false);
         ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
@@ -153,8 +133,7 @@ public class LoginManager {
     // unregister the user from the server and
     // saves his phone and password to used in the next login to the application .
     public void Exit() {
-        StageCoordinator.getInstance().unregisterCurrentUser();
-        //todo update the user status in the server
+        StageCoordinator.getInstance().unregisterCurrentUser(true);
         saveCredentials(ACTION_EXIT);
     }
 

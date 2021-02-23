@@ -7,6 +7,7 @@ import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.MessageDto;
 import iti.jets.gfive.common.models.NotificationDto;
+import iti.jets.gfive.ui.controllers.*;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.services.MessageDBService;
@@ -24,6 +25,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -48,6 +50,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     private BorderPane borderPane;
     private Label name;
     private Label number;
+    ArrayList<UserDto> contacts;
     //private  Label newLabel;
     Label label = new Label("new");
 
@@ -73,9 +76,6 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         this.notificationLabelId = notificationLabelId;
     }
 
-    //    public void setNotificationsListId(JFXListView notificationsListId){
-//        this.notificationsListId = notificationsListId;
-//        System.out.println("notificationsListId is set to: " + notificationsListId);
     public void setListView(ListView<AnchorPane> list) {
         listView = list;
     }
@@ -101,26 +101,9 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         this.number = number;
     }
 
-    //    public void setnewLabel(Label newLabel)
-//    {
-//        this.newLabel = newLabel;
-//    }
     public Label getnewLabel() {
         return this.label;
     }
-//    public void increaseNotificationsNumber(){
-////        int notificationsNumber = Integer.parseInt(this.notificationLabelId.getText());
-////        notificationsNumber+=1;
-////        System.out.println(notificationsNumber);
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                int notificationsNumber = Integer.parseInt(notificationLabelId.getText());
-//                notificationsNumber+=1;
-//                notificationLabelId.setText(notificationsNumber+"");
-//            }
-//        });
-//    }
 
     public void increaseNotificationsNumber() {
         Platform.runLater(new Runnable() {
@@ -206,6 +189,47 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
 
     }
 
+    @Override
+    public void receiveFile(MessageDto messageDto) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ObservableList<BorderPane> list = contactsList.getItems();
+                //System.out.println("inside the condition  " + number.getText() + "  " + messageDto.getSenderNumber());
+                if (borderPane.isVisible() && number.getText().equals(messageDto.getSenderNumber())) {
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
+                        AnchorPane anchorPane = fxmlLoader.load();
+                        FileMessageController controller = fxmlLoader.getController();
+                        controller.fileNameLabelId.setText(messageDto.getMessageName());
+                        controller.recordID.setText(String.valueOf(messageDto.getId()));
+                        listView.getItems().add(anchorPane);
+                        listView.scrollTo(anchorPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    System.out.println("inside else");
+                    for (BorderPane item : list) {
+                        VBox vBox = (VBox) item.getCenter();
+                        HBox hbox = (HBox) vBox.getChildren().get(0);
+                        Label senderName = (Label) hbox.getChildren().get(0);
+                        Label receiverNumber = (Label) vBox.getChildren().get(1);
+                        if (receiverNumber.getText().equals(messageDto.getSenderNumber())) {
+                            System.out.println("inside the match buttton");
+                            // newLabel.setVisible(true);
+                            label.setStyle("-fx-background-color: green;");
+                            item.setRight(label);
+                            label.setVisible(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     void handleBotMessage(MessageDto messageDto) throws RemoteException {
         if (!(messageDto.getMessageName().equals("text") ||
                 messageDto.getMessageName().equals("messagename"))) return;
@@ -274,18 +298,45 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void updateContactsList() throws RemoteException {
-        ModelsFactory modelsFactory = ModelsFactory.getInstance();
-        CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-        ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
-        ArrayList<UserDto> contacts;
-        try {
-            contacts = contactDBCrudInter.getContactsList(currentUserModel.getPhoneNumber());
-            ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void updateContactsList(UserDto contactInfo) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
+                try {
+                    BorderPane item = fxmlLoader.load();
+                    ContactController controller = fxmlLoader.getController();
+                    controller.contactNameLabel.setText(contactInfo.getUsername());
+                    controller.contactNumberLabel.setText(contactInfo.getPhoneNumber());
+                    controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE, contactInfo.getStatus())).toString()));
+                    controller.contactImg.setImage(contactInfo.getImage());
+                    contactsList.getItems().add(item);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateStatus(UserDto user) throws RemoteException {
+//        ContactsListView con = ContactsListView.getInstance();
+//        con.setContactsListViewId();
+        System.out.println(user.getPhoneNumber() + "-----------> " + user.getStatus());
+
+        ContactsListView c = ContactsListView.getInstance();
+        c.changeContactStatus(user);
+        StageCoordinator.getInstance().changeStatus(user);
+//        c.fillContacts(contacts);
+
+    }
+
+    @Override
+    public void updatePicture(UserDto user) throws RemoteException {
+        System.out.println(user.getPhoneNumber() + "-----------> " + user.getStatus());
+        ContactsListView c = ContactsListView.getInstance();
+        c.changeContactPicture(user);
+        StageCoordinator.getInstance().changeStatus(user);
     }
 
     public JFXListView<BorderPane> getNotificationsToFill() {
@@ -293,6 +344,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     public void addNotifications(ArrayList<NotificationDto> notifications) {
+        notificationsListId.getItems().clear(); // for the logout case
         //System.out.println(notifications.size() + "<-------------1");
         for (NotificationDto notification : notifications) {
             increaseNotificationsNumber();
@@ -313,7 +365,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     @Override
-    public void addGroupInMembersList(String groupname ,String id) throws RemoteException {
+    public void addGroupInMembersList(String groupname, String id) throws RemoteException {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -321,11 +373,12 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
                 try {
                     BorderPane borderPane = fxmlLoader.load();
-                    ImageView imageView = (ImageView) borderPane.getLeft();
+//                    ImageView imageView = (ImageView) borderPane.getLeft();
+                    ImageView imageView = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
                     VBox vBox2 = (VBox) borderPane.getCenter();
                     HBox hbox1 = (HBox) vBox2.getChildren().get(0);
                     Label label = (Label) hbox1.getChildren().get(0);
-                    Label groupid = (Label)vBox2.getChildren().get(1);
+                    Label groupid = (Label) vBox2.getChildren().get(1);
                     label.setText(groupname);
                     Image groupchat = new Image(NotificationMsgHandler.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
                     imageView.setImage(groupchat);

@@ -65,7 +65,7 @@ public class LoginController implements Initializable {
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
             System.out.println("befor");
-            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+//            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
             if (userDto == null) {
                 return;
@@ -91,6 +91,8 @@ public class LoginController implements Initializable {
 //                }
             } catch (RemoteException e) {
                 e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+                return;
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts);// Sherbini: todo this was null for me, should be handled
@@ -99,6 +101,8 @@ public class LoginController implements Initializable {
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
             currentUserModel.setPhoneNumber(txt_loginPhone.getText());
             currentUserModel.setUsername(userDto.getUsername());
+            currentUserModel.setStatus(userDto.getStatus());
+
             //in case the user did not enter the date in registeration
             Date date = userDto.getBirthDate();
             if (date != null) {
@@ -110,19 +114,22 @@ public class LoginController implements Initializable {
             currentUserModel.setPassword(txt_loginPass.getText());
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
            List<GroupDto> groups = groupChatInter.selectAllGroups(currentUserModel.getPhoneNumber());
             c.fillGroups(groups);
 
 
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
 
 
 
 
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
-       stageCoordinator.switchToMainPage();
+        stageCoordinator.switchToMainPage();
 
     }
 
@@ -135,6 +142,8 @@ public class LoginController implements Initializable {
             notificationMsgHandler.addNotifications(notificationsList);
         } catch (RemoteException e) {
             e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
         }
     }
 
@@ -143,8 +152,9 @@ public class LoginController implements Initializable {
     }
 
     public void resetFieldsValidation() {
-        txt_loginPass.resetValidation();
-        txt_loginPhone.resetValidation();
+        FieldIconBinder fieldIconBinder = FieldIconBinder.getInstance();
+        fieldIconBinder.resetValidation(txt_loginPhone);
+        fieldIconBinder.resetValidation(txt_loginPass);
 
         // clear left for the binding
     }

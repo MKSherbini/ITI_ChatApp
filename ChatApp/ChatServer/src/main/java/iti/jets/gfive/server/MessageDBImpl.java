@@ -2,6 +2,7 @@ package iti.jets.gfive.server;
 
 import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.common.models.MessageDto;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.db.DataSourceFactory;
 
@@ -31,7 +32,7 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         try {
             con = ds.getConnection();
             String sql = "select * from message \n" +
-                    " WHERE (sender_id = ? and receiver_id =?) or (sender_id=? and receiver_id=?) ";
+                    " WHERE (sender_id = ? and receiver_id =?) or (sender_id=? and receiver_id=?) order by message_id";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, senderNumber);
             preparedStatement.setString(2, receiverNumber);
@@ -40,6 +41,7 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 messageDto = new MessageDto();
+                messageDto.setId(resultSet.getInt("message_id"));
                 messageDto.setContent(resultSet.getString("content"));
                 messageDto.setReceiverNumber(resultSet.getString("receiver_id"));
                 messageDto.setSenderNumber(resultSet.getString("sender_id"));
@@ -51,14 +53,16 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             System.out.println("Number of list "+messageList.size());
         } catch (SQLException | NullPointerException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null && resultSet != null) {
-            try {
-                stmt.close();
-                con.close();
-                resultSet.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            System.out.println("INSIDE FINALLY OF GET MESSAGES");
+            if (con != null && stmt != null && resultSet != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                    resultSet.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         return messageList;
@@ -71,30 +75,44 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         Connection con = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected = 0;
+        int messageId = -1;
+        ResultSet rs = null;
         try {
             con = ds.getConnection();
             String insertQuery = "insert into message\n" +
-                    "(sender_id, receiver_id, state , content, message_date)\n" +
-                    "values (?, ?, ?, ?, ?)";
-            preparedStatement = con.prepareStatement(insertQuery);
-            preparedStatement.setString(1, messageDto.getSenderNumber());
-            preparedStatement.setString(2, messageDto.getReceiverNumber());
-            preparedStatement.setString(3, messageDto.getState());
-            preparedStatement.setString(4, messageDto.getContent());
-            preparedStatement.setDate(5, messageDto.getMessageDate());
+                    "(message_name, sender_id, receiver_id, state , content, message_date)\n" +
+                    "values (?, ?, ?, ?, ?, ?)";
+            preparedStatement = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, messageDto.getMessageName());
+            preparedStatement.setString(2, messageDto.getSenderNumber());
+            preparedStatement.setString(3, messageDto.getReceiverNumber());
+            preparedStatement.setString(4, messageDto.getState());
+            if(messageDto.getContent() == null){
+                preparedStatement.setBytes(5, messageDto.getFileContent());
+            } else{
+                preparedStatement.setString(5, messageDto.getContent());
+            }
+            preparedStatement.setDate(6, messageDto.getMessageDate());
             rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected == 0)
+                return messageId;
+            rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()){
+                messageId = rs.getInt(1);
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
-        return rowsAffected;
+        return messageId;
     }
 
     @Override
@@ -113,15 +131,52 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             System.out.println("rowsaffected" + rowsAffected);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;
+    }
+
+    @Override
+    public byte[] getFile(int recordId){
+        ds = DataSourceFactory.getMySQLDataSource();
+        ArrayList<NotificationDto> notificationList = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        byte [] fileData = null;
+        try {
+            con = ds.getConnection();
+            String query = "select content from message \n" +
+                    "where message_id = ?;";
+            preparedStatement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, recordId);
+            rs = preparedStatement.executeQuery();
+            try{
+                while(rs.next()){
+                    fileData = rs.getBytes("content");
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+        return fileData;
     }
 }

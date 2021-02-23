@@ -11,4 +11,5 @@ public interface MessageDBInter extends Remote {
    List<MessageDto> selectAllMessages(String receiverNumber , String senderNumber) throws RemoteException;
    int insertMessage(MessageDto messageDto) throws RemoteException;
    int updateMessageState(String receiverNumber , String senderNumber) throws RemoteException;
+   byte[] getFile(int recordId) throws RemoteException;
 }
