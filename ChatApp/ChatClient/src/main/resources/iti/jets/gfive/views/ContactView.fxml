@@ -43,9 +43,9 @@
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="66.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" layoutX="55.0" layoutY="-10.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <StackPane layoutX="42.0" layoutY="51.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <StackPane fx:id="stackID" layoutX="42.0" layoutY="51.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
                <children>
-                  <Circle fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="circleID" fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                   <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons/away.png" />

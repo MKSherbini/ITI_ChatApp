@@ -101,6 +101,7 @@ public class ContactsListView {
                         //controller.setLabelValue(contact.getUsername());
                         controller.contactNameLabel.setText(contact.getUsername());
                         controller.contactNumberLabel.setText(contact.getPhoneNumber());
+                       // if(controller.contactNumberLabel.getText().equals())
                         controller.ivStatus.setImage(new Image(getClass().getResource(String.format(MainScreenController.URL_RESOURCE,contact.getStatus())).toString()));
 //                        controller.lblStatus.setText(contact.getStatus());
                         controller.contactImg.setImage(contact.getImage());
@@ -131,6 +132,7 @@ public class ContactsListView {
                         controller.contactNameLabel.setText(group.getGroupname());
                         controller.contactNumberLabel.setText(String.valueOf(group.getId()));
                         controller.contactNumberLabel.setVisible(false);
+                        controller.stackID.setVisible(false);
                        Image groupchat = new Image(ContactsListView.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
                         controller.contactImg.setImage(groupchat);
                         contactsListViewId.getItems().add(item);

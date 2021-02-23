@@ -658,6 +658,13 @@ public class MainScreenController implements Initializable {
                     int fileRecordId = groupChatInter.saveAllMessages(fileGroupMessageDto);
                     fileGroupMessageDto.setId(String.valueOf(fileRecordId));
                     List<String> groupMembers = groupChatInter.selectAllMemebers(receivernumberID.getText());
+                    for(int i = 0 ; i <groupMembers.size();i++)
+                    {
+                        if(groupMembers.get(i).equals(currentUserModel.getPhoneNumber()))
+                        {
+                            groupMembers.remove(i);
+                        }
+                    }
                     clientConnectionInter.sendFileToGroup(fileGroupMessageDto, groupMembers);
                     Platform.runLater(new Runnable() {
                         @Override
@@ -782,6 +789,7 @@ public class MainScreenController implements Initializable {
                         Label label = (Label) hbox1.getChildren().get(0);
                         Label label1 = (Label) vBox2.getChildren().get(1);
                         label.setText(groupnameID.getText());
+                        contactController.stackID.setVisible(false);
 
                         System.out.println("33333333->");
 

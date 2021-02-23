@@ -375,6 +375,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/ContactView.fxml"));
                 try {
                     BorderPane borderPane = fxmlLoader.load();
+                    ContactController controller = fxmlLoader.getController();
 //                    ImageView imageView = (ImageView) borderPane.getLeft();
                     ImageView imageView = (ImageView) ((AnchorPane) borderPane.getLeft()).getChildren().get(0);
                     VBox vBox2 = (VBox) borderPane.getCenter();
@@ -386,6 +387,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                     imageView.setImage(groupchat);
                     groupid.setText(id);
                     groupid.setVisible(false);
+                    controller.stackID.setVisible(false);
 
                     contactsList.getItems().add(borderPane);
                 } catch (IOException e) {
@@ -411,6 +413,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                             FileMessageController controller = fxmlLoader.getController();
                             controller.fileNameLabelId.setText(message);
                             controller.recordID.setText(fileRecordId);
+
                             listView.getItems().add(anchorPane);
                             listView.scrollTo(anchorPane);
                         } catch (IOException e) {
