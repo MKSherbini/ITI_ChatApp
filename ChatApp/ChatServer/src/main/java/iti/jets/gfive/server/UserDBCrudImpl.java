@@ -398,7 +398,8 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         }
         return img;
     }
-    public int updateUserConnection(UserDto user,boolean online) throws RemoteException {
+
+    public int updateUserConnection(UserDto user, boolean online) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         Statement stmt = null;
@@ -411,8 +412,8 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             preparedStatement.setBoolean(1, online);
             preparedStatement.setString(2, user.getPhoneNumber());
             rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected>0)
-                System.out.println(user.getPhoneNumber()+ " online = "+online);
+            if (rowsAffected > 0)
+                System.out.println(user.getPhoneNumber() + " online = " + online);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
@@ -425,6 +426,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
                 }
             }
         }
+        if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
     }
 }

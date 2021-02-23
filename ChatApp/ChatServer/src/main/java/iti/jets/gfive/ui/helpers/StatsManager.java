@@ -37,12 +37,16 @@ public class StatsManager {
         var connectedPropMap = model.getConnectionPropertiesMap();
         System.out.println(connectedMap.entrySet());
         System.out.println(connectedPropMap.entrySet());
-        connectedMap.forEach((integer, integer2) -> {
-            if (integer == 0) {
-                connectedPropMap.get("Offline").set(integer2);
-            } else {
-                connectedPropMap.get("Online").set(integer2);
-            }
-        });
+        connectedPropMap.get("Online").set(connectedMap.getOrDefault(true, 0));
+        connectedPropMap.get("Offline").set(connectedMap.getOrDefault(false, 0));
+        System.out.println(connectedPropMap.entrySet());
+
+//        connectedMap.forEach((online, count) -> {
+//            if (online) {
+//                connectedPropMap.get("Online").set(count);
+//            } else {
+//                connectedPropMap.get("Offline").set(count);
+//            }
+//        });
     }
 }

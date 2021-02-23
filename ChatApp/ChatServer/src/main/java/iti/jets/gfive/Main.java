@@ -25,8 +25,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
-//        stageCoordinator.switchToServerMain();
-        stageCoordinator.switchToServerStats();
+        stageCoordinator.switchToServerMain();
+//        stageCoordinator.switchToServerStats();
         primaryStage.show();
     }
 

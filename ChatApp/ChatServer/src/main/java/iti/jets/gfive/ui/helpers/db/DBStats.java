@@ -85,19 +85,19 @@ public class DBStats {
         return countryStats;
     }
 
-    public Map<Integer, Integer> selectConnectionStats() {
+    public Map<Boolean, Integer> selectConnectionStats() {
         var ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs;
-        Map<Integer, Integer> countryStats = new HashMap<>();
+        Map<Boolean, Integer> countryStats = new HashMap<>();
         try {
             con = ds.getConnection();
             String selectQuery = "select on_line, COUNT(*)from chatapp.user_data group by on_line;";
             preparedStatement = con.prepareStatement(selectQuery);
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                countryStats.put(rs.getInt(1), rs.getInt(2));
+                countryStats.put(rs.getBoolean(1), rs.getInt(2));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
