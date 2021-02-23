@@ -1,9 +1,11 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.ContactDBCrudService;
+import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.ui.controllers.LoginController;
 import iti.jets.gfive.ui.controllers.MainScreenController;
 import iti.jets.gfive.ui.controllers.RegisterController;
@@ -19,6 +21,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StageCoordinator {
@@ -131,6 +134,16 @@ public class StageCoordinator {
     // todo fix this shit
     // This method unregister the user from the server
     public void unregisterCurrentUser(boolean force) {
+        if (force) {
+            try {
+                // make sure this dies
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (NoSuchObjectException noSuchObjectException) {
+                noSuchObjectException.printStackTrace();
+                // idfc
+            }
+        }
+
         if (!registered) {
             return;
         }
@@ -182,8 +195,10 @@ public class StageCoordinator {
         System.out.println(user.getPhoneNumber() + "-----------> " + user.getStatus());
 //        ( (MainScreenController)scenes.get("MainScreenView").getLoader().getController()).changeContactStatus(user);
         ArrayList<UserDto> contacts = null;
+        List<GroupDto> groups = null;
         try {
             contacts = ContactDBCrudService.getContactService().getContactsList(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
+            groups = GroupChatService.getGroupChatInter().selectAllGroups(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
             StageCoordinator.getInstance().reset();
@@ -192,5 +207,6 @@ public class StageCoordinator {
 
         ContactsListView c = ContactsListView.getInstance();
         c.fillContacts(contacts);
+        c.fillGroups(groups);
     }
 }

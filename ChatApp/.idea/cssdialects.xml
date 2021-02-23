@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/ChatClient/src/main/resources/iti/jets/gfive/styles/error.css" dialect="JavaFX" />
     <file url="file://$PROJECT_DIR$/ChatClient/src/main/resources/iti/jets/gfive/styles/login.css" dialect="JavaFX" />
     <file url="file://$PROJECT_DIR$/ChatServer/src/main/resources/iti/jets/gfive/styles/application.css" dialect="JavaFX" />
+    <file url="file://$PROJECT_DIR$/ChatServer/src/main/resources/iti/jets/gfive/styles/stats.css" dialect="JavaFX" />
   </component>
 </project>

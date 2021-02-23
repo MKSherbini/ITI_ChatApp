@@ -1,12 +1,10 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.common.interfaces.*;
+import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
-import iti.jets.gfive.services.ClientConnectionService;
-import iti.jets.gfive.services.ContactDBCrudService;
-import iti.jets.gfive.services.NotificationDBCrudService;
-import iti.jets.gfive.services.UserDBCrudService;
+import iti.jets.gfive.services.*;
 import iti.jets.gfive.ui.controllers.RegisterController;
 import iti.jets.gfive.ui.models.CurrentUserModel;
 import javafx.scene.image.Image;
@@ -16,6 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class LoginManager {
@@ -74,13 +73,14 @@ public class LoginManager {
         try {
             UserDBCrudInter userServices = UserDBCrudService.getUserService();
             if (userServices == null) return;
-            System.out.println("befor");
+            //System.out.println("befor");
             Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
             userDto = userServices.selectFromDB(phone, password);
             userDto.setPhoneNumber(phone);
             StageCoordinator.getInstance().registerUser(userDto);
             ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
             ArrayList<UserDto> contacts = null;
+            List<GroupDto> groups = null;
             try {
                 contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
             } catch (RemoteException e) {
@@ -90,6 +90,8 @@ public class LoginManager {
             }
             ContactsListView c = ContactsListView.getInstance();
             c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
+            groups = GroupChatService.getGroupChatInter().selectAllGroups(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
+            c.fillGroups(groups);
             getNotifications(userDto);
             ModelsFactory modelsFactory = ModelsFactory.getInstance();
             CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
@@ -107,7 +109,7 @@ public class LoginManager {
             currentUserModel.setPassword(password);
             currentUserModel.setBio(userDto.getBio());
             currentUserModel.setImage(userDto.getImage());
-
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
         } catch (RemoteException e) {
             e.printStackTrace();
             StageCoordinator.getInstance().reset();

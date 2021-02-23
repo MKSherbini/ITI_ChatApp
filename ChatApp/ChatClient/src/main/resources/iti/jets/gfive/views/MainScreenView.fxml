@@ -2,15 +2,14 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -52,20 +51,12 @@
                <image>
                   <Image url="@../icons/add-contact.png" />
                </image></ImageView>
-            <JFXTextField layoutX="86.0" layoutY="20.0" promptText="Search" AnchorPane.bottomAnchor="20.799999999999997" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="141.20000000000002" AnchorPane.topAnchor="20.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <styleClass>
-                  <String fx:value="badge" />
-                  <String fx:value="active" />
-               </styleClass>
-            </JFXTextField>
+            <Button layoutX="33.0" layoutY="19.0" mnemonicParsing="false" onAction="#OnclickCreateGroup" prefHeight="23.0" prefWidth="240.0" text="Create Group" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="453.0" prefHeight="62.0" prefWidth="504.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Text fx:id="CurrentUserNameID" fill="#fafafa" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="120.80003356933582" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="18.2734375">
+            <Text fx:id="CurrentUserNameID" fill="#fafafa" layoutX="18.0" layoutY="39.7265625" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat" wrappingWidth="153.60002136230457" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="18.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -78,18 +69,21 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <AnchorPane layoutX="400.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="35.0" AnchorPane.rightAnchor="70.8" AnchorPane.topAnchor="12.0">
+            <AnchorPane layoutX="400.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="45.0" AnchorPane.rightAnchor="70.8" AnchorPane.topAnchor="17.0">
                <children>
-                  <Button fx:id="ProfileBtnID" layoutY="8.0" mnemonicParsing="false" onAction="#onClickProfile" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Button fx:id="ProfileBtnID" contentDisplay="CENTER" layoutY="8.0" mnemonicParsing="false" onAction="#onClickProfile" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #183152;" textAlignment="JUSTIFY" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView fx:id="profilepictureID" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="profilepictureID" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/profile_icon.png" />
                            </image>
                         </ImageView>
                      </graphic>
+                     <font>
+                        <Font size="1.0" />
+                     </font>
                   </Button>
-                  <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0">
+                  <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.rightAnchor="2.0">
                      <children>
                         <Circle fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                         <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -200,5 +194,7 @@
             </BorderPane>
          </children>
       </AnchorPane>
+      <Button fx:id="addGroupBtn" layoutX="338.0" layoutY="560.0" mnemonicParsing="false" onAction="#onClickAddGroup" prefHeight="23.0" prefWidth="114.0" text="Add " visible="false" AnchorPane.bottomAnchor="3.0" />
+      <TextField fx:id="groupnameID" layoutX="74.0" layoutY="560.0" prefHeight="23.0" prefWidth="256.0" promptText="Enter Group Name" visible="false" AnchorPane.bottomAnchor="3.0" />
    </children>
 </AnchorPane>

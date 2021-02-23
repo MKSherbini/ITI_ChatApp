@@ -32,7 +32,7 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         try {
             con = ds.getConnection();
             String sql = "select * from message \n" +
-                    " WHERE (sender_id = ? and receiver_id =?) or (sender_id=? and receiver_id=?) ";
+                    " WHERE (sender_id = ? and receiver_id =?) or (sender_id=? and receiver_id=?) order by message_id";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, senderNumber);
             preparedStatement.setString(2, receiverNumber);
@@ -53,14 +53,15 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             System.out.println("Number of list "+messageList.size());
         } catch (SQLException | NullPointerException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && stmt != null && resultSet != null) {
-            try {
-                stmt.close();
-                con.close();
-                resultSet.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && stmt != null && resultSet != null) {
+                try {
+                    stmt.close();
+                    con.close();
+                    resultSet.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         return messageList;
@@ -100,13 +101,14 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
         return messageId;
@@ -128,13 +130,14 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             System.out.println("rowsaffected" + rowsAffected);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
-            try {
-                preparedStatement.close();
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if (con != null && preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return rowsAffected;
@@ -143,7 +146,6 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
     @Override
     public byte[] getFile(int recordId){
         ds = DataSourceFactory.getMySQLDataSource();
-        ArrayList<NotificationDto> notificationList = new ArrayList<>();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs;
@@ -164,12 +166,13 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        if(con != null && preparedStatement != null){
-            try {
-                preparedStatement.close(); con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } finally {
+            if(con != null && preparedStatement != null){
+                try {
+                    preparedStatement.close(); con.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
         return fileData;

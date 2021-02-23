@@ -91,6 +91,18 @@ public class MessageDto implements Serializable {
         this.messageDate = messageDate;
     }
 
+    @Override
+    public String toString() {
+        return "MessageDto{" +
+                "messageName='" + messageName + '\'' +
+                ", senderNumber='" + senderNumber + '\'' +
+                ", receiverNumber='" + receiverNumber + '\'' +
+                ", state='" + state + '\'' +
+                ", content='" + content + '\'' +
+                ", messageDate=" + messageDate +
+                '}';
+    }
+
     public byte[] getFileContent() {
         return fileContent;
     }

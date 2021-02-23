@@ -3,6 +3,12 @@ package iti.jets.gfive;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
@@ -20,11 +26,8 @@ public class Main extends Application {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
         stageCoordinator.switchToServerMain();
+//        stageCoordinator.switchToServerStats();
         primaryStage.show();
-
-        primaryStage.setOnCloseRequest(event -> {
-            Platform.exit();
-        });
     }
 
     @Override

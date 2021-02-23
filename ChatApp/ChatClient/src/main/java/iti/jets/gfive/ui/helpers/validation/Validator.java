@@ -2,10 +2,13 @@ package iti.jets.gfive.ui.helpers.validation;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.NotificationDBCrudService;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ContactsListView;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -71,6 +74,18 @@ public class Validator {
                     }
                     return true;
                 });
+        addPredicateValidation(phone, "Check your notifications list",
+                s -> {
+                    try {
+                        return !NotificationDBCrudService.getNotificationService()
+                                .reverseNotification(currentUserModel.getPhoneNumber(),
+                                        s);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
+                    }
+                    return true;
+                });
         setValidateOnEvent(phone);
     }
 
@@ -91,8 +106,17 @@ public class Validator {
         setValidateOnEvent(repeatPassword);
     }
 
-    public void buildRequiredPasswordValidation(JFXPasswordField passwordField) {
+    public void buildLoginPasswordValidation(JFXPasswordField passwordField, JFXTextField userID) {
         addRequiredFieldValidation(passwordField);
+        addPredicateValidation(passwordField, "Incorrect password", s -> {
+            try {
+                return null != UserDBCrudService.getUserService().selectFromDB(userID.textProperty().get(), s);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                StageCoordinator.getInstance().reset();
+            }
+            return true;
+        });
         setValidateOnEvent(passwordField);
     }
 
@@ -101,9 +125,9 @@ public class Validator {
         setValidateOnEvent(textField);
     }
 
-    public void buildBioValidation(JFXTextField textField) {
-        addBoundsValidation(textField, 0, 100);
-        setValidateOnEvent(textField);
+    public void buildBioValidation(JFXTextArea textArea) {
+        addBoundsValidationForTextArea(textArea, 0, 200);
+        setValidateOnEventForTextArea(textArea);
     }
 
     public void buildDateValidation(JFXDatePicker date) {
@@ -111,6 +135,10 @@ public class Validator {
         setValidateOnEvent(date);
     }
 
+    private void addBoundsValidationForTextArea(JFXTextArea textArea, int minTextLength, int maxTextLength) {
+        StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
+        textArea.getValidators().add(validator);
+    }
 
     private void addBoundsValidation(JFXTextField textField, int minTextLength, int maxTextLength) {
         StringBoundsValidator validator = new StringBoundsValidator(minTextLength, maxTextLength);
@@ -169,6 +197,12 @@ public class Validator {
         textField.getValidators().add(validator);
     }
 
+    private void addPredicateValidation(JFXPasswordField textField, String errorMessage, Predicate<String> predicate) {
+        PredicateValidator validator = new PredicateValidator(errorMessage, predicate);
+
+        textField.getValidators().add(validator);
+    }
+
     private void addRegexValidation(JFXTextField textField, String regex, String errorMsg) {
         RegexValidator regexValidator = new RegexValidator(errorMsg);
         regexValidator.setRegexPattern(regex);
@@ -195,6 +229,15 @@ public class Validator {
         });
     }
 
+    private void setValidateOnEventForTextArea(JFXTextArea textArea) {
+        setErrorIcon(textArea);
+        textArea.focusedProperty().addListener((o, oldVal, newVal) -> {
+            if (newVal != null && !newVal) {
+                textArea.validate();
+            }
+        });
+    }
+
     private void setValidateOnEvent(JFXTextField textField) {
         setErrorIcon(textField);
         textField.focusedProperty().addListener((o, oldVal, newVal) -> {
@@ -216,6 +259,11 @@ public class Validator {
     // fas-exclamation, fas-exclamation-circle, fas-exclamation-triangle, fas-info-circle
     // fas-khanda, fas-lightbulb, fas-minus-circle, fas-question-circle,
     // fas-skull, mdi2s-skull-outline, mdi2s-skull-scan-outline, mdi2s-skull, mdi2s-skull-crossbones-outline
+    private void setErrorIcon(JFXTextArea textArea) {
+        FontIcon errorIcon = new FontIcon("fas-skull");
+        textArea.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));
+    }
+
     private void setErrorIcon(JFXTextField textField) {
         FontIcon errorIcon = new FontIcon("fas-skull");
         textField.getValidators().forEach(validatorBase -> validatorBase.setIcon(errorIcon));

@@ -31,11 +31,10 @@ public class ServerMainController {
     @FXML
     private JFXButton btn_quit;
 
-    boolean isServerRunning;
-
 
     @FXML
     void onClickQuit(ActionEvent event) {
+        Server.getInstance().stopServer();
         Platform.exit();
     }
 
@@ -46,29 +45,28 @@ public class ServerMainController {
 
     @FXML
     void onClickToggleService(ActionEvent event) {
-        isServerRunning = !isServerRunning;
-        setServerState(isServerRunning);
+        toggleServerState();
     }
 
     @FXML
     void onClickViewStatus(ActionEvent event) {
-
+        StageCoordinator.getInstance().switchToServerStats();
     }
 
-    private void setServerState(boolean state) {
+    private void toggleServerState() {
         Server server = Server.getInstance();
+        var state = server.toggleServerRunning();
+
         if (state) {
             lbl_serverStatusText.setText("Online");
             lbl_serverStatusColor.getStyleClass().clear();
             lbl_serverStatusColor.getStyleClass().add("online-label");
             btn_toggleService.setText("Stop Service");
-            server.startServer();
         } else {
             lbl_serverStatusText.setText("Offline");
             lbl_serverStatusColor.getStyleClass().clear();
             lbl_serverStatusColor.getStyleClass().add("offline-label");
             btn_toggleService.setText("Start Service");
-            server.stopServer();
         }
     }
 

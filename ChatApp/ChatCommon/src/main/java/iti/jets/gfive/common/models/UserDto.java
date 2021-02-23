@@ -85,8 +85,8 @@ public class UserDto implements Serializable {
         s.defaultWriteObject();
         //image = new Image(UserDto.class.getResource("/iti/jets/gfive/images/sponge.png").toString());
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
-        if (image == null) System.out.println("fimageeeeeeee");
-        if (image != null) System.out.println("gimageeeeeeee");
+        //if (image == null) System.out.println("fimageeeeeeee");
+        //if (image != null) System.out.println("gimageeeeeeee");
 //        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); //72kb
 
     }

@@ -1,27 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
-   <left>
-      <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
-   </left>
+<BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
    <center>
       <VBox prefHeight="54.0" prefWidth="180.0" BorderPane.alignment="CENTER">
          <children>
             <HBox>
                <children>
                   <Label fx:id="contactNameLabel" prefHeight="58.0" prefWidth="186.0" text="test" />
-                  <Label fx:id="newLabelID" style="-fx-background-color: green;" text="new" visible="false" />
+                  <VBox prefHeight="58.0" prefWidth="87.0">
+                     <children>
+                        <JFXButton fx:id="addBtnID" onAction="#onClickAddContatc" prefHeight="25.0" prefWidth="59.0" text=" " visible="false">
+                           <graphic>
+                              <FontAwesomeIconView fill="GREEN" glyphName="PLUS" />
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="deleteBtnID" onAction="#onClickRemoveContact" prefHeight="25.0" prefWidth="59.0" text=" " visible="false">
+                           <graphic>
+                              <FontAwesomeIconView fill="RED" glyphName="MINUS" size="14" wrappingWidth="14.095197677612305" />
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             <Label fx:id="contactNumberLabel" prefHeight="17.0" prefWidth="146.0" text="Label" />
          </children>
       </VBox>
    </center>
-   <right>
-      <Label fx:id="lblStatus" text="Label" BorderPane.alignment="CENTER" />
-   </right>
+   <left>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="66.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" layoutX="55.0" layoutY="-10.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <StackPane fx:id="stackID" layoutX="42.0" layoutY="51.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+               <children>
+                  <Circle fx:id="circleID" fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                  <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/away.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+   </left>
 </BorderPane>

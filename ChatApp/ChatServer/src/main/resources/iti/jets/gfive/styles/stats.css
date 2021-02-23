@@ -1,0 +1,112 @@
+.Bloggy-Gradient-Blues-1-hex {
+    color: #E1E6FA;
+}
+
+.Bloggy-Gradient-Blues-2-hex {
+    color: #C4D7ED;
+}
+
+.Bloggy-Gradient-Blues-3-hex {
+    color: #ABC8E2;
+}
+
+.Bloggy-Gradient-Blues-4-hex {
+    color: #375D81;
+}
+
+.Bloggy-Gradient-Blues-5-hex {
+    color: #183152;
+}
+
+.root {
+    -fx-background-color: #183152;
+}
+
+.right-pane {
+    -fx-background-color: #183152;
+}
+
+.button {
+    -fx-background-color: #375D81;
+    -fx-text-fill: #E1E6FA;
+    -fx-background-radius: 1em;
+}
+
+.label {
+    -fx-text-fill: #E1E6FA;
+}
+
+
+.online-label {
+    -fx-text-fill: green;
+    -fx-background-color: green;
+    -fx-min-width: 50px;
+}
+
+.offline-label {
+    -fx-text-fill: red;
+    -fx-background-color: red;
+    -fx-min-width: 50px;
+}
+
+
+.jfx-radio-button {
+    -fx-text-fill: #375D81;
+    -jfx-selected-color: #c4d7ed;
+    -jfx-unselected-color: #375D81;
+}
+
+.loginHbox {
+    -fx-background-color: #183152;
+}
+
+.jfx-password-field,
+.jfx-text-field {
+    -fx-background-color: transparent;
+    -jfx-unfocus-color: #375D81;
+    -jfx-focus-color: #c4d7ed;
+    -fx-text-fill: #E1E6FA;
+    -fx-prompt-text-fill: #375D81;
+}
+
+.jfx-password-field:error,
+.jfx-text-field:error {
+    -jfx-focus-color: #FF4500;
+    -jfx-unfocus-color: #FF4500;
+    -fx-prompt-text-fill: #D34336;
+}
+
+.jfx-password-field .error-label,
+.jfx-text-field .error-label {
+    -fx-text-fill: #FF4500;
+    -fx-padding: -2 0 0 0;
+}
+
+.header {
+    -fx-text-fill: #E1E6FA;
+    -fx-background-color: #375D81;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: #E1E6FA;
+    -fx-fill: #E1E6FA;
+}
+
+.chart-pie-label {
+    -fx-fill: #E1E6FA;
+    -fx-font-size: 1em;
+}
+
+.chart-legend {
+    -fx-background-color: #183152;
+    -fx-stroke: darkred;
+    -fx-padding: 0, 55; /* fk this, I give up */
+    /*-fx-padding: 6px 80px 6px 6px;*/
+    /*-fx-background-insets: 0, 0, 0, 55;*/
+    /*-fx-background-radius: 6, 5;*/
+    /*-fx-padding: auto auto auto auto;*/
+}
+
+.chart {
+    -fx-background-color: #375D81;
+}
