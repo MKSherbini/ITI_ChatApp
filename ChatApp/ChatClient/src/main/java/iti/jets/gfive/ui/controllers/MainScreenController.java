@@ -78,6 +78,8 @@ public class MainScreenController implements Initializable {
     @FXML
     public ImageView ibtnAddContct;
     @FXML
+    public Label bostshapeID;
+    @FXML
     public Button addGroupBtn;
     public ToggleSwitch botSwitchBtnId;
     @FXML
@@ -412,6 +414,12 @@ public class MainScreenController implements Initializable {
             receivernumberID.setText(receiverNumber.getText());
             if (receivernumberID.getText().charAt(0) != '0') {
                 receivernumberID.setVisible(false);
+                bostshapeID.setVisible(false);
+            }
+            else
+            {
+                bostshapeID.setVisible(true);
+                receivernumberID.setVisible(true);
             }
 
             ReceiverImgID.setImage(receiverimage.getImage());
@@ -736,6 +744,7 @@ public class MainScreenController implements Initializable {
                 a.setHeaderText("Error: File is too big");
                 a.show();
                 return;
+
             }
             String filePath = selectedFile.getPath();
             File fileToSend = new File(filePath);
@@ -862,9 +871,20 @@ public class MainScreenController implements Initializable {
     void onClickAddGroup(ActionEvent event) {
         if (groupnameID.getText().equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("please enter a group name first ");
+            alert.setTitle("Empty group name");
+            alert.setHeaderText("Error: Group name is empty!");
+            alert.setContentText("Please enter a group name first!");
             alert.show();
-        } else {
+        } else if (groupnameID.getText().length()>15)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Group name length");
+            alert.setHeaderText("Error: Group name is too long ");
+            alert.setContentText("Group name must be less than or equals 15 characters");
+            alert.show();
+        }
+
+        else {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -888,29 +908,37 @@ public class MainScreenController implements Initializable {
                         ModelsFactory modelsFactory = ModelsFactory.getInstance();
                         CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
                         contactController.groupChatMembers.add(currentUserModel.getPhoneNumber());
-                        Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
-                        var groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
-                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
-                        for (int i = 0; i < contactController.groupChatMembers.size(); i++) {
-                            if (contactController.groupChatMembers.get(i).equals(currentUserModel.getPhoneNumber())) {
-                                contactController.groupChatMembers.remove(i);
+                        if (contactController.groupChatMembers.size() == 1) {
+                            contactController.groupChatMembers.clear();
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Empty group");
+                            alert.setHeaderText("Error: No members in the Group !");
+                            alert.setContentText("Please enter members first!");
+                            alert.show();
+                        } else {
+                            Image groupchat = new Image(MainScreenController.class.getResource("/iti/jets/gfive/images/groupchat.png").toString());
+                            var groupid = groupChatInter.insert(groupnameID.getText(), contactController.groupChatMembers);
+                            ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+                            for (int i = 0; i < contactController.groupChatMembers.size(); i++) {
+                                if (contactController.groupChatMembers.get(i).equals(currentUserModel.getPhoneNumber())) {
+                                    contactController.groupChatMembers.remove(i);
+                                }
                             }
+                            clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers, String.valueOf(groupid));
+                            imageView.setImage(groupchat);
+                            System.out.println("------>groupis " + groupid);
+
+                            label1.setText(String.valueOf(groupid));
+                            label1.setVisible(false);
+                            System.out.println(label1.getText());
+                            contactsListViewId.getItems().add(borderPane);
+
+                            contactController.groupChatMembers.clear();
+
                         }
-                        clientConnectionInter.createGroupInAllMemebers(groupnameID.getText(), contactController.groupChatMembers, String.valueOf(groupid));
-                        imageView.setImage(groupchat);
-                        System.out.println("------>groupis " + groupid);
-
-                        label1.setText(String.valueOf(groupid));
-                        label1.setVisible(false);
-                        System.out.println(label1.getText());
-                        contactsListViewId.getItems().add(borderPane);
-
-                        contactController.groupChatMembers.clear();
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        } catch(IOException e){
+                            e.printStackTrace();
+                        }
 //                    try {
 //                        //call server to update the ui of other members
 //                        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
@@ -922,21 +950,22 @@ public class MainScreenController implements Initializable {
 //                        e.printStackTrace();
 //                    }
 
-                    ObservableList<BorderPane> list = contactsListViewId.getItems();
-                    for (BorderPane item : list) {
+                        ObservableList<BorderPane> list = contactsListViewId.getItems();
+                        for (BorderPane item : list) {
 
-                        System.out.println("222222->");
-                        VBox vBox = (VBox) item.getCenter();
-                        HBox hbox = (HBox) vBox.getChildren().get(0);
-                        VBox vBox1 = (VBox) hbox.getChildren().get(1);
-                        Button addbtn = (Button) vBox1.getChildren().get(0);
-                        Button deletebtn = (Button) vBox1.getChildren().get(1);
-                        addbtn.setVisible(false);
-                        deletebtn.setVisible(false);
-                        groupnameID.setText("");
-                        groupnameID.setVisible(false);
-                        addGroupBtn.setVisible(false);
-                    }
+                            System.out.println("222222->");
+                            VBox vBox = (VBox) item.getCenter();
+                            HBox hbox = (HBox) vBox.getChildren().get(0);
+                            VBox vBox1 = (VBox) hbox.getChildren().get(1);
+                            Button addbtn = (Button) vBox1.getChildren().get(0);
+                            Button deletebtn = (Button) vBox1.getChildren().get(1);
+                            addbtn.setVisible(false);
+                            deletebtn.setVisible(false);
+                            groupnameID.setText("");
+                            groupnameID.setVisible(false);
+                            addGroupBtn.setVisible(false);
+                        }
+
 
                 }
             });
