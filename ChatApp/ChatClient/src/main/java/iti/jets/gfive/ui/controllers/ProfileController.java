@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
@@ -124,6 +125,13 @@ public class ProfileController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        final Rectangle clip = new Rectangle(ProfileImageID.getFitWidth(), ProfileImageID.getFitHeight());
+        clip.setArcWidth(180);
+        clip.setArcHeight(180);
+        ProfileImageID.setSmooth(true);
+//        ProfileImageID.setPreserveRatio(true);
+        ProfileImageID.setClip(clip);
+//        ProfileImageID.
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {

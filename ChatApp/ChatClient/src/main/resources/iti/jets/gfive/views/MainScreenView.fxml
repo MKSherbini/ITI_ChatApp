@@ -1,32 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Rectangle2D?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.RadialGradient?>
-<?import javafx.scene.paint.Stop?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import org.controlsfx.control.ToggleSwitch?>
+<?import com.jfoenix.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
 
-<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="586.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
    <children>
       <AnchorPane layoutX="18.0" layoutY="14.0" prefHeight="586.0" prefWidth="76.0" style="-fx-background-color: #183152;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -71,9 +56,9 @@
                </graphic></Button>
             <AnchorPane layoutX="400.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="45.0" AnchorPane.rightAnchor="70.8" AnchorPane.topAnchor="17.0">
                <children>
-                  <Button fx:id="ProfileBtnID" contentDisplay="CENTER" layoutY="8.0" mnemonicParsing="false" onAction="#onClickProfile" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #183152;" textAlignment="JUSTIFY" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Button fx:id="ProfileBtnID" contentDisplay="CENTER" layoutY="8.0" mnemonicParsing="false" onAction="#onClickProfile" prefHeight="35.0" prefWidth="45.0" style="-fx-background-color: #183152;" textAlignment="JUSTIFY" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView fx:id="profilepictureID" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="profilepictureID" fitHeight="35.0" fitWidth="35.0" nodeOrientation="INHERIT" pickOnBounds="true">
                            <image>
                               <Image url="@../icons/profile_icon.png" />
                            </image>
@@ -83,10 +68,10 @@
                         <Font size="1.0" />
                      </font>
                   </Button>
-                  <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.rightAnchor="2.0">
+                  <StackPane layoutX="57.0" layoutY="-13.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Circle fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
-                        <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <Circle fill="WHITE" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="ivStatus" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/away.png" />
                            </image>
@@ -104,7 +89,7 @@
          <children>
             <Button fx:id="button" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#OpenNotificationDialog" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #183152;" wrapText="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <graphic>
-                  <ImageView fx:id="btnNotification" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="btnNotification" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="false">
                      <image>
                         <Image url="@../icons/bell.png" />
                      </image>
@@ -136,12 +121,17 @@
                      <children>
                         <HBox fx:id="hboxChatBarId" alignment="TOP_RIGHT" prefHeight="32.0" prefWidth="600.0" spacing="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ImageView fx:id="ReceiverImgID" fitHeight="67.0" fitWidth="117.0" pickOnBounds="true" preserveRatio="true">
-                              </ImageView>
+                              <ImageView fx:id="ReceiverImgID" fitHeight="75" fitWidth="75" pickOnBounds="true">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="16.0" right="5.0" top="5.0" />
+                                 </HBox.margin></ImageView>
                               <Region prefHeight="58.0" prefWidth="31.0" />
-                              <VBox prefHeight="59.0" prefWidth="215.0">
+                              <VBox prefHeight="59.0" prefWidth="257.0">
                                  <children>
-                                    <Label fx:id="receivernameID" prefHeight="39.0" prefWidth="372.0" text="Label" />
+                                    <Label fx:id="receivernameID" prefHeight="39.0" prefWidth="372.0" text="Label">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font></Label>
                                     <Label fx:id="receivernumberID" prefHeight="15.0" prefWidth="386.0" text="Label" />
                                  </children>
                               </VBox>

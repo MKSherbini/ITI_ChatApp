@@ -178,6 +178,50 @@ public class StageCoordinator {
             reset();
         }
     }
+    public void close(){
+        if (registered) {
+           logout();
+       }
+        try {
+            // make sure this dies
+            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+        } catch (NoSuchObjectException noSuchObjectException) {
+            noSuchObjectException.printStackTrace();
+        }
+
+
+    }
+    public void logout(){
+        try {
+            ClientConnectionService.getClientConnService().unregister(NotificationMsgHandler.getInstance());
+            registered= false;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+    public void exit(){
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), ModelsFactory.getInstance().getCurrentUserModel().getUsername(), ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+            user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
+            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            // calmly squashing the no server error
+            // todo until another method emerges I'm doing it this way...
+            try {
+                // make sure this dies
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (NoSuchObjectException noSuchObjectException) {
+                noSuchObjectException.printStackTrace();
+            }
+
+            reset();
+        }
+    }
 
 
     public void registerUser(UserDto userDto) {

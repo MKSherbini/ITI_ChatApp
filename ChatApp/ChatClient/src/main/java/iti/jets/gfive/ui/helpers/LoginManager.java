@@ -126,7 +126,7 @@ public class LoginManager {
     // save user data
     // remove the password from the current user model to force the user to login again once he logged out
     public void Logout() {
-        StageCoordinator.getInstance().unregisterCurrentUser(false);
+        StageCoordinator.getInstance().logout();
         ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
@@ -135,7 +135,7 @@ public class LoginManager {
     // unregister the user from the server and
     // saves his phone and password to used in the next login to the application .
     public void Exit() {
-        StageCoordinator.getInstance().unregisterCurrentUser(true);
+        StageCoordinator.getInstance().exit();
         saveCredentials(ACTION_EXIT);
     }
 

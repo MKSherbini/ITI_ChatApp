@@ -3,6 +3,7 @@ package iti.jets.gfive;
 import iti.jets.gfive.AIML.BotsManager;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.LoginManager;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -48,7 +49,10 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae -> {
-            StageCoordinator.getInstance().unregisterCurrentUser(true);
+            if(ModelsFactory.getInstance().getCurrentUserModel().getUsername()!=null){
+                StageCoordinator.getInstance().close();
+            }
+
             Platform.exit();
         });
 //        var m = Marshaltor.getInstance();
