@@ -1,5 +1,6 @@
 package iti.jets.gfive.services;
 
+import iti.jets.gfive.common.IPConn;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 
 import java.rmi.RemoteException;
@@ -9,12 +10,14 @@ import java.rmi.registry.Registry;
 public class RegisteryObj {
     private static Registry registryObj = null;
 
-    private RegisteryObj(){}
+    private RegisteryObj() {
+    }
 
-    public static Registry getInstance(){
-        if(registryObj == null){
+    public static Registry getInstance() {
+        if (registryObj == null) {
             try {
-                registryObj = LocateRegistry.getRegistry(8000);
+                System.setProperty("java.rmi.server.hostname", IPConn.IP);
+                registryObj = LocateRegistry.getRegistry(IPConn.IP, 8000);
                 return registryObj;
             } catch (RemoteException e) {
                 e.printStackTrace();

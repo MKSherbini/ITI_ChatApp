@@ -162,7 +162,7 @@ public class LoginManager {
     // This method to read the saved password and phone number to perform implicit login
     private void readCredentials() {
         Properties prop = null;
-        try (InputStream input = new FileInputStream("src/main/resources/config.properties")) {
+        try (InputStream input = LoginManager.class.getResourceAsStream("/config.properties")) {
             prop = new Properties();
             // load a properties file
             prop.load(input);

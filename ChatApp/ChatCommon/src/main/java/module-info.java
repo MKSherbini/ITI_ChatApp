@@ -24,4 +24,5 @@ module ChatCommon {
 
     exports iti.jets.gfive.common.interfaces;
     exports iti.jets.gfive.common.models;
+    exports iti.jets.gfive.common;
 }

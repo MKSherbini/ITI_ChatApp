@@ -13,10 +13,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInter {
+public class MessageDBImpl extends UnicastRemoteObject implements MessageDBInter {
     DataSource ds;
-    public MessageDBImpl() throws RemoteException
-    {
+
+    public MessageDBImpl() throws RemoteException {
     }
 
     @Override
@@ -50,18 +50,19 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
                 messageDto.setMessageName(resultSet.getString("message_name"));
                 messageList.add(messageDto);
             }
-            System.out.println("Number of list "+messageList.size());
+            System.out.println("Number of list " + messageList.size());
         } catch (SQLException | NullPointerException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && stmt != null && resultSet != null) {
-                try {
+            try {
+                if (stmt != null)
                     stmt.close();
+                if (con != null)
                     con.close();
+                if (resultSet != null)
                     resultSet.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return messageList;
@@ -86,36 +87,38 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             preparedStatement.setString(2, messageDto.getSenderNumber());
             preparedStatement.setString(3, messageDto.getReceiverNumber());
             preparedStatement.setString(4, messageDto.getState());
-            if(messageDto.getContent() == null){
+            if (messageDto.getContent() == null) {
                 preparedStatement.setBytes(5, messageDto.getFileContent());
-            } else{
+            } else {
                 preparedStatement.setString(5, messageDto.getContent());
             }
             preparedStatement.setDate(6, messageDto.getMessageDate());
             rowsAffected = preparedStatement.executeUpdate();
-            if(rowsAffected == 0)
+            if (rowsAffected == 0)
                 return messageId;
             rs = preparedStatement.getGeneratedKeys();
-            if(rs.next()){
+            if (rs.next()) {
                 messageId = rs.getInt(1);
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+                if (rs != null)
+                    rs.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return messageId;
     }
 
     @Override
-    public int updateMessageState(String receiverNumber, String senderNumber) throws RemoteException{
+    public int updateMessageState(String receiverNumber, String senderNumber) throws RemoteException {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -131,25 +134,25 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return rowsAffected;
     }
 
     @Override
-    public byte[] getFile(int recordId){
+    public byte[] getFile(int recordId) {
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs;
-        byte [] fileData = null;
+        byte[] fileData = null;
         try {
             con = ds.getConnection();
             String query = "select content from message \n" +
@@ -157,8 +160,8 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
             preparedStatement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, recordId);
             rs = preparedStatement.executeQuery();
-            try{
-                while(rs.next()){
+            try {
+                while (rs.next()) {
                     fileData = rs.getBytes("content");
                 }
             } catch (SQLException throwables) {
@@ -167,12 +170,13 @@ public class MessageDBImpl extends UnicastRemoteObject implements  MessageDBInte
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if(con != null && preparedStatement != null){
-                try {
-                    preparedStatement.close(); con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            try {
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (con != null)
+                    con.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return fileData;

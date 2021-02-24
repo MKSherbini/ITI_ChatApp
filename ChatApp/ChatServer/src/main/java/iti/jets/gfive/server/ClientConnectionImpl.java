@@ -22,14 +22,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
     public static Set<ConnectedClient> clientsPool = ConcurrentHashMap.newKeySet();
     public static Set<String> GroupChatMember = ConcurrentHashMap.newKeySet();
+    public static Thread pingerThread;
+    volatile public static boolean shouldDie;
 
     public ClientConnectionImpl() throws RemoteException {
-        var pinger = new Thread(() -> {
-            while (true) {
+        pingerThread = new Thread(() -> {
+            while (!ClientConnectionImpl.shouldDie) {
+//                System.out.println(ClientConnectionImpl.shouldDie);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                    return;
                 }
                 ClientConnectionImpl.clientsPool.forEach(connectedClient -> {
                     try {
@@ -55,9 +60,10 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     }
                 });
             }
+            Thread.currentThread().interrupt();
         });
-        pinger.setDaemon(true);
-        pinger.start();
+        pingerThread.setDaemon(true);
+        pingerThread.start();
     }
 
     @Override
