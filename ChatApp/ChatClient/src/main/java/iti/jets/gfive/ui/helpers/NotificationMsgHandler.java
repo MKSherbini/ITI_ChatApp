@@ -168,6 +168,8 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                             label.setStyle("-fx-background-color: green;");
                             label.setVisible(true);
 
+
+
                             break;
                         }
 

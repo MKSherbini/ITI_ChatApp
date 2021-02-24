@@ -55,76 +55,86 @@ public class LoginController implements Initializable {
 
     @FXML
     void onClickLoginSubmit(ActionEvent event) {
-        // validate field
-
-        UserDto userDto = new UserDto();
         boolean allFieldsValid = validateFields();
         if (!allFieldsValid) return;
+        // validate field
 
-        //validate login with DB
-        //todo get and set the picture
-        try {
-            UserDBCrudInter userServices = UserDBCrudService.getUserService();
-            System.out.println("befor");
-//            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
-            userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
-            if (userDto == null) {
-                return;
-            }
-            //System.out.println("name  "+userDto.getUsername());
-            //System.out.println("imag  "+userDto.getImage());
-            userDto.setPhoneNumber(txt_loginPhone.getText());
 
-            //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
-//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
-            //after validation register this client to the server
-            StageCoordinator.getInstance().registerUser(userDto);
-
-            // todo call the thread that gets the contacts list and display in the listView
-            // same thread or method to be called after adding a new contact aka --> a friend request accept
-            ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
-            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
-            ArrayList<UserDto> contacts = null;
+        UserDto userDto = new UserDto();
+            //validate login with DB
+            //todo get and set the picture
             try {
-                contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
+                UserDBCrudInter userServices = UserDBCrudService.getUserService();
+                System.out.println("befor");
+//            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+                userDto = userServices.selectFromDB(txt_loginPhone.getText(), txt_loginPass.getText());
+                if (userDto == null) {
+                    return;
+                }
+                //System.out.println("name  "+userDto.getUsername());
+                //System.out.println("imag  "+userDto.getImage());
+                userDto.setPhoneNumber(txt_loginPhone.getText());
+
+                //todo when login feature is merged then the hardcoded values will be replaced with the returned userDto obj
+//        UserDto user = new UserDto("01234555555", "Mm1@"); //mahameho user
+                //after validation register this client to the server
+                StageCoordinator.getInstance().registerUser(userDto);
+
+                // todo call the thread that gets the contacts list and display in the listView
+                // same thread or method to be called after adding a new contact aka --> a friend request accept
+                ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
+                GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                ArrayList<UserDto> contacts = null;
+                try {
+                    contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
 //                for (UserDto contact : contacts) {
 //                    System.out.println(contact);
 //                }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    StageCoordinator.getInstance().reset();
+                    return;
+                }
+                ContactsListView c = ContactsListView.getInstance();
+
+                ModelsFactory modelsFactory = ModelsFactory.getInstance();
+                CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+                currentUserModel.setPhoneNumber(txt_loginPhone.getText());
+                currentUserModel.setUsername(userDto.getUsername());
+                currentUserModel.setStatus(userDto.getStatus());
+
+                //in case the user did not enter the date in registeration
+                Date date = userDto.getBirthDate();
+                if (date != null) {
+                    currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+                }
+                currentUserModel.setCountry(userDto.getCountry());
+                currentUserModel.setGender(userDto.getGender());
+                currentUserModel.setEmail(userDto.getEmail());
+                currentUserModel.setPassword(txt_loginPass.getText());
+                currentUserModel.setBio(userDto.getBio());
+                currentUserModel.setImage(userDto.getImage());
+                ClientConnectionService.getClientConnService().puplishStatus(userDto);
+                List<GroupDto> groups = groupChatInter.selectAllGroups(currentUserModel.getPhoneNumber());
+                final  ArrayList<UserDto> contacts2 = contacts;
+                final UserDto userDto1 = userDto;
+                Thread thread = new Thread(() -> {
+
+                c.fillContacts(contacts2);// Sherbini: todo this was null for me, should be handled
+                getNotifications(userDto1);
+                c.fillGroups(groups);
+                });thread.start();
+
+
             } catch (RemoteException e) {
                 e.printStackTrace();
                 StageCoordinator.getInstance().reset();
                 return;
             }
-            ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts);// Sherbini: todo this was null for me, should be handled
-            getNotifications(userDto);
-            ModelsFactory modelsFactory = ModelsFactory.getInstance();
-            CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-            currentUserModel.setPhoneNumber(txt_loginPhone.getText());
-            currentUserModel.setUsername(userDto.getUsername());
-            currentUserModel.setStatus(userDto.getStatus());
-
-            //in case the user did not enter the date in registeration
-            Date date = userDto.getBirthDate();
-            if (date != null) {
-                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
-            }
-            currentUserModel.setCountry(userDto.getCountry());
-            currentUserModel.setGender(userDto.getGender());
-            currentUserModel.setEmail(userDto.getEmail());
-            currentUserModel.setPassword(txt_loginPass.getText());
-            currentUserModel.setBio(userDto.getBio());
-            currentUserModel.setImage(userDto.getImage());
-            ClientConnectionService.getClientConnService().puplishStatus(userDto);
-           List<GroupDto> groups = groupChatInter.selectAllGroups(currentUserModel.getPhoneNumber());
-            c.fillGroups(groups);
 
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            StageCoordinator.getInstance().reset();
-            return;
-        }
+
+
 
 
 
