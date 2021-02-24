@@ -972,9 +972,4 @@ public class MainScreenController implements Initializable {
         }
 
     }
-
-    public void changeContactStatus(UserDto user) {
-//        ContactsListView.getInstance().changeContactStatus(user);
-        System.out.println(user.getUsername() + " ------->" + user.getStatus());
-    }
 }
