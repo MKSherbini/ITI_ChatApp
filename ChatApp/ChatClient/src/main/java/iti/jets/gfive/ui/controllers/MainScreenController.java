@@ -372,7 +372,7 @@ public class MainScreenController implements Initializable {
 
                         //todo still won't work with the method only by making the attribute public!
                         for (GroupMessagesDto groupMessagesDto1 : groupMessagesDto) {
-                            if(!groupMessagesDto1.getMessage_name().equals("text")){
+                            if (!groupMessagesDto1.getMessage_name().equals("text")) {
                                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
                                 AnchorPane anchorPane = fxmlLoader.load();
                                 FileMessageController controller = fxmlLoader.getController();
@@ -602,29 +602,56 @@ public class MainScreenController implements Initializable {
     public void onClickSaveChat(ActionEvent actionEvent) {
         if (receiverNumber.getText().length() == 0) return;
         CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
-        MessageDBInter messageServices = MessageDBService.getMessageService();
-        List<MessageDto> messageList = null;
-        try {
-            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if (messageList == null) return;
+        ChatModel chatModel = new ChatModel();
+        if (receivernumberID.getText().charAt(0) == '0') {
+            MessageDBInter messageServices = MessageDBService.getMessageService();
+            List<MessageDto> messageList = null;
+            try {
+                messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (messageList == null) return;
 
 //        Map<String, String> map = new HashMap<>();
 //        map.put(receiverNumber.getText(), receivernameID.getText());
 //        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
 
-        ChatModel chatModel = new ChatModel();
-        chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
-        chatModel.setChatOwner(currentUserModel.getUsername());
-        messageList.forEach(messageDto -> {
-            if (messageDto.getMessageName().equals("text")) {
-                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
-            }
-            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
-        });
 
+            chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+            chatModel.setChatOwner(currentUserModel.getUsername());
+            messageList.forEach(messageDto -> {
+                if (messageDto.getMessageName().equals("text")) {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getContent()));
+                } else {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getMessageName()));
+                }
+            });
+        } else {
+            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+            List<GroupMessagesDto> messageList = null;
+            try {
+                messageList = groupChatInter.selectAllMessages(receivernumberID.getText());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (messageList == null) return;
+
+//        Map<String, String> map = new HashMap<>();
+//        map.put(receiverNumber.getText(), receivernameID.getText());
+//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
+
+
+            chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+            chatModel.setChatOwner(currentUserModel.getUsername());
+            messageList.forEach(messageDto -> {
+                if (messageDto.getMessage_name().equals("text")) {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSendernumber(), messageDto.getMessage()));
+                } else {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSendernumber(), messageDto.getMessage_name()));
+                }
+            });
+        }
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
     }
@@ -652,16 +679,14 @@ public class MainScreenController implements Initializable {
                 int fileLength = (int) fileToSend.length();
                 byte[] fileData = new byte[fileLength];
                 int c = fis.read(fileData);
-                if(receivernumberID.getText().charAt(0) != '0'){
+                if (receivernumberID.getText().charAt(0) != '0') {
                     GroupMessagesDto fileGroupMessageDto = new GroupMessagesDto(receivernumberID.getText(), fileData, currentUserModel.getPhoneNumber(), fileToSend.getName());
                     GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
                     int fileRecordId = groupChatInter.saveAllMessages(fileGroupMessageDto);
                     fileGroupMessageDto.setId(String.valueOf(fileRecordId));
                     List<String> groupMembers = groupChatInter.selectAllMemebers(receivernumberID.getText());
-                    for(int i = 0 ; i <groupMembers.size();i++)
-                    {
-                        if(groupMembers.get(i).equals(currentUserModel.getPhoneNumber()))
-                        {
+                    for (int i = 0; i < groupMembers.size(); i++) {
+                        if (groupMembers.get(i).equals(currentUserModel.getPhoneNumber())) {
                             groupMembers.remove(i);
                         }
                     }
@@ -685,7 +710,7 @@ public class MainScreenController implements Initializable {
                             }
                         }
                     });
-                } else{
+                } else {
                     Date date = Date.valueOf(LocalDate.now());
                     MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
                             receiverNumber.getText(), "unseen", fileData, date);

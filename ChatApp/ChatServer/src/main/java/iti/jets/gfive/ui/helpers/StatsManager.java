@@ -1,5 +1,6 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.classes.ConnectedClient;
 import iti.jets.gfive.server.ClientConnectionImpl;
 import iti.jets.gfive.ui.helpers.db.DBStats;
 
@@ -59,7 +60,7 @@ public class StatsManager {
 
         var connectedPropMap = model.getConnectionPropertiesMap();
         int all = db.selectUsersCount();
-        int online = ClientConnectionImpl.clientsPool.size();
+        int online = (int) ClientConnectionImpl.clientsPool.stream().map(c -> c.getClient().getPhoneNumber()).distinct().count();
         System.out.println(connectedPropMap.entrySet());
         connectedPropMap.get("Online").set(online);
         connectedPropMap.get("Offline").set(all - online);

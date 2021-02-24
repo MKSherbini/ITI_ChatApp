@@ -5,6 +5,7 @@ import iti.jets.gfive.common.interfaces.MessageDBInter;
 import iti.jets.gfive.services.GroupChatService;
 import iti.jets.gfive.services.MessageDBService;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
+import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -56,10 +57,9 @@ public class FileMessageController {
                     }
                     fileOutputStream.write(retrievedFile);
                     fileOutputStream.close();
-                } catch (RemoteException | FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    StageCoordinator.getInstance().reset();
                 }
             }
         }

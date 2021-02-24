@@ -101,10 +101,10 @@ public class Marshaltor {
     private void prepareMessage(File dirTarget, ChatModel chatModel) {
         Map<String, UserDto> userMap = new HashMap<>();
         chatModel.getMessages().forEach(messageModel -> {
-            var receiver = setupUser(userMap, dirTarget, messageModel.getReceiverPhone());
+//            var receiver = setupUser(userMap, dirTarget, messageModel.getReceiverPhone());
             var sender = setupUser(userMap, dirTarget, messageModel.getSenderPhone());
             messageModel.setImage(sender.getUsername() + ".png");
-            messageModel.setReceiverName(receiver.getUsername());
+//            messageModel.setReceiverName(receiver.getUsername());
             messageModel.setSenderName(sender.getUsername());
         });
     }
