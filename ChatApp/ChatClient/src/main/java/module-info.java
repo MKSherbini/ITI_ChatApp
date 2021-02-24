@@ -3,6 +3,7 @@ module ChatClient {
     requires javafx.controls;
     requires javafx.fxml;
 
+
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
 
@@ -24,10 +25,10 @@ module ChatClient {
     requires jakarta.xml.bind;
     requires org.apache.commons.io;
     requires javafx.swing;
+    requires javafx.web;
 
 
     exports iti.jets.gfive;
-    opens iti.jets.gfive.ui.controllers;
-
+    opens iti.jets.gfive.ui.controllers  to javafx.fxml, javafx.web;
     opens iti.jets.gfive.ui.models.chat to jakarta.xml.bind;
 }

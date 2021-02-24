@@ -21,7 +21,9 @@ import iti.jets.gfive.ui.models.CurrentUserModel;
 import iti.jets.gfive.ui.models.chat.ChatModel;
 import iti.jets.gfive.ui.models.chat.MessageModel;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import iti.jets.gfive.ui.helpers.LoginManager;
@@ -248,6 +250,69 @@ public class MainScreenController implements Initializable {
                 e.printStackTrace();
             }
         });
+
+
+        chatListView.setCellFactory(param -> new ListCell<AnchorPane>() {
+            @Override
+            protected void updateItem(AnchorPane item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                    // other stuff to do...
+
+                } else {
+//                    item.prefWidthProperty().bind(chatListView.widthProperty().divide(1.1));
+//                    item.setMaxWidth(Control.USE_PREF_SIZE);
+                    // set the width's
+                    setMinWidth(chatListView.getWidth());
+                    setPrefWidth(chatListView.getWidth());
+                    setMaxWidth(chatListView.getWidth());
+                    setMaxHeight(chatListView.getHeight());
+                    List<Node> parentChildren = item.getChildren();
+                    DoubleProperty bestFitProperty = new SimpleDoubleProperty(40);
+                    parentChildren.forEach(node -> {
+                        if (node instanceof HBox) {
+                            ((HBox) node).getChildren().forEach(node1 -> {
+                                if (node1 instanceof Label) {
+                                    var label = (Label) node1;
+//                                    System.out.println((label).getPrefHeight());
+//                                    label.getText()
+                                    Text text = new Text(label.getText());
+                                    text.applyCss();
+//                                    label.getCssMetaData()
+//                                    System.out.println(text.getLayoutBounds().getWidth() / getPrefWidth());
+                                    bestFitProperty.set(
+                                            Math.max(bestFitProperty.get(),
+                                                    text.getLayoutBounds().getWidth() * 30 / getPrefWidth()));
+                                }
+                            });
+                        }
+//                            System.out.println("hbox pref " + ((HBox) node).getPrefHeight());
+
+                    });
+                    setPrefHeight(bestFitProperty.get());
+                    setMinHeight(bestFitProperty.get());
+                    System.out.println(" pref " + item.getPrefHeight());
+                    System.out.println(" pref " + item.getPrefWidth());
+
+//                    setPrefHeight(chatListView.getPrefHeight());
+//                    setMinHeight(chatListView.getHeight());
+//                    HBox h = (HBox) item.getChildren().get(0);
+//                    setPrefHeight();
+
+                    // allow wrapping
+                    setWrapText(true);
+
+//                    setText(item.toString());
+
+                    setGraphic(item);
+
+
+                }
+            }
+        });
+//        chatListView.setSc
     }
 
     // this method create new image view object and fit its width and height to 20 px .
@@ -380,7 +445,7 @@ public class MainScreenController implements Initializable {
 
                         //todo still won't work with the method only by making the attribute public!
                         for (GroupMessagesDto groupMessagesDto1 : groupMessagesDto) {
-                            if(!groupMessagesDto1.getMessage_name().equals("text")){
+                            if (!groupMessagesDto1.getMessage_name().equals("text")) {
                                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
                                 AnchorPane anchorPane = fxmlLoader.load();
                                 FileMessageController controller = fxmlLoader.getController();
@@ -610,29 +675,56 @@ public class MainScreenController implements Initializable {
     public void onClickSaveChat(ActionEvent actionEvent) {
         if (receiverNumber.getText().length() == 0) return;
         CurrentUserModel currentUserModel = ModelsFactory.getInstance().getCurrentUserModel();
-        MessageDBInter messageServices = MessageDBService.getMessageService();
-        List<MessageDto> messageList = null;
-        try {
-            messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        if (messageList == null) return;
+        ChatModel chatModel = new ChatModel();
+        if (receivernumberID.getText().charAt(0) == '0') {
+            MessageDBInter messageServices = MessageDBService.getMessageService();
+            List<MessageDto> messageList = null;
+            try {
+                messageList = messageServices.selectAllMessages(receiverNumber.getText(), currentUserModel.getPhoneNumber());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (messageList == null) return;
 
 //        Map<String, String> map = new HashMap<>();
 //        map.put(receiverNumber.getText(), receivernameID.getText());
 //        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
 
-        ChatModel chatModel = new ChatModel();
-        chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
-        chatModel.setChatOwner(currentUserModel.getUsername());
-        messageList.forEach(messageDto -> {
-            if (messageDto.getMessageName().equals("text")) {
-                chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getContent()));
-            }
-            chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getReceiverNumber(), messageDto.getMessageName()));
-        });
 
+            chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+            chatModel.setChatOwner(currentUserModel.getUsername());
+            messageList.forEach(messageDto -> {
+                if (messageDto.getMessageName().equals("text")) {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getContent()));
+                } else {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSenderNumber(), messageDto.getMessageName()));
+                }
+            });
+        } else {
+            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+            List<GroupMessagesDto> messageList = null;
+            try {
+                messageList = groupChatInter.selectAllMessages(receivernumberID.getText());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (messageList == null) return;
+
+//        Map<String, String> map = new HashMap<>();
+//        map.put(receiverNumber.getText(), receivernameID.getText());
+//        map.put(currentUserModel.getPhoneNumber(), currentUserModel.getUsername());
+
+
+            chatModel.setChatName(receivernameID.getText()); // for now it's the other guy
+            chatModel.setChatOwner(currentUserModel.getUsername());
+            messageList.forEach(messageDto -> {
+                if (messageDto.getMessage_name().equals("text")) {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSendernumber(), messageDto.getMessage()));
+                } else {
+                    chatModel.getMessages().add(new MessageModel(messageDto.getSendernumber(), messageDto.getMessage_name()));
+                }
+            });
+        }
         var m = Marshaltor.getInstance();
         m.marshalChat(chatModel);
     }
@@ -661,16 +753,14 @@ public class MainScreenController implements Initializable {
                 int fileLength = (int) fileToSend.length();
                 byte[] fileData = new byte[fileLength];
                 int c = fis.read(fileData);
-                if(receivernumberID.getText().charAt(0) != '0'){
+                if (receivernumberID.getText().charAt(0) != '0') {
                     GroupMessagesDto fileGroupMessageDto = new GroupMessagesDto(receivernumberID.getText(), fileData, currentUserModel.getPhoneNumber(), fileToSend.getName());
                     GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
                     int fileRecordId = groupChatInter.saveAllMessages(fileGroupMessageDto);
                     fileGroupMessageDto.setId(String.valueOf(fileRecordId));
                     List<String> groupMembers = groupChatInter.selectAllMemebers(receivernumberID.getText());
-                    for(int i = 0 ; i <groupMembers.size();i++)
-                    {
-                        if(groupMembers.get(i).equals(currentUserModel.getPhoneNumber()))
-                        {
+                    for (int i = 0; i < groupMembers.size(); i++) {
+                        if (groupMembers.get(i).equals(currentUserModel.getPhoneNumber())) {
                             groupMembers.remove(i);
                         }
                     }
@@ -694,7 +784,7 @@ public class MainScreenController implements Initializable {
                             }
                         }
                     });
-                } else{
+                } else {
                     Date date = Date.valueOf(LocalDate.now());
                     MessageDto fileMessageDto = new MessageDto(-1, fileToSend.getName(), currentUserModel.getPhoneNumber(),
                             receiverNumber.getText(), "unseen", fileData, date);

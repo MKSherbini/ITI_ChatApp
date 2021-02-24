@@ -23,6 +23,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -34,6 +36,9 @@ import javafx.scene.layout.*;
 import java.io.IOException;
 
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -41,20 +46,20 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class NotificationMsgHandler extends UnicastRemoteObject implements NotificationReceiveInter {
-    private static NotificationMsgHandler notificationsLabel = null;
-    private Label notificationLabelId;
+    transient private static NotificationMsgHandler notificationsLabel = null;
+    transient private Label notificationLabelId;
     //private JFXListView<BorderPane> notificationsListId = NotificationsDialogController.getNotificationsListId();
-    private JFXListView<BorderPane> notificationsListId = new JFXListView<>();
-    private ListView<AnchorPane> listView;
-    private Button newButton;
-    private ListView<BorderPane> contactsList;
-    private BorderPane borderPane;
-    private Label name;
-    private Label number;
-    ArrayList<UserDto> contacts;
+    transient private JFXListView<BorderPane> notificationsListId = new JFXListView<>();
+    transient private ListView<AnchorPane> listView;
+    transient private Button newButton;
+    transient private ListView<BorderPane> contactsList;
+    transient private BorderPane borderPane;
+    transient private Label name;
+    transient private Label number;
+    transient ArrayList<UserDto> contacts;
     //private  Label newLabel;
-    Label label = new Label("new");
-    private Label receivernumberID;
+    transient Label label = new Label("new");
+    transient private Label receivernumberID;
 
 
     private NotificationMsgHandler() throws RemoteException {
@@ -284,6 +289,15 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     }
 
     public void receive(NotificationDto notification) throws RemoteException {
+        if (notification.getSenderId().equals("01000000000")) {
+            Platform.runLater(() -> {
+                AnnouncementLoader.getInstance().showDialog(notification.getContent());
+
+            });
+
+            System.out.println(notification.getContent());
+            return;
+        }
         increaseNotificationsNumber();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/NotificationView.fxml"));
         try {
@@ -406,7 +420,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
                 ObservableList<BorderPane> list = contactsList.getItems();
                 System.out.println("inside the condition  ");
                 if (borderPane.isVisible() && number.getText().equals(id)) {
-                    if(file){
+                    if (file) {
                         try {
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/iti/jets/gfive/views/FileMessageView.fxml"));
                             AnchorPane anchorPane = fxmlLoader.load();
@@ -510,6 +524,7 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
     public void setReceivernumberID(Label receivernumberID) {
         this.receivernumberID = receivernumberID;
     }
+
     public String getReceivernumberID() {
         return this.receivernumberID.getText();
     }

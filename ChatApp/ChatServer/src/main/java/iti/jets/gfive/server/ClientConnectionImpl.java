@@ -6,6 +6,7 @@ import iti.jets.gfive.common.interfaces.GroupChatInter;
 import iti.jets.gfive.common.interfaces.NotificationReceiveInter;
 import iti.jets.gfive.common.models.GroupMessagesDto;
 import iti.jets.gfive.common.models.MessageDto;
+import iti.jets.gfive.common.models.NotificationDto;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.ui.helpers.StatsManager;
 
@@ -14,6 +15,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import java.sql.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientConnectionImpl extends UnicastRemoteObject implements ClientConnectionInter {
@@ -34,8 +37,21 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     } catch (RemoteException e) {
                         // gotcha u pos
                         e.printStackTrace();
-                        ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
-                        StatsManager.getInstance().updateConnectionStats();
+                        try {
+                            unregister(connectedClient.getReceiveNotif());
+                        } catch (RemoteException remoteException) {
+                            remoteException.printStackTrace();
+                        }
+//                        try {
+//                            UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
+//                            userDBCrud.updateUserConnection(connectedClient.getClient(), false);
+//                            connectedClient.getClient().setStatus("offline");
+//                            puplishStatus(connectedClient.getClient());
+//                        } catch (RemoteException remoteException) {
+//                            remoteException.printStackTrace();
+//                        }
+//                        ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
+//                        StatsManager.getInstance().updateConnectionStats();
                     }
                 });
             }
@@ -50,6 +66,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         try {
             UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
             userDBCrud.updateUserConnection(user, true);
+            puplishStatus(user);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -60,8 +77,10 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
 
     @Override
     public void unregister(NotificationReceiveInter notif) throws RemoteException {
+        System.out.println("user in server unregister ");
         clientsPool.forEach(connectedClient -> {
             if (connectedClient.getReceiveNotif().equals(notif)) {
+                System.out.println("cuurendnkdjknlkfndclkfdnc");
                 try {
                     UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
                     userDBCrud.updateUserConnection(connectedClient.getClient(), false);
@@ -116,6 +135,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
         });
     }
 
+
     @Override
     public void publishPicture(UserDto user) throws RemoteException {
         System.out.println("INSIDE THE PUBLIC PIC");
@@ -150,6 +170,24 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     }
 
     @Override
+    public void publishAnnouncement(String announce) throws RemoteException {
+        if (clientsPool == null || clientsPool.size() < 1)
+            return;
+        clientsPool.forEach(connectedClient -> {
+
+            try {
+                connectedClient.getReceiveNotif().receive(
+                        new NotificationDto(1000, announce, "01000000000",
+                                new Date(new java.util.Date().getTime()),
+                                false, connectedClient.getClient().getPhoneNumber()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        });
+    }
+
+    @Override
     public void addMemberToGroupChat(String number) throws RemoteException {
         GroupChatMember.add(number);
         System.out.println("size--->" + GroupChatMember.size());
@@ -176,11 +214,11 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         clientsPool.remove(connectedClient); // drop him, he prolly died
+
                         StatsManager.getInstance().updateConnectionStats();
                     }
                 }
             }
-
         });
         GroupChatMember.clear();
 

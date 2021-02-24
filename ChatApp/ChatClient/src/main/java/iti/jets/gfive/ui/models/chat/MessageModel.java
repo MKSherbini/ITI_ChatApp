@@ -26,7 +26,7 @@ public class MessageModel {
         this.messageDate = messageDate;
     }
 
-    public MessageModel(String senderPhone, String receiverPhone, String content) {
+    public MessageModel(String senderPhone, String content) {
         this.senderPhone = senderPhone;
         this.receiverPhone = receiverPhone;
         this.content = content;

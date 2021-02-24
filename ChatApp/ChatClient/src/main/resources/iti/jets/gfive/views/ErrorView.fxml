@@ -21,6 +21,11 @@
             </ImageView>
             <Label layoutX="60.0" layoutY="326.0" styleClass="error-label-color" text="Come back later when you have a reliable connection to the server" textFill="ORANGERED" />
             <JFXButton buttonType="RAISED" layoutX="216.0" layoutY="392.0" onAction="#onClickQuit" text="Quit" />
+            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="300.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="11.0">
+               <image>
+                  <Image url="@../images/icon.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </children>

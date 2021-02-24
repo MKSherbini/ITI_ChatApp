@@ -134,6 +134,7 @@ public class StageCoordinator {
     // todo fix this shit
     // This method unregister the user from the server
     public void unregisterCurrentUser(boolean force) {
+        System.out.println("registered " + registered);
         if (force) {
             try {
                 // make sure this dies
@@ -145,15 +146,19 @@ public class StageCoordinator {
         }
 
         if (!registered) {
+            System.out.println("regesterd if statment");
             return;
         }
+        System.out.println("regesterd after if statment");
         registered = false;
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
+            System.out.println("before unregister");
             UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), ModelsFactory.getInstance().getCurrentUserModel().getUsername(), ModelsFactory.getInstance().getCurrentUserModel().getStatus());
             user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
             clientConnectionInter.puplishStatus(user);
             clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+            System.out.println("user unregistered successfully  ");
             // force will be true only on exit and close
             if (force) {
                 UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
@@ -208,5 +213,29 @@ public class StageCoordinator {
         ContactsListView c = ContactsListView.getInstance();
         c.fillContacts(contacts);
         c.fillGroups(groups);
+    }
+
+    public void die() {
+        ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
+        try {
+            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+        } catch (NoSuchObjectException e) {
+            e.printStackTrace();
+        }
+        UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), ModelsFactory.getInstance().getCurrentUserModel().getUsername(), ModelsFactory.getInstance().getCurrentUserModel().getStatus());
+        user.setImage(ModelsFactory.getInstance().getCurrentUserModel().getImage());
+        try {
+            clientConnectionInter.puplishStatus(user);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        try {
+            clientConnectionInter.unregister(NotificationMsgHandler.getInstance());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+//        StageCoordinator.getInstance().unregisterCurrentUser(true);
+        Platform.exit();
     }
 }
