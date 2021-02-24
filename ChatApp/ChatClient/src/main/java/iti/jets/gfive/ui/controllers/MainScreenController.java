@@ -63,6 +63,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +135,18 @@ public class MainScreenController implements Initializable {
         statusProperty.addListener((opserver, old, newval) -> ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, newval)).toString())));
         ivStatus.setImage(new Image(getClass().getResource(String.format(URL_RESOURCE, ModelsFactory.getInstance().getCurrentUserModel().getStatus())).toString()));
     }
-
+    public void cleanCurrentUserModel(){
+        CurrentUserModel user = ModelsFactory.getInstance().getCurrentUserModel();
+//        user.setStatus("offline");
+        user.setPassword(null);
+//        user.setImage(null);
+//        user.setAnnounce(null);
+        user.setBio(null);
+        user.setCountry(null);
+        user.setEmail(null);
+        user.setGender(null);
+        user.setDate(null);
+    }
     @FXML
     private ImageView ivStatus;
     Property<Image> statusImage;
@@ -151,7 +163,10 @@ public class MainScreenController implements Initializable {
         miLogout = new MenuItem("Logout");
         miLogout.setOnAction((acrionEvent) -> {
             LoginManager.getInstance().Logout();
+            chatAreaBorderPaneID.setVisible(false);
+
             StageCoordinator.getInstance().switchToLoginPage();
+            cleanCurrentUserModel();
         });
         status = new Menu("Status");
         miAvailable = new MenuItem("Available");
@@ -215,7 +230,15 @@ public class MainScreenController implements Initializable {
         final Rectangle clip = new Rectangle(35, 35);
         clip.setArcWidth(180);
         clip.setArcHeight(180);
+        profilepictureID.setSmooth(true);
         profilepictureID.setClip(clip);
+
+        final Rectangle receverClip = new Rectangle(75, 75);
+        receverClip.setArcWidth(180);
+        receverClip.setArcHeight(180);
+        ReceiverImgID.setSmooth(true);
+        ReceiverImgID.setClip(receverClip);
+
 
 
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
@@ -971,10 +994,5 @@ public class MainScreenController implements Initializable {
             });
         }
 
-    }
-
-    public void changeContactStatus(UserDto user) {
-//        ContactsListView.getInstance().changeContactStatus(user);
-        System.out.println(user.getUsername() + " ------->" + user.getStatus());
     }
 }

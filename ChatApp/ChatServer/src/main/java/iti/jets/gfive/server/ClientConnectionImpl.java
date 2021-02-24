@@ -89,7 +89,8 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                 System.out.println("cuurendnkdjknlkfndclkfdnc");
                 try {
                     UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
-                    userDBCrud.updateUserConnection(connectedClient.getClient(), false);
+                    int rows =userDBCrud.updateUserConnection(connectedClient.getClient(), false);
+                    System.out.println("connection status changed:  " +rows );
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

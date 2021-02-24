@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -11,6 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="contactComponent" prefHeight="63.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.ContactController">
    <center>
@@ -18,7 +20,10 @@
          <children>
             <HBox>
                <children>
-                  <Label fx:id="contactNameLabel" prefHeight="58.0" prefWidth="186.0" text="test" />
+                  <Label fx:id="contactNameLabel" prefHeight="58.0" prefWidth="186.0" style="-fx-font-size: 15;" text="test">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
                   <VBox prefHeight="58.0" prefWidth="87.0">
                      <children>
                         <JFXButton fx:id="addBtnID" onAction="#onClickAddContatc" prefHeight="25.0" prefWidth="59.0" text=" " visible="false">
@@ -40,10 +45,10 @@
       </VBox>
    </center>
    <left>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="66.0" BorderPane.alignment="CENTER">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="75.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="66.0" layoutX="55.0" layoutY="-10.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <StackPane fx:id="stackID" layoutX="42.0" layoutY="51.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <ImageView fx:id="contactImg" fitHeight="75.0" fitWidth="75.0" layoutX="55.0" layoutY="-10.0" pickOnBounds="true" style="-fx-background-radius: 20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <StackPane fx:id="stackID" layoutX="42.0" layoutY="51.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <Circle fx:id="circleID" fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                   <ImageView fx:id="ivStatus" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -54,6 +59,9 @@
                </children>
             </StackPane>
          </children>
+         <BorderPane.margin>
+            <Insets right="5.0" />
+         </BorderPane.margin>
       </AnchorPane>
    </left>
 </BorderPane>

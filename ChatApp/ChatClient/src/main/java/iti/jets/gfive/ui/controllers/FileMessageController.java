@@ -42,25 +42,27 @@ public class FileMessageController {
         selectedFile = fileChooser.showSaveDialog(null);
         if (fileChooser != null) {
             if (selectedFile != null) {
-                String filePath = selectedFile.getAbsolutePath();
-                MessageDBInter messageServices = MessageDBService.getMessageService();
-                GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
-                byte[] retrievedFile = null;
-                try {
-                    retrievedFile = recevierNum.charAt(0) == '0' ? messageServices.getFile(Integer.parseInt(recordID.getText())) : groupChatInter.getFileForGroup(Integer.parseInt(recordID.getText()));
-                    if (!filePath.endsWith(extension)) {
-                        filePath = filePath + "." + extension;
+                new Thread(()->{
+                    String filePath = selectedFile.getAbsolutePath();
+                    MessageDBInter messageServices = MessageDBService.getMessageService();
+                    GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+                    byte[] retrievedFile = null;
+                    try {
+                        retrievedFile = recevierNum.charAt(0) == '0' ? messageServices.getFile(Integer.parseInt(recordID.getText())) : groupChatInter.getFileForGroup(Integer.parseInt(recordID.getText()));
+                        if (!filePath.endsWith(extension)) {
+                            filePath = filePath + "." + extension;
+                        }
+                        FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                        if (retrievedFile == null) {
+                            return;
+                        }
+                        fileOutputStream.write(retrievedFile);
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        StageCoordinator.getInstance().reset();
                     }
-                    FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-                    if (retrievedFile == null) {
-                        return;
-                    }
-                    fileOutputStream.write(retrievedFile);
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    StageCoordinator.getInstance().reset();
-                }
+                }).start();
             }
         }
     }

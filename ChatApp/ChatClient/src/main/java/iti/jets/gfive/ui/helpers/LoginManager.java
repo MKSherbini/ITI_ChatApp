@@ -70,52 +70,7 @@ public class LoginManager {
 
     // This method to intitialize the user data once he opened the app if he was exit at the last time
     public void initCurrentUser() {
-
-        try {
-            UserDBCrudInter userServices = UserDBCrudService.getUserService();
-            if (userServices == null) return;
-            //System.out.println("befor");
-            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
-            userDto = userServices.selectFromDB(phone, password);
-            userDto.setPhoneNumber(phone);
-            StageCoordinator.getInstance().registerUser(userDto);
-            ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
-            ArrayList<UserDto> contacts = null;
-            List<GroupDto> groups = null;
-            try {
-                contacts = contactDBCrudInter.getContactsList(userDto.getPhoneNumber());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                StageCoordinator.getInstance().reset();
-                return;
-            }
-            ContactsListView c = ContactsListView.getInstance();
-            c.fillContacts(contacts); // Sherbini: todo this was null for me, should be handled
-            groups = GroupChatService.getGroupChatInter().selectAllGroups(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
-            c.fillGroups(groups);
-            getNotifications(userDto);
-            ModelsFactory modelsFactory = ModelsFactory.getInstance();
-            CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
-            currentUserModel.setPhoneNumber(phone);
-            currentUserModel.setUsername(userDto.getUsername());
-            currentUserModel.setStatus(userDto.getStatus());
-            //in case the user did not enter the date in registeration
-            Date date = userDto.getBirthDate();
-            if (date != null) {
-                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
-            }
-            currentUserModel.setCountry(userDto.getCountry());
-            currentUserModel.setGender(userDto.getGender());
-            currentUserModel.setEmail(userDto.getEmail());
-            currentUserModel.setPassword(password);
-            currentUserModel.setBio(userDto.getBio());
-            currentUserModel.setImage(userDto.getImage());
-            ClientConnectionService.getClientConnService().puplishStatus(userDto);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            StageCoordinator.getInstance().reset();
-        }
-
+        handleLogin(phone, password);
     }
 
 
@@ -127,7 +82,7 @@ public class LoginManager {
     // save user data
     // remove the password from the current user model to force the user to login again once he logged out
     public void Logout() {
-        StageCoordinator.getInstance().unregisterCurrentUser(false);
+        StageCoordinator.getInstance().logout();
         ModelsFactory.getInstance().getCurrentUserModel().setPassword("");
         saveCredentials(ACTION_LOGOUT);
     }
@@ -136,7 +91,7 @@ public class LoginManager {
     // unregister the user from the server and
     // saves his phone and password to used in the next login to the application .
     public void Exit() {
-        StageCoordinator.getInstance().unregisterCurrentUser(true);
+        StageCoordinator.getInstance().exit();
         saveCredentials(ACTION_EXIT);
     }
 
@@ -181,5 +136,66 @@ public class LoginManager {
             ex.printStackTrace();
         }
 
+    }
+
+    public void handleLogin(String userPhoneNumber, String userPassword){
+        UserDto userDto = new UserDto();
+        //validate login with DB
+        try {
+            UserDBCrudInter userServices = UserDBCrudService.getUserService();
+            System.out.println("befor");
+//            Image image = new Image(RegisterController.class.getResource("/iti/jets/gfive/images/personal.jpg").toString());
+            userDto = userServices.selectFromDB(userPhoneNumber, userPassword);
+            if (userDto == null) {
+                return;
+            }
+            userDto.setPhoneNumber(userPhoneNumber);
+            StageCoordinator.getInstance().registerUser(userDto);
+
+            ModelsFactory modelsFactory = ModelsFactory.getInstance();
+            CurrentUserModel currentUserModel = modelsFactory.getCurrentUserModel();
+            currentUserModel.setPhoneNumber(userPhoneNumber);
+            currentUserModel.setUsername(userDto.getUsername());
+            currentUserModel.setStatus(userDto.getStatus());
+            //in case the user did not enter the date in registeration
+            Date date = userDto.getBirthDate();
+            if (date != null) {
+                currentUserModel.setDate(userDto.getBirthDate().toLocalDate());
+            }
+            currentUserModel.setCountry(userDto.getCountry());
+            currentUserModel.setGender(userDto.getGender());
+            currentUserModel.setEmail(userDto.getEmail());
+            currentUserModel.setPassword(userPassword);
+            currentUserModel.setBio(userDto.getBio());
+            currentUserModel.setImage(userDto.getImage());
+
+            ClientConnectionService.getClientConnService().puplishStatus(userDto);
+
+            ContactDBCrudInter contactDBCrudInter = ContactDBCrudService.getContactService();
+            GroupChatInter groupChatInter = GroupChatService.getGroupChatInter();
+            ContactsListView c = ContactsListView.getInstance();
+            final UserDto userDto1 = userDto;
+            Thread thread = new Thread(() -> {
+                ArrayList<UserDto> contacts = null;
+                try {
+                    contacts = contactDBCrudInter.getContactsList(userDto1.getPhoneNumber());
+                    c.fillContacts(contacts);// Sherbini: todo this was null for me, should be handled
+
+                    getNotifications(userDto1);
+
+                    List<GroupDto> groups = groupChatInter.selectAllGroups(currentUserModel.getPhoneNumber());
+                    c.fillGroups(groups);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    StageCoordinator.getInstance().reset();
+                    return;
+                }
+            });
+            thread.start();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            StageCoordinator.getInstance().reset();
+            return;
+        }
     }
 }
