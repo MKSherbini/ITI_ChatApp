@@ -76,6 +76,8 @@ public class MainScreenController implements Initializable {
     @FXML
     public ImageView ibtnAddContct;
     @FXML
+    public Label bostshapeID;
+    @FXML
     public Button addGroupBtn;
     public ToggleSwitch botSwitchBtnId;
     @FXML
@@ -347,6 +349,12 @@ public class MainScreenController implements Initializable {
             receivernumberID.setText(receiverNumber.getText());
             if (receivernumberID.getText().charAt(0) != '0') {
                 receivernumberID.setVisible(false);
+                bostshapeID.setVisible(false);
+            }
+            else
+            {
+                bostshapeID.setVisible(true);
+                receivernumberID.setVisible(true);
             }
 
             ReceiverImgID.setImage(receiverimage.getImage());
@@ -644,6 +652,7 @@ public class MainScreenController implements Initializable {
                 a.setHeaderText("Error: File is too big");
                 a.show();
                 return;
+
             }
             String filePath = selectedFile.getPath();
             File fileToSend = new File(filePath);
@@ -772,9 +781,20 @@ public class MainScreenController implements Initializable {
     void onClickAddGroup(ActionEvent event) {
         if (groupnameID.getText().equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("please enter a group name first ");
+            alert.setTitle("Empty group name");
+            alert.setHeaderText("Error: Group name is empty!");
+            alert.setContentText("Please enter a group name first!");
             alert.show();
-        } else {
+        } else if (groupnameID.getText().length()>15)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Group name length");
+            alert.setHeaderText("Error: Group name is too long ");
+            alert.setContentText("Group name must be less than or equals 15 characters");
+            alert.show();
+        }
+
+        else {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
