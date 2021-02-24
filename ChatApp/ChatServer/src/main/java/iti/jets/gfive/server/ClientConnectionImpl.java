@@ -28,7 +28,7 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
     public ClientConnectionImpl() throws RemoteException {
         pingerThread = new Thread(() -> {
             while (!ClientConnectionImpl.shouldDie) {
-                System.out.println(ClientConnectionImpl.shouldDie);
+//                System.out.println(ClientConnectionImpl.shouldDie);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

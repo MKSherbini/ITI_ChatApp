@@ -6,16 +6,17 @@ import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DataSourceFactory {
-    public static DataSource getMySQLDataSource(){
+    public static DataSource getMySQLDataSource() {
         Properties props = new Properties();
-        FileInputStream fis;
+        InputStream fis;
         MysqlDataSource mysqlDS = null;
-        try{
+        try {
             //fis = new FileInputStream("db.properties");
-            fis = new FileInputStream(DataSourceFactory.class.getResource("/db.properties").getPath());
+            fis = DataSourceFactory.class.getResourceAsStream("/iti/jets/gfive/db.properties");
             props.load(fis);
             mysqlDS = new MysqlDataSource();
             mysqlDS.setURL(props.getProperty("MYSQL_DB_URL"));
