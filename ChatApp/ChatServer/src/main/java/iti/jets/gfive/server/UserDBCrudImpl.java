@@ -1,5 +1,6 @@
 package iti.jets.gfive.server;
 
+import iti.jets.gfive.common.Hashator;
 import iti.jets.gfive.common.models.UserDto;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.db.DataSourceFactory;
@@ -78,6 +79,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
     @Override
     public UserDto selectFromDB(String phoneNumber, String password) throws RemoteException {
+        password = Hashator.hash(password);
         UserDto user = new UserDto();
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
@@ -132,6 +134,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
     @Override
     public int insertUserRecord(UserDto user) throws RemoteException {
+        user.setPassword(Hashator.hash(user.getPassword()));
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -246,6 +249,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
 
     @Override
     public int updateUserRecord(UserDto user) throws RemoteException {
+        user.setPassword(Hashator.hash(user.getPassword()));
         System.out.println("inside update");
         ds = DataSourceFactory.getMySQLDataSource();
         Connection con = null;

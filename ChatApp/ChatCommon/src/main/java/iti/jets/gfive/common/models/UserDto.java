@@ -6,6 +6,7 @@ import java.io.*;
 import java.sql.Blob;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import javafx.embed.swing.SwingFXUtils;
@@ -58,7 +59,7 @@ public class UserDto implements Serializable {
         this.country = country;
         this.email = email;
         this.bio = bio;
-        this.image= new Image(UserDto.class.getResource("/images/personal.jpg").toString());
+        this.image = new Image(UserDto.class.getResource("/images/personal.jpg").toString());
     }
 
     public UserDto(String phoneNumber, Image image) {
@@ -73,18 +74,24 @@ public class UserDto implements Serializable {
     }
 
     public UserDto(String phoneNumber, String status) {
-        this .phoneNumber = phoneNumber;
-        this .status = status;
+        this.phoneNumber = phoneNumber;
+        this.status = status;
     }
+
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         s.defaultReadObject();
-        image = SwingFXUtils.toFXImage(ImageIO.read(s), null);
+        var bytes = s.readAllBytes();
+        InputStream i = new ByteArrayInputStream(bytes);
+//        System.out.println(Arrays.toString(bytes));
+        if (bytes.length > 0)
+            image = SwingFXUtils.toFXImage(ImageIO.read(i), null);
     }
 
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
         //image = new Image(UserDto.class.getResource("/iti/jets/gfive/images/sponge.png").toString());
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
+        if (image != null)
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", s);
         //if (image == null) System.out.println("fimageeeeeeee");
         //if (image != null) System.out.println("gimageeeeeeee");
 //        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("D:/sent.png")); //72kb

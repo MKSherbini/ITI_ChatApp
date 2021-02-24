@@ -1,5 +1,6 @@
 package iti.jets.gfive.ui.helpers;
 
+import iti.jets.gfive.common.Hashator;
 import iti.jets.gfive.common.interfaces.*;
 import iti.jets.gfive.common.models.GroupDto;
 import iti.jets.gfive.common.models.NotificationDto;
@@ -142,12 +143,13 @@ public class LoginManager {
     // this method to write the user data to properties file
     // saves his phone and password to used in the next login to the application
     private void saveCredentials(String action) {
-        try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
+        try (OutputStream output = new FileOutputStream(System.getProperty("user.dir") + "/config.properties")) {
             Properties prop = new Properties();
             // set the properties value
             prop.setProperty(PHONE_NUMBER, ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber());
             if (action.equals(ACTION_EXIT)) {
-                prop.setProperty(PASSWORD, ModelsFactory.getInstance().getCurrentUserModel().getPassword());
+                prop.setProperty(PASSWORD,
+                        Hashator.hash(ModelsFactory.getInstance().getCurrentUserModel().getPassword()));
             }
             if (action.equals(ACTION_LOGOUT)) {
                 prop.setProperty(PASSWORD, "");
@@ -162,7 +164,10 @@ public class LoginManager {
     // This method to read the saved password and phone number to perform implicit login
     private void readCredentials() {
         Properties prop = null;
-        try (InputStream input = LoginManager.class.getResourceAsStream("/config.properties")) {
+        String path = System.getProperty("user.dir") + "/config.properties";
+        File file = new File(path);
+        if (!file.exists()) return;
+        try (InputStream input = new FileInputStream(path)) {
             prop = new Properties();
             // load a properties file
             prop.load(input);
