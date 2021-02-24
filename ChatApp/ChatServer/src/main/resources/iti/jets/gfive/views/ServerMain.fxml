@@ -15,12 +15,6 @@
         <AnchorPane layoutX="6.0" layoutY="10.0" prefHeight="400.0" prefWidth="198.0" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="85.0" layoutY="-1.0" prefHeight="400.0" prefWidth="420.0" style="-fx-background-radius: 20em;" styleClass="right-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <HBox layoutX="157.0" styleClass="searchHBox" visible="false" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                    <children>
-                        <TextField promptText="Search" />
-                        <FontIcon iconColor="#375d81" iconLiteral="mdi2s-search-web" iconSize="22" wrappingWidth="22.4000244140625" />
-                    </children>
-                </HBox>
                 <Label fx:id="lb_appName" layoutX="218.0" layoutY="27.0" text="ChillChatServer" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="27.0" />
                 <Label layoutX="34.0" layoutY="64.0" text="Choose wisely" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="64.0" />
                 <VBox layoutX="71.0" layoutY="107.0" prefHeight="34.0" prefWidth="234.0" spacing="25.0" styleClass="loginHbox" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="21.799999999999983">

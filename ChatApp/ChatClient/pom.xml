@@ -36,8 +36,6 @@
         </dependency>
 
 
-
-
     </dependencies>
 
     <build>
@@ -52,6 +50,11 @@
                     <jlinkImageName>hello</jlinkImageName>
                     <mainClass>${project.artifactId}/${project.groupId}.Main</mainClass>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
             </plugin>
         </plugins>
 

@@ -48,8 +48,9 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae -> {
-            StageCoordinator.getInstance().unregisterCurrentUser(true);
-            Platform.exit();
+            StageCoordinator.getInstance().die();
+//            StageCoordinator.getInstance().unregisterCurrentUser(true);
+//            Platform.exit();
         });
 //        var m = Marshaltor.getInstance();
 //        m.marshalChat();
