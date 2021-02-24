@@ -185,9 +185,9 @@
                   </HBox>
                </bottom>
                <center>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <ListView fx:id="chatListView" prefHeight="443.0" prefWidth="506.0" styleClass="chatListView" stylesheets="@../styles/ChatAreaStyle.css" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="chatListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="443.0" prefWidth="506.0" styleClass="chatListView" stylesheets="@../styles/ChatAreaStyle.css" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </center>

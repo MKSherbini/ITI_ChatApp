@@ -34,8 +34,7 @@ public class ServerMainController {
 
     @FXML
     void onClickQuit(ActionEvent event) {
-        Server.getInstance().stopServer();
-        Platform.exit();
+        StageCoordinator.getInstance().die();
     }
 
     @FXML

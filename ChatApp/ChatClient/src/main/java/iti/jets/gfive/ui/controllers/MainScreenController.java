@@ -21,7 +21,9 @@ import iti.jets.gfive.ui.models.CurrentUserModel;
 import iti.jets.gfive.ui.models.chat.ChatModel;
 import iti.jets.gfive.ui.models.chat.MessageModel;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import iti.jets.gfive.ui.helpers.LoginManager;
@@ -246,6 +248,69 @@ public class MainScreenController implements Initializable {
                 e.printStackTrace();
             }
         });
+
+
+        chatListView.setCellFactory(param -> new ListCell<AnchorPane>() {
+            @Override
+            protected void updateItem(AnchorPane item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                    // other stuff to do...
+
+                } else {
+//                    item.prefWidthProperty().bind(chatListView.widthProperty().divide(1.1));
+//                    item.setMaxWidth(Control.USE_PREF_SIZE);
+                    // set the width's
+                    setMinWidth(chatListView.getWidth());
+                    setPrefWidth(chatListView.getWidth());
+                    setMaxWidth(chatListView.getWidth());
+                    setMaxHeight(chatListView.getHeight());
+                    List<Node> parentChildren = item.getChildren();
+                    DoubleProperty bestFitProperty = new SimpleDoubleProperty(40);
+                    parentChildren.forEach(node -> {
+                        if (node instanceof HBox) {
+                            ((HBox) node).getChildren().forEach(node1 -> {
+                                if (node1 instanceof Label) {
+                                    var label = (Label) node1;
+//                                    System.out.println((label).getPrefHeight());
+//                                    label.getText()
+                                    Text text = new Text(label.getText());
+                                    text.applyCss();
+//                                    label.getCssMetaData()
+//                                    System.out.println(text.getLayoutBounds().getWidth() / getPrefWidth());
+                                    bestFitProperty.set(
+                                            Math.max(bestFitProperty.get(),
+                                                    text.getLayoutBounds().getWidth() * 30 / getPrefWidth()));
+                                }
+                            });
+                        }
+//                            System.out.println("hbox pref " + ((HBox) node).getPrefHeight());
+
+                    });
+                    setPrefHeight(bestFitProperty.get());
+                    setMinHeight(bestFitProperty.get());
+                    System.out.println(" pref " + item.getPrefHeight());
+                    System.out.println(" pref " + item.getPrefWidth());
+
+//                    setPrefHeight(chatListView.getPrefHeight());
+//                    setMinHeight(chatListView.getHeight());
+//                    HBox h = (HBox) item.getChildren().get(0);
+//                    setPrefHeight();
+
+                    // allow wrapping
+                    setWrapText(true);
+
+//                    setText(item.toString());
+
+                    setGraphic(item);
+
+
+                }
+            }
+        });
+//        chatListView.setSc
     }
 
     // this method create new image view object and fit its width and height to 20 px .

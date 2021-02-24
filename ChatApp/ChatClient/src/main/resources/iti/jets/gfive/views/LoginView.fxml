@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -65,6 +67,11 @@
                   <Font size="8.0" />
                </font>
             </Label>
+            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="299.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="11.0">
+               <image>
+                  <Image url="@../images/icon.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </children>

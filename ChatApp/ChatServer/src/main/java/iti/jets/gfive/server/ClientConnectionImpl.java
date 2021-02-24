@@ -38,15 +38,20 @@ public class ClientConnectionImpl extends UnicastRemoteObject implements ClientC
                         // gotcha u pos
                         e.printStackTrace();
                         try {
-                            UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
-                            userDBCrud.updateUserConnection(connectedClient.getClient(), false);
-                            connectedClient.getClient().setStatus("offline");
-                            puplishStatus(connectedClient.getClient());
+                            unregister(connectedClient.getReceiveNotif());
                         } catch (RemoteException remoteException) {
                             remoteException.printStackTrace();
                         }
-                        ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
-                        StatsManager.getInstance().updateConnectionStats();
+//                        try {
+//                            UserDBCrudImpl userDBCrud = new UserDBCrudImpl();
+//                            userDBCrud.updateUserConnection(connectedClient.getClient(), false);
+//                            connectedClient.getClient().setStatus("offline");
+//                            puplishStatus(connectedClient.getClient());
+//                        } catch (RemoteException remoteException) {
+//                            remoteException.printStackTrace();
+//                        }
+//                        ClientConnectionImpl.clientsPool.remove(connectedClient); // drop him, he prolly died
+//                        StatsManager.getInstance().updateConnectionStats();
                     }
                 });
             }

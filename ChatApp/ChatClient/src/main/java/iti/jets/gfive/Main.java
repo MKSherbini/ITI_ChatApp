@@ -9,6 +9,7 @@ import iti.jets.gfive.ui.helpers.StageCoordinator;
 import iti.jets.gfive.ui.helpers.serialization.Marshaltor;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
@@ -43,11 +44,12 @@ public class Main extends Application {
             stageCoordinator.switchToLoginPage();
         }
 
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/iti/jets/gfive/images/icon.png")));
         primaryStage.show();
         //todo unregister and unexport but which obj??
-        primaryStage.setOnCloseRequest(ae ->{
-           StageCoordinator.getInstance().unregisterCurrentUser(true);
-           Platform.exit();
+        primaryStage.setOnCloseRequest(ae -> {
+            StageCoordinator.getInstance().unregisterCurrentUser(true);
+            Platform.exit();
         });
 //        var m = Marshaltor.getInstance();
 //        m.marshalChat();

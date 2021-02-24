@@ -1,6 +1,7 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.Server;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,9 +27,14 @@ public class StageCoordinator {
         }
         primaryStage = stage;
         primaryStage.setOnCloseRequest(event -> {
-            Server.getInstance().stopServer();
-            Platform.exit();
+            die();
         });
+    }
+
+    public void die() {
+        Server.getInstance().stopServer();
+        Platform.exit();
+        System.exit(0); // todo care later
     }
 
     public static StageCoordinator getInstance() {
@@ -41,7 +47,8 @@ public class StageCoordinator {
 
         loadView(viewName);
     }
-    public void switchToAnnouncement(){
+
+    public void switchToAnnouncement() {
         var viewName = "AnnouncementView";
         loadView(viewName);
     }
