@@ -1,5 +1,6 @@
 package iti.jets.gfive;
 
+import iti.jets.gfive.common.IPConn;
 import iti.jets.gfive.common.interfaces.*;
 import iti.jets.gfive.server.*;
 import javafx.event.ActionEvent;
@@ -68,7 +69,7 @@ public class Server {
 
             Registry registry = null;
             try {
-                System.setProperty("java.rmi.server.hostname", "192.168.001.207");
+                System.setProperty("java.rmi.server.hostname", IPConn.IP);
                 registry = LocateRegistry.createRegistry(port);
                 System.out.println("Created registry on port " + port);
             } catch (RemoteException e) {
