@@ -16,7 +16,7 @@ public class DataSourceFactory {
         MysqlDataSource mysqlDS = null;
         try {
             //fis = new FileInputStream("db.properties");
-            fis = DataSourceFactory.class.getResourceAsStream("/iti/jets/gfive/db.properties");
+            fis = DataSourceFactory.class.getResourceAsStream("/db.properties");
             props.load(fis);
             mysqlDS = new MysqlDataSource();
             mysqlDS.setURL(props.getProperty("MYSQL_DB_URL"));

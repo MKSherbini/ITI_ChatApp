@@ -13,7 +13,7 @@
    <children>
       <AnchorPane layoutX="-2.0" prefHeight="68.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label alignment="CENTER" layoutX="286.0" layoutY="26.0" styleClass="header" stylesheets="@../styles/login.css" text="New Contact " textAlignment="CENTER" textFill="RED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label alignment="CENTER" layoutX="286.0" layoutY="26.0" styleClass="header" stylesheets="@../styles/login.css" text="Add New Contact " textAlignment="CENTER" textFill="RED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font name="Times New Roman Bold" size="24.0" />
                </font>
@@ -22,8 +22,14 @@
       </AnchorPane>
       <HBox layoutX="200.0" layoutY="349.0" spacing="20.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="349.0">
          <children>
-            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#performCancel" prefWidth="100.0" text="cancel" />
-            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#performAddContact" prefWidth="100.0" text="Add" />
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#performAddContact" prefWidth="100.0" text="Send">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#performCancel" prefWidth="100.0" text="Cancel">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
          </children>
       </HBox>
       <AnchorPane layoutX="51.0" layoutY="81.0" prefHeight="258.0" prefWidth="498.0" styleClass="loginHbox" stylesheets="@../styles/addContactDialog.css" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="81.0">
@@ -44,7 +50,10 @@
                         </HBox>
                      </children>
                   </HBox>
-                  <Button fx:id="btnNew" layoutX="407.09765625" mnemonicParsing="false" onAction="#performNewContact" text="new" />
+                  <Button fx:id="btnNew" layoutX="407.09765625" mnemonicParsing="false" onAction="#performNewContact" text="Add">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
                </children>
             </AnchorPane>
             <JFXListView fx:id="listView" layoutX="84.0" layoutY="85.0" prefHeight="144.0" prefWidth="330.0" style="-fx-background-color: #E1E6FA;" AnchorPane.bottomAnchor="29.399999999999977" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="85.0" />

@@ -37,9 +37,9 @@
 
 <AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="584.0" prefWidth="959.0" stylesheets="@../styles/bootstrapfx.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.MainScreenController">
    <children>
-      <AnchorPane layoutX="-54.0" layoutY="-2.0" prefHeight="63.0" prefWidth="392.0" scaleZ="5.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="-54.0" AnchorPane.topAnchor="-2.0">
+      <AnchorPane layoutX="-54.0" layoutY="-2.0" prefHeight="75.0" prefWidth="392.0" scaleZ="5.0" style="-fx-background-color: #183152;" AnchorPane.leftAnchor="-54.0" AnchorPane.topAnchor="-2.0">
          <children>
-            <ImageView fx:id="ibtnAddContct" fitHeight="39.0" fitWidth="38.0" layoutX="326.0" layoutY="12.0" onMouseClicked="#openAddNewContactDialog" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.399999999999999" AnchorPane.leftAnchor="325.6" AnchorPane.rightAnchor="13.600000000000023" AnchorPane.topAnchor="12.0">
+            <ImageView fx:id="ibtnAddContct" fitHeight="39.0" fitWidth="38.0" layoutX="334.0" layoutY="14.0" onMouseClicked="#openAddNewContactDialog" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="23.200000000000003" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="14.0">
                <image>
                   <Image url="@../icons/add-contact.png" />
                </image></ImageView>
@@ -91,7 +91,7 @@
                </children>
             </AnchorPane>
          </children></AnchorPane>
-      <JFXListView fx:id="contactsListViewId" layoutX="-8.0" layoutY="60.0" onMousePressed="#onClickonContact" prefHeight="524.0" prefWidth="346.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-8.0" AnchorPane.topAnchor="60.0" />
+      <JFXListView fx:id="contactsListViewId" layoutY="58.0" onMousePressed="#onClickonContact" prefHeight="526.0" prefWidth="338.0" style="-fx-background-color: #375D81;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="62.0" />
       <Line endX="-100.0" endY="525.3999633789062" layoutX="438.0" layoutY="60.0" startX="-100.0" AnchorPane.bottomAnchor="0.10003662109375" AnchorPane.leftAnchor="337.5" AnchorPane.topAnchor="59.5" />
 
 
@@ -123,13 +123,13 @@
             </StackPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="453.0" layoutY="62.0" prefHeight="535.0" prefWidth="517.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="453.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
+      <AnchorPane layoutX="338.0" layoutY="62.0" prefHeight="522.0" prefWidth="607.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="338.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
          <children>
-            <BorderPane fx:id="chatAreaBorderPaneID" layoutX="-115.0" layoutY="2.0" prefHeight="522.0" prefWidth="621.0" visible="false" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="-115.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0">
+            <BorderPane fx:id="chatAreaBorderPaneID" layoutX="-115.0" layoutY="2.0" prefHeight="522.0" prefWidth="607.0" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                <top>
                   <AnchorPane prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                      <children>
-                        <HBox fx:id="hboxChatBarId" alignment="TOP_RIGHT" layoutX="-2.0" layoutY="-4.0" prefHeight="67.0" prefWidth="615.0" spacing="4.0" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="-4.0">
+                        <HBox fx:id="hboxChatBarId" alignment="TOP_RIGHT" layoutX="-2.0" layoutY="-4.0" prefHeight="67.0" prefWidth="613.0" spacing="4.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-12.0" AnchorPane.topAnchor="1.0">
                            <children>
                               <ImageView fx:id="ReceiverImgID" fitHeight="75" fitWidth="75" pickOnBounds="true">
                                  <HBox.margin>
@@ -184,7 +184,7 @@
                   <HBox prefHeight="38.0" prefWidth="506.0" spacing="4.0">
                      <children>
                         <Region prefHeight="42.0" prefWidth="0.0" />
-                        <TextArea fx:id="msgTxtAreaID" prefHeight="42.0" prefWidth="350.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                        <TextArea fx:id="msgTxtAreaID" prefHeight="42.0" prefWidth="493.0" wrapText="true" HBox.hgrow="ALWAYS" />
                         <JFXButton fx:id="attachBtnId" buttonType="RAISED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onClickAttachFile" prefHeight="30.0" prefWidth="24.0" styleClass="attachBtnId" stylesheets="@../styles/ChatAreaStyle.css" text=" " textFill="#e1e6fa">
                            <font>
                               <Font name="System Bold" size="11.0" />
@@ -204,7 +204,7 @@
                <center>
                   <AnchorPane prefHeight="323.0" prefWidth="330.0" BorderPane.alignment="CENTER">
                      <children>
-                        <ListView fx:id="chatListView" prefHeight="415.0" prefWidth="621.0" styleClass="chatListView" stylesheets="@../styles/ChatAreaStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="chatListView" layoutX="4.0" layoutY="5.0" prefHeight="407.0" prefWidth="613.0" styleClass="chatListView" stylesheets="@../styles/ChatAreaStyle.css" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="-11.0" AnchorPane.topAnchor="5.0" />
                      </children>
                   </AnchorPane>
                </center>
@@ -215,6 +215,6 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <TextField fx:id="groupnameID" layoutY="558.0" prefHeight="20.0" prefWidth="240.0" promptText="Enter Group Name" visible="false" AnchorPane.bottomAnchor="3.0" />
+      <TextField fx:id="groupnameID" layoutY="558.0" prefHeight="20.0" prefWidth="240.0" promptText="Enter Group Name" visible="false" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="2.0" />
    </children>
 </AnchorPane>

@@ -54,7 +54,7 @@ public class Main extends Application {
             }
 
             Platform.exit();
-            StageCoordinator.getInstance().die();
+            //StageCoordinator.getInstance().die();
 //            StageCoordinator.getInstance().unregisterCurrentUser(true);
 //            Platform.exit();
         });
