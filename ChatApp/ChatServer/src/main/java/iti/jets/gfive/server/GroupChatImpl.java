@@ -43,13 +43,13 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return groups;
@@ -105,14 +105,15 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null && rs != null) {
-                try {
-                    rs.close();
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+                if (rs != null)
+                    rs.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return groupid;
@@ -142,13 +143,13 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return members;
@@ -185,13 +186,13 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return messages;
@@ -228,14 +229,15 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null && rs != null) {
-                try {
-                    rs.close();
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+                if (rs != null)
+                    rs.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return groupid;
@@ -264,13 +266,13 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return name;
@@ -300,12 +302,13 @@ public class GroupChatImpl extends UnicastRemoteObject implements GroupChatInter
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if(con != null && preparedStatement != null){
-                try {
-                    preparedStatement.close(); con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            try {
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (con != null)
+                    con.close();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return fileData;

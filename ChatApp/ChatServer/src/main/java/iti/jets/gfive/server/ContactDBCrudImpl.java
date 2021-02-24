@@ -40,13 +40,13 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return rowsAffected;
@@ -78,9 +78,9 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
                     contact.setCountry(rs.getString("country"));
                     contact.setBirthDate(rs.getDate("date_birth"));
                     contact.setBio(rs.getString("bio"));
-                    if(rs.getBoolean("on_line")){
+                    if (rs.getBoolean("on_line")) {
                         contact.setStatus(rs.getString("user_status"));
-                    }else{
+                    } else {
                         contact.setStatus("offline");
                     }
                     contact.setImage(UserDBCrudImpl.deserializeFromString(rs.getBytes("picture")));
@@ -92,13 +92,13 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return contactsList;
@@ -123,11 +123,12 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
 
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
+        } finally {
             try {
-                preparedStatement.close();
-                con.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (con != null)
+                    con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -151,11 +152,12 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
 
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-        }
-        if (con != null && preparedStatement != null) {
+        }finally {
             try {
-                preparedStatement.close();
-                con.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (con != null)
+                    con.close();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
@@ -208,13 +210,13 @@ public class ContactDBCrudImpl extends UnicastRemoteObject implements ContactDBC
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return contact;

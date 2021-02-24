@@ -1,12 +1,14 @@
 package iti.jets.gfive.ui.helpers;
 
 import iti.jets.gfive.Server;
+import iti.jets.gfive.server.ClientConnectionImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +35,20 @@ public class StageCoordinator {
 
     public void die() {
         Server.getInstance().stopServer();
+        ClientConnectionImpl.shouldDie = true;
+        if (ClientConnectionImpl.pingerThread != null)
+            ClientConnectionImpl.pingerThread.interrupt();
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (ClientConnectionImpl.pingerThread != null)
+                System.out.println("alive" +
+                        ClientConnectionImpl.pingerThread.isAlive()
+                );
+        }).start();
         Platform.exit();
         System.exit(0); // todo care later
     }

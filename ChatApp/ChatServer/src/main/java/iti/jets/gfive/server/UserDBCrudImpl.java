@@ -60,15 +60,18 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException | NullPointerException | IOException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && stmt != null && resultSet != null) {
-                try {
+//            if (con != null && stmt != null && resultSet != null) {
+            try {
+                if (stmt != null)
                     stmt.close();
+                if (con != null)
                     con.close();
+                if (resultSet != null)
                     resultSet.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
+//            }
         }
         return user;
     }
@@ -110,15 +113,18 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException | NullPointerException | IOException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && stmt != null && resultSet != null) {
-                try {
+//            if (con != null && stmt != null && resultSet != null) {
+            try {
+                if (stmt != null)
                     stmt.close();
+                if (con != null)
                     con.close();
+                if (resultSet != null)
                     resultSet.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
+//            }
         }
         System.out.println("AFTER THE FINALLY");
         return null;
@@ -151,14 +157,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException | IOException throwable) {
             throwable.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+//            if (con != null && preparedStatement != null) {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
+//            }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
@@ -188,14 +196,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && stmt != null) {
-                try {
+//            if (con != null && stmt != null) {
+            try {
+                if (stmt != null)
                     stmt.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         return rowsAffected;
     }
@@ -220,14 +230,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+//            if (con != null && preparedStatement != null) {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         return rowsAffected;
     }
@@ -264,15 +276,17 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } finally {
-                if (con != null && preparedStatement != null) {
-                    try {
+//                if (con != null && preparedStatement != null) {
+                try {
+                    if (preparedStatement != null)
                         preparedStatement.close();
+                    if (con != null)
                         con.close();
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
+
+//                }
             }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
@@ -295,14 +309,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+//            if (con != null && preparedStatement != null) {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
@@ -328,14 +344,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+//            if (con != null && preparedStatement != null) {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         return registered;
     }
@@ -345,6 +363,7 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         ObjectInputStream ois = new ObjectInputStream(
                 new ByteArrayInputStream(s));
         var img = SwingFXUtils.toFXImage(ImageIO.read(ois), null);
+        ois.close();
         return img;
     }
 
@@ -387,14 +406,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         } finally {
-            if (con != null && preparedStatement != null) {
-                try {
+//            if (con != null && preparedStatement != null) {
+            try {
+                if (preparedStatement != null)
                     preparedStatement.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         return img;
     }
@@ -417,14 +438,16 @@ public class UserDBCrudImpl extends UnicastRemoteObject implements UserDBCrudInt
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
-            if (con != null && stmt != null) {
-                try {
+//            if (con != null && stmt != null) {
+            try {
+                if (stmt != null)
                     stmt.close();
+                if (con != null)
                     con.close();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
+//            }
         }
         if (rowsAffected > 0) StatsManager.getInstance().updateStats();
         return rowsAffected;
