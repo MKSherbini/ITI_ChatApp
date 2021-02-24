@@ -6,17 +6,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="74.0" prefWidth="462.0" styleClass="notificationContentId" stylesheets="@../styles/notificationComponent.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.NotificationViewController">
-   <left>
-      <VBox BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="notificationContentId" prefHeight="72.0" prefWidth="368.0" text="Label" />
-            <Label fx:id="senderIdLabel" text="Label" />
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <VBox prefHeight="42.0" prefWidth="94.0" spacing="2.0" BorderPane.alignment="CENTER">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="74.0" prefWidth="520.0" styleClass="notificationContentId" stylesheets="@../styles/notificationComponent.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iti.jets.gfive.ui.controllers.NotificationViewController">
+   <right>
+      <VBox prefHeight="74.0" prefWidth="95.0" spacing="2.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="acceptBtnId" mnemonicParsing="false" onAction="#acceptContact" prefHeight="53.0" prefWidth="94.0" styleClass="acceptBtnId" text="Accept" textFill="WHITE">
                <font>
@@ -28,6 +20,14 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="notificationContentId" prefHeight="72.0" prefWidth="368.0" text="Label" />
+            <Label fx:id="senderIdLabel" text="Label" visible="false" />
          </children>
       </VBox>
    </center>

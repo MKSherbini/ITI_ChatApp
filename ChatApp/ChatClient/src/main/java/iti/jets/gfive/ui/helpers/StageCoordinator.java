@@ -178,28 +178,32 @@ public class StageCoordinator {
             reset();
         }
     }
-    public void close(){
+
+    public void close() {
         if (registered) {
-           logout();
-       }
-        try {
-            // make sure this dies
-            UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
-        } catch (NoSuchObjectException noSuchObjectException) {
-            noSuchObjectException.printStackTrace();
+            logout();
         }
+        if (hasServerErrors)
+            try {
+                // make sure this dies
+                UnicastRemoteObject.unexportObject(NotificationMsgHandler.getInstance(), true);
+            } catch (NoSuchObjectException noSuchObjectException) {
+                noSuchObjectException.printStackTrace();
+            }
 
 
     }
-    public void logout(){
+
+    public void logout() {
         try {
             ClientConnectionService.getClientConnService().unregister(NotificationMsgHandler.getInstance());
-            registered= false;
+            registered = false;
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
-    public void exit(){
+
+    public void exit() {
         ClientConnectionInter clientConnectionInter = ClientConnectionService.getClientConnService();
         try {
             UserDto user = new UserDto(ModelsFactory.getInstance().getCurrentUserModel().getPhoneNumber(), ModelsFactory.getInstance().getCurrentUserModel().getUsername(), ModelsFactory.getInstance().getCurrentUserModel().getStatus());

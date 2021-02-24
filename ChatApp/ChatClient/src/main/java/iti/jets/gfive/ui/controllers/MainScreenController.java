@@ -364,10 +364,6 @@ public class MainScreenController implements Initializable {
         stageCoordinator.switchToProfilePage();
     }
 
-    @FXML
-    public void openFriendRequestDialog(ActionEvent actionEvent) {
-        openDialog("FriendRequestDialog");
-    }
 
     private void openDialog(String viewName) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
@@ -379,6 +375,7 @@ public class MainScreenController implements Initializable {
             stage.setMaximized(false);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
             //todo when undecorated the window is no longer movable!
             //stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(scene);
@@ -398,6 +395,7 @@ public class MainScreenController implements Initializable {
             Scene scene = new Scene(parent, 600, 400);
             Stage stage = new Stage();
             stage.setMaximized(false);
+            stage.setResizable(false);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);

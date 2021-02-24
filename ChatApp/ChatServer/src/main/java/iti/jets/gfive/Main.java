@@ -1,5 +1,6 @@
 package iti.jets.gfive;
 
+import iti.jets.gfive.common.CustomLogger;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,6 +20,10 @@ import java.util.Scanner;
 public class Main extends Application {
 
     public static void main(String[] args) {
+        System.out.println("Welcome to our error free app");
+        System.setErr(CustomLogger.sout);
+        System.setOut(CustomLogger.sout);
+        System.out.println("dead");
         launch(args);
     }
 

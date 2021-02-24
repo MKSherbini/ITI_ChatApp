@@ -32,6 +32,7 @@ public class AnnouncementLoader {
                     parent = fxmlLoader.load();
                     scene = new Scene(parent, 600, 400);
                     stage.setMaximized(false);
+                    stage.setResizable(false);
                     stage.initStyle(StageStyle.UTILITY);
                     stage.initModality(Modality.APPLICATION_MODAL);
                 } catch (IOException e) {

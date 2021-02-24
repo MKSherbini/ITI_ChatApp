@@ -1,6 +1,7 @@
 package iti.jets.gfive;
 
 import iti.jets.gfive.AIML.BotsManager;
+import iti.jets.gfive.common.CustomLogger;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
@@ -22,6 +23,10 @@ import java.util.Scanner;
 public class Main extends Application {
 
     public static void main(String[] args) {
+        System.out.println("Welcome to our error free app");
+        System.setErr(CustomLogger.sout);
+        System.setOut(CustomLogger.sout);
+        System.out.println("dead");
         launch(args);
     }
 
@@ -49,7 +54,7 @@ public class Main extends Application {
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae -> {
-            if(ModelsFactory.getInstance().getCurrentUserModel().getUsername()!=null){
+            if (ModelsFactory.getInstance().getCurrentUserModel().getUsername() != null) {
                 StageCoordinator.getInstance().close();
             }
 
