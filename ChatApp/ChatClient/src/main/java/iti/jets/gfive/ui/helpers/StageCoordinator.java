@@ -124,7 +124,7 @@ public class StageCoordinator {
     public void reset() {
         System.out.println("Resetting");
         hasServerErrors = true;
-        unregisterCurrentUser(true);
+//        logout();
         switchToErrorPage();
 //        Platform.exit();
 //        scenes.clear();

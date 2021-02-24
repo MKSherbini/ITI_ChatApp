@@ -3,7 +3,9 @@ package iti.jets.gfive;
 import iti.jets.gfive.AIML.BotsManager;
 import iti.jets.gfive.common.CustomLogger;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
+import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.ClientConnectionService;
+import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.NotificationMsgHandler;
 import iti.jets.gfive.ui.helpers.LoginManager;
@@ -34,8 +36,18 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws SQLException {
         StageCoordinator stageCoordinator = StageCoordinator.getInstance();
         stageCoordinator.initStage(primaryStage);
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/iti/jets/gfive/images/icon.png")));
         LoginManager loginManager = LoginManager.getInstance();
         if (loginManager == null) return;
+
+
+        UserDBCrudInter userServices = UserDBCrudService.getUserService();
+        if (userServices == null) {
+            primaryStage.show();
+            StageCoordinator.getInstance().reset();
+            return;
+        }
+
 
         // check if the can login returned true this meaning that user just exit
         // and his password and phone number saved and can enter
@@ -50,7 +62,7 @@ public class Main extends Application {
             stageCoordinator.switchToLoginPage();
         }
 
-        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/iti/jets/gfive/images/icon.png")));
+
         primaryStage.show();
         //todo unregister and unexport but which obj??
         primaryStage.setOnCloseRequest(ae -> {

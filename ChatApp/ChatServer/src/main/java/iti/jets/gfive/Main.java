@@ -13,6 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.util.Scanner;
 //import org.alicebot.ab.configuration.BotConfiguration;
@@ -24,6 +28,18 @@ public class Main extends Application {
         System.setErr(CustomLogger.sout);
         System.setOut(CustomLogger.sout);
         System.out.println("dead");
+        String path = System.getProperty("user.dir") + "/server.lock";
+        File file = new File(path);
+        if (file.exists()) {
+            return;
+        } else {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         launch(args);
     }
 

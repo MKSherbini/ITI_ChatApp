@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,10 @@ public class StageCoordinator {
     }
 
     public void die() {
+        String path = System.getProperty("user.dir") + "/server.lock";
+        File file = new File(path);
+        if (file.exists())
+            file.delete();
         Server.getInstance().stopServer();
         ClientConnectionImpl.shouldDie = true;
         if (ClientConnectionImpl.pingerThread != null)
