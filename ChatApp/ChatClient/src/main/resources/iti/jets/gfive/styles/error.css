@@ -29,12 +29,12 @@
 
 .button {
     -fx-background-color: #375D81;
-    -fx-text-fill: #E1E6FA;
+    -fx-text-fill: #D34336;
     -fx-background-radius: 1em;
 }
 
 .right-pane > .label {
-    -fx-text-fill: #FF4500;
+    -fx-text-fill: #D34336;
 }
 
 
