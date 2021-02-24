@@ -25,7 +25,12 @@
       </AnchorPane>
       <HTMLEditor fx:id="htmlEditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="24.0" layoutY="91.0" prefHeight="251.0" prefWidth="551.0" style="-fx-background-color: #554; -fx-border-style: solid;  -fx-border-width: 5; -fx-border-color: #375D81;" AnchorPane.bottomAnchor="57.80000000000001" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.799999999999955" AnchorPane.topAnchor="91.0" />
       <Button fx:id="btnAnnounce" layoutX="263.0" layoutY="350.0" mnemonicParsing="false" onAction="#sendAnnouncement" text="Announce " AnchorPane.bottomAnchor="24.4" AnchorPane.leftAnchor="263.0" AnchorPane.rightAnchor="263.4" />
-      <Label fx:id="lblError" layoutX="26.0" layoutY="342.0" prefHeight="18.0" prefWidth="545.0" text="should enter at least 10 charcters to announce  ...." textFill="RED">
+      <Label fx:id="lblError"  visible="false" layoutX="26.0" layoutY="342.0" prefHeight="18.0" prefWidth="545.0" text="should enter at least 10 charcters to announce  ...." textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblSent" layoutX="26.0" visible="false" layoutY="342.0" prefHeight="18.0" prefWidth="545.0" text="Announcement sent successfully " textFill="green">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>

@@ -25,21 +25,15 @@ public class AnnouncementLoader {
     private void openDialog(String viewName) {
         if(stage == null ) {
             stage = new Stage();
-
             if (scene == null) {
-
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(String.format("/iti/jets/gfive/views/%s.fxml", viewName)));
                 Parent parent = null;
                 try {
                     parent = fxmlLoader.load();
                     scene = new Scene(parent, 600, 400);
-
                     stage.setMaximized(false);
                     stage.initStyle(StageStyle.UTILITY);
                     stage.initModality(Modality.APPLICATION_MODAL);
-                    //todo when undecorated the window is no longer movable!
-                    //stage.initStyle(StageStyle.UNDECORATED);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -47,15 +41,11 @@ public class AnnouncementLoader {
         }else{
             if(stage.isShowing()){
                 return ;
-            }else{
-                stage.setScene(scene);
-                stage.setTitle("Server Announcement ..");
-                stage.showAndWait();
-
             }
         }
-
-
+        stage.setScene(scene);
+        stage.setTitle("Server Announcement ..");
+        stage.showAndWait();
     }
 
     public void showDialog(String content){

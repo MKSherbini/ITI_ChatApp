@@ -103,9 +103,10 @@ public class ContactController implements Initializable {
 
         //contactNameLabel = new Label();
         // this to make the image view like circle
-        final Rectangle clip = new Rectangle(60, 60);
+        final Rectangle clip = new Rectangle(75, 75);
         clip.setArcWidth(180);
         clip.setArcHeight(180);
+        contactImg.setSmooth(true);
         contactImg.setClip(clip);
         NotificationMsgHandler n = NotificationMsgHandler.getInstance();
 
