@@ -26,8 +26,10 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         System.out.println("Welcome to our error free app");
-        System.setErr(CustomLogger.sout);
-        System.setOut(CustomLogger.sout);
+        if (!CustomLogger.isDebugMode) {
+            System.setErr(CustomLogger.sout);
+            System.setOut(CustomLogger.sout);
+        }
         System.out.println("dead");
         launch(args);
     }

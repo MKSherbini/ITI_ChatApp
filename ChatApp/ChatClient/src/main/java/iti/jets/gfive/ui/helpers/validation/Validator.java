@@ -121,7 +121,7 @@ public class Validator {
     }
 
     public void buildNameValidation(JFXTextField textField) {
-        addBoundsValidation(textField, 2, 10);
+        addBoundsValidation(textField, 2, 20);
         setValidateOnEvent(textField);
     }
 

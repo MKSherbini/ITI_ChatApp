@@ -13,12 +13,13 @@ import java.util.stream.Collectors;
 // todo add exception handling
 public class BotsManager {
     private static final BotsManager instance = new BotsManager();
-    private static final String botsPath = "src/main/resources/iti/jets/gfive";
+    private static String botsPath;
     private List<Bot> bots;
     private List<Chat> chats;
     private boolean isInitialized;
 
     private BotsManager() {
+        botsPath = System.getProperty("user.dir") + "/Resources";
     }
 
     public static BotsManager getInstance() {
