@@ -69,7 +69,7 @@ public class Server {
 
             Registry registry = null;
             try {
-                System.setProperty("java.rmi.server.hostname", IPConn.IP);
+//                System.setProperty("java.rmi.server.hostname", IPConn.IP);
                 registry = LocateRegistry.createRegistry(port);
                 System.out.println("Created registry on port " + port);
             } catch (RemoteException e) {

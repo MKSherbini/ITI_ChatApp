@@ -2,6 +2,7 @@ package iti.jets.gfive;
 
 import iti.jets.gfive.AIML.BotsManager;
 import iti.jets.gfive.common.CustomLogger;
+import iti.jets.gfive.common.IPConn;
 import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.services.ClientConnectionService;
@@ -26,6 +27,15 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         System.out.println("Welcome to our error free app");
+        if (args.length > 0) {
+            System.out.println("Client on IP: " + args[0]);
+            IPConn.IP = args[0];
+        }
+
+        if (args.length > 1) {
+            CustomLogger.isDebugMode = args[1].startsWith("T");
+        }
+
         if (!CustomLogger.isDebugMode) {
             System.setErr(CustomLogger.sout);
             System.setOut(CustomLogger.sout);
