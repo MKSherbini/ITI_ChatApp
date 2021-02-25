@@ -21,4 +21,5 @@ public interface ClientConnectionInter extends Remote {
     void createGroupInAllMemebers(String groupname , List<String> list , String id)throws RemoteException;
     void sendFileToGroup(GroupMessagesDto msg, List<String> groupMembers) throws RemoteException;
     void publishAnnouncement(String announce) throws RemoteException;
+    void publishName(UserDto user) throws RemoteException;
 }

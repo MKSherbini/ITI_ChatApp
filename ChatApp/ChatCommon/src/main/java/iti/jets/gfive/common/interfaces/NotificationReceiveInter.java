@@ -28,4 +28,6 @@ public interface NotificationReceiveInter extends Remote {
     void receivePing() throws RemoteException;
 
     void receiveFileToGroup(GroupMessagesDto groupMessageDto) throws RemoteException;
+
+    void updateName(UserDto user) throws RemoteException;
 }

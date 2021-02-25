@@ -25,8 +25,8 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         System.out.println("Welcome to our error free app");
-        System.setErr(CustomLogger.sout);
-        System.setOut(CustomLogger.sout);
+        //System.setErr(CustomLogger.sout);
+        //System.setOut(CustomLogger.sout);
         System.out.println("dead");
         String path = System.getProperty("user.dir") + "/server.lock";
         File file = new File(path);

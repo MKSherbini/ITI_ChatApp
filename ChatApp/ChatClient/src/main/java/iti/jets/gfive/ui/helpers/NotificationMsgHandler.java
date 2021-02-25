@@ -357,6 +357,14 @@ public class NotificationMsgHandler extends UnicastRemoteObject implements Notif
         StageCoordinator.getInstance().changeStatus(user);
     }
 
+    @Override
+    public void updateName(UserDto user) throws RemoteException {
+        System.out.println(user.getPhoneNumber() + "-----------> " + user.getStatus());
+        ContactsListView c = ContactsListView.getInstance();
+        c.changeContactName(user);
+        StageCoordinator.getInstance().changeStatus(user);
+    }
+
     public JFXListView<BorderPane> getNotificationsToFill() {
         return this.notificationsListId;
     }

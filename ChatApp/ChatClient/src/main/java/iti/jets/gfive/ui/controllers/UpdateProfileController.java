@@ -1,8 +1,10 @@
 package iti.jets.gfive.ui.controllers;
 
 import com.jfoenix.controls.*;
+import iti.jets.gfive.common.interfaces.ClientConnectionInter;
 import iti.jets.gfive.common.interfaces.UserDBCrudInter;
 import iti.jets.gfive.common.models.UserDto;
+import iti.jets.gfive.services.ClientConnectionService;
 import iti.jets.gfive.services.UserDBCrudService;
 import iti.jets.gfive.ui.helpers.ModelsFactory;
 import iti.jets.gfive.ui.helpers.StageCoordinator;
@@ -115,6 +117,12 @@ public class UpdateProfileController implements Initializable {
             currentUserModel.setEmail(EmailID.getText());
             currentUserModel.setPassword(PasswordID.getText());
             currentUserModel.setBio(BioID.getText());
+            ClientConnectionInter cci = ClientConnectionService.getClientConnService();
+            try {
+                cci.publishName(user);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
 
 
             StageCoordinator stageCoordinator = StageCoordinator.getInstance();
