@@ -95,7 +95,7 @@ public class Marshaltor {
     }
 
     private void prepareFolder(File dirTarget, ChatModel chatModel) throws IOException {
-        FileUtils.copyDirectory(new File(this.getClass().getResource("/chatExportFiles").getPath()), dirTarget);
+        FileUtils.copyDirectory(new File(System.getProperty("user.dir") + "/Resources/chatExportFiles"), dirTarget);
     }
 
     private void prepareMessage(File dirTarget, ChatModel chatModel) {
@@ -139,7 +139,7 @@ public class Marshaltor {
     }
 
     private void GenerateHTMLFromXML(File htmlFile, ByteArrayInputStream xmlFile) {
-        File xsltFile = new File(getClass().getResource("/chat.xslt").getPath());
+        var xsltFile = (getClass().getResourceAsStream("/chat.xslt"));
         try {
 //            if (htmlFile.getName().toLowerCase(Locale.ROOT).endsWith(".html"))
 //                htmlFile.createNewFile();
@@ -157,7 +157,7 @@ public class Marshaltor {
         }
     }
 
-    private void GenerateHTMLFromXMLBasedOnXslt(File htmlFile, ByteArrayInputStream xmlFile, File xsltFile) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    private void GenerateHTMLFromXMLBasedOnXslt(File htmlFile, ByteArrayInputStream xmlFile, InputStream xsltFile) throws IOException, SAXException, ParserConfigurationException, TransformerException {
         Document xmlDocument = createDocumentFromFile(xmlFile);
         DOMSource xmlDomSource = new DOMSource(xmlDocument);
 
@@ -182,7 +182,7 @@ public class Marshaltor {
         return documentBuilder.parse(xmlFile);
     }
 
-    private Document createNSAwareDocumentFromFile(File xmlFile) throws ParserConfigurationException, IOException, SAXException {
+    private Document createNSAwareDocumentFromFile(InputStream xmlFile) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();

@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class CustomLogger {
+    public static boolean isDebugMode=true;
   static public PrintStream sout =new java.io.PrintStream(new java.io.OutputStream() {
         @Override public void write(int b) {}
     }) {

@@ -52,7 +52,7 @@ public class StageCoordinator {
 
         if (scenes.containsKey(viewName)) {
             LoginController controller = scenes.get(viewName).getLoader().getController();
-            controller.validateFields();
+            controller.resetFieldsValidation();
         }
         loadView(viewName);
     }
