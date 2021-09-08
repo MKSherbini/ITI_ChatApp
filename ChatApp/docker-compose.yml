@@ -1,0 +1,19 @@
+# host.docker.internal is localhost
+
+version: "3.4"
+services:
+   mysql:
+      container_name: mysql
+      image: mysql:8.0.23
+      command: --secure-file-priv=""
+      ports:
+         - "3306:3306"
+      volumes:
+         - ./mysql/config:/etc/mysql/
+         - ./mysql/data:/var/lib/mysql
+      environment:
+         MYSQL_ROOT_HOST: '%'
+         MYSQL_ROOT_PASSWORD: root
+         MYSQL_USER: mks
+         MYSQL_PASSWORD: jets
+         MYSQL_DATABASE: chatapp
