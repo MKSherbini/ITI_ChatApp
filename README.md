@@ -1,4 +1,5 @@
-# ITI_ChatApp
+# ITI_ChatApp 
+![](https://api.visitorbadge.io/api/VisitorHit?user=ITI_ChatApp&repo=github-visitors-badge&countColor=%23001E7A)
 
 A Chat App as a project for [ITI](iti.gov.eg/), That supports networking, sending/receiving any type of messages (text, photos, videos, and others), chat export, customizable chat bot support, and an admin side with a dashboard to control the server, view user's statistics, and send global notification messages to all users
 
